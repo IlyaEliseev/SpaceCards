@@ -1,0 +1,61 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32126.317
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpaceCards.API", "SpaceCards.API\SpaceCards.API.csproj", "{06437DA9-25B4-4276-BA5F-68DF840B056D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpaceCards.Domain", "SpaceCards.Domain\SpaceCards.Domain.csproj", "{84727FF8-D96F-479D-8BC1-3B7C35B8FC0B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpaceCards.BusinessLogic", "SpaceCards.BusinessLogic\SpaceCards.BusinessLogic.csproj", "{D4BE7B5B-3706-4A84-A6BF-346716BBE920}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpaceCards.DataAccess.Postgre", "SpaceCards.DataAccess.Postgre\SpaceCards.DataAccess.Postgre.csproj", "{6B2A8115-56A1-4735-80AE-9BB1848A436B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpaceCards.UnitTests", "SpaceCards.UnitTests\SpaceCards.UnitTests.csproj", "{EC0860B9-C09D-4022-93D4-5C967319E1F2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpaceCards.IntegrationTests", "SpaceCards.IntegrationTests\SpaceCards.IntegrationTests.csproj", "{271CE748-CF04-4DA2-B08C-D56682DD6075}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution items", "Solution items", "{5714A897-1886-4D67-AAB0-14425CD7BB59}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		stylecop.json = stylecop.json
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{06437DA9-25B4-4276-BA5F-68DF840B056D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06437DA9-25B4-4276-BA5F-68DF840B056D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06437DA9-25B4-4276-BA5F-68DF840B056D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06437DA9-25B4-4276-BA5F-68DF840B056D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{84727FF8-D96F-479D-8BC1-3B7C35B8FC0B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{84727FF8-D96F-479D-8BC1-3B7C35B8FC0B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{84727FF8-D96F-479D-8BC1-3B7C35B8FC0B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{84727FF8-D96F-479D-8BC1-3B7C35B8FC0B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D4BE7B5B-3706-4A84-A6BF-346716BBE920}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D4BE7B5B-3706-4A84-A6BF-346716BBE920}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D4BE7B5B-3706-4A84-A6BF-346716BBE920}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D4BE7B5B-3706-4A84-A6BF-346716BBE920}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B2A8115-56A1-4735-80AE-9BB1848A436B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B2A8115-56A1-4735-80AE-9BB1848A436B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B2A8115-56A1-4735-80AE-9BB1848A436B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B2A8115-56A1-4735-80AE-9BB1848A436B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC0860B9-C09D-4022-93D4-5C967319E1F2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC0860B9-C09D-4022-93D4-5C967319E1F2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC0860B9-C09D-4022-93D4-5C967319E1F2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC0860B9-C09D-4022-93D4-5C967319E1F2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{271CE748-CF04-4DA2-B08C-D56682DD6075}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{271CE748-CF04-4DA2-B08C-D56682DD6075}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{271CE748-CF04-4DA2-B08C-D56682DD6075}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{271CE748-CF04-4DA2-B08C-D56682DD6075}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5C866DCB-BD38-44FE-B21A-07BD46152FA5}
+	EndGlobalSection
+EndGlobal
