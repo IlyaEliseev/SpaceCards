@@ -12,10 +12,12 @@ namespace SpaceCards.API.Controllers
     public class CardsController : ControllerBase
     {
         private readonly ILogger<CardsController> _logger;
+        private readonly ICardsService _service;
 
-        public CardsController(ILogger<CardsController> logger)
+        public CardsController(ILogger<CardsController> logger, ICardsService service)
         {
             _logger = logger;
+            _service = service;
         }
 
         /// <summary>
@@ -28,14 +30,15 @@ namespace SpaceCards.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Create([FromBody] CreateCardRequest request)
         {
-            var card = Card.Create(request.Word, request.WordTranslate);
+            var (cardId, errors) = await _service.Create(request.FrontSide, request.BackSide);
 
-            if (card.Result == null)
+            if (errors.Any() || cardId == default)
             {
-                return Ok(card.Errors);
+                _logger.LogError("{errors}", errors);
+                return BadRequest(errors);
             }
 
-            return Ok(card.Result);
+            return Ok(cardId);
         }
 
         /// <summary>
@@ -47,7 +50,7 @@ namespace SpaceCards.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Get()
         {
-            var card = Card.Get();
+            var card = await _service.Get();
 
             return Ok(card);
         }
@@ -55,37 +58,44 @@ namespace SpaceCards.API.Controllers
         /// <summary>
         /// Delete card by card word.
         /// </summary>
-        /// <param name="cardName">Word in card.</param>
+        /// <param name="cardId">Card id.</param>
         /// <returns>Successful delete card.</returns>
-        [HttpDelete]
+        [HttpDelete("{cardId:int}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Delete(string cardName)
+        public async Task<IActionResult> Delete(int cardId)
         {
-            var deletedCard = Card.Delete(cardName);
+            var (result, errors) = await _service.Delete(cardId);
 
-            if (!deletedCard.Result)
+            if (errors.Any() || !result)
             {
-                return Ok(deletedCard.Errors);
+                _logger.LogError("{errors}", errors);
+                return BadRequest(errors);
             }
 
-            return Ok(deletedCard.Result);
+            return Ok(result);
         }
 
         /// <summary>
         /// Find card and update.
         /// </summary>
-        /// <param name="cardWord">Card search parametr.</param>
+        /// <param name="cardId">Card search parametr.</param>
         /// <param name="card">Card with new parametrs.</param>
         /// <returns>Successful update card.</returns>
-        [HttpPost("Update/{cardWord}")]
+        [HttpPut("{cardId:int}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Update(string cardWord, [FromBody] UpdateCardRequest card)
+        public async Task<IActionResult> Update(int cardId, [FromBody] UpdateCardRequest card)
         {
-            var result = Card.Update(cardWord, card.Word, card.WordTranslate);
+            var (result, errors) = await _service.Update(cardId, card.FrontSide, card.BackSide);
 
-            return Ok(result.Result);
+            if (errors.Any() || !result)
+            {
+                _logger.LogError("{errors}", errors);
+                return BadRequest(errors);
+            }
+
+            return Ok(result);
         }
     }
 }
