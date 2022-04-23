@@ -2,7 +2,7 @@
 {
     public interface ICardsService
     {
-        Task<(int Result, string[] Errors)> Create(string word, string wordTranslate);
+        Task<(int Result, string[] Errors)> Create(string frontSide, string backSide);
 
         Task<Card[]> Get();
 
