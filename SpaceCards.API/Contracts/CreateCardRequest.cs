@@ -1,9 +1,16 @@
-﻿namespace SpaceCards.API.Contracts
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace SpaceCards.API.Contracts
 {
+    /// <summary>
+    /// Contract for creating card.
+    /// </summary>
     public class CreateCardRequest
     {
-        public string Word { get; set; }
+        [Required]
+        public string FrontSide { get; set; }
 
-        public string WordTranslate { get; set; }
+        [Required]
+        public string BackSide { get; set; }
     }
 }

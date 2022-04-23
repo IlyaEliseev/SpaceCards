@@ -92,4 +92,4 @@ dotnet_diagnostic.SA1101.severity = none
 
 # SA1600: Elements should be documented
 dotnet_diagnostic.SA1600.severity = none
-dotnet_diagnostic.SA1200.severity=silent
+dotnet_diagnostic.SA1200.severity = silent

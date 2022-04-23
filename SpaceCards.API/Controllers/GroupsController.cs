@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SpaceCards.API.Contracts;
+using SpaceCards.DataAccess.Postgre;
 using SpaceCards.Domain;
 using System.Net.Mime;
 
@@ -12,10 +13,12 @@ namespace SpaceCards.API.Controllers
     public class GroupsController : ControllerBase
     {
         private readonly ILogger<GroupsController> _logger;
+        private readonly IGroupsService _service;
 
-        public GroupsController(ILogger<GroupsController> logger)
+        public GroupsController(ILogger<GroupsController> logger, IGroupsService service)
         {
             _logger = logger;
+            _service = service;
         }
 
         /// <summary>
@@ -29,35 +32,37 @@ namespace SpaceCards.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Create([FromBody] CreateGroupRequest request)
         {
-            var group = Group.Create(request.Name);
+            var (groupId, errors) = await _service.Create(request.Name);
 
-            if (group.Result == null)
+            if (errors.Any() || groupId == default)
             {
-                return Ok(group.Errors);
+                _logger.LogError("{errors}", errors);
+                return BadRequest(errors);
             }
 
-            return Ok(group.Result);
+            return Ok(groupId);
         }
 
         /// <summary>
         /// Add card in group.
         /// </summary>
-        /// <param name="groupName">Group name.</param>
-        /// <param name="cardWord">Word in card.</param>
-        /// <returns>Word added card.</returns>
-        [HttpPost("{groupName}/{cardWord}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(string))]
+        /// <param name="cardId">Card id.</param>
+        /// <param name="groupId">Group id.</param>
+        /// <returns>Successful added card.</returns>
+        [HttpPost("{groupId:int}/cards")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> AddCard(string groupName, string cardWord)
+        public async Task<IActionResult> AddCard(int cardId, int groupId)
         {
-            var result = Group.AddCard(groupName, cardWord);
+            var (result, errors) = await _service.AddCard(cardId, groupId);
 
-            if (result.Word == null)
+            if (errors.Any() || !result)
             {
-                return Ok(result.Errors);
+                _logger.LogError("{errors}", errors);
+                return BadRequest(errors);
             }
 
-            return Ok(result.Word);
+            return Ok(result);
         }
 
         /// <summary>
@@ -67,57 +72,53 @@ namespace SpaceCards.API.Controllers
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Group[]))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> Get()
         {
-            var groups = Group.GetAll();
-
-            if (groups.Result == Array.Empty<Group>())
-            {
-                return Ok(groups.Errors);
-            }
-
-            return Ok(groups.Result);
+            var groups = await _service.Get();
+            return Ok(groups);
         }
 
         /// <summary>
         /// Update group.
         /// </summary>
-        /// <param name="groupName">Group search parametr.</param>
+        /// <param name="groupId">Group id.</param>
         /// <param name="request">Group with new parametrs.</param>
         /// <returns>Successful updat group.</returns>
-        [HttpPost("Update/{groupName}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Group[]))]
+        [HttpPut("{groupId:int}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Update(string groupName, [FromBody] UpdateGroupRequest request)
+        public async Task<IActionResult> Update(int groupId, [FromBody] UpdateGroupRequest request)
         {
-            var updateGroup = Group.Update(groupName, request.Name);
+            var (result, errors) = await _service.Update(groupId, request.Name);
 
-            if (updateGroup.Result == null)
+            if (errors.Any() || !result)
             {
-                return Ok(updateGroup.Errors);
+                _logger.LogError("{errors}", errors);
+                return BadRequest(errors);
             }
 
-            return Ok(updateGroup.Result);
+            return Ok(result);
         }
 
         /// <summary>
         /// Delete group.
         /// </summary>
-        /// <param name="groupName">Group name.</param>
+        /// <param name="groupId">Group id.</param>
         /// <returns>Successful delete group.</returns>
-        [HttpDelete]
+        [HttpDelete("{groupId:int}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Delete(string groupName)
+        public async Task<IActionResult> Delete(int groupId)
         {
-            var deletedGroup = Group.Delete(groupName);
+            var (result, errors) = await _service.Delete(groupId);
 
-            if (!deletedGroup.Result)
+            if (errors.Any() || !result)
             {
-                return Ok(deletedGroup.Errors);
+                _logger.LogError("{errors}", errors);
+                return BadRequest(errors);
             }
 
-            return Ok(deletedGroup.Result);
+            return Ok(result);
         }
     }
 }
