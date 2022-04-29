@@ -1,3 +1,5 @@
+using Microsoft.EntityFrameworkCore;
+using SpaceCards.API;
 using SpaceCards.BusinessLogic;
 using SpaceCards.DataAccess.Postgre;
 using SpaceCards.Domain;
@@ -6,6 +8,17 @@ using System.Reflection;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddDbContext<SpaceCardsDbContext>(options =>
+{
+    options.UseNpgsql(builder.Configuration.GetConnectionString("SpaceCardsDb"));
+});
+
+builder.Services.AddAutoMapper(cfg =>
+{
+    cfg.AddProfile<ApiMappingProfile>();
+    cfg.AddProfile<DataAccessMappingProfile>();
+});
+
 builder.Services.AddScoped<ICardsRepository, CardsRepository>();
 
 builder.Services.AddScoped<ICardsService, CardsService>();
@@ -13,8 +26,6 @@ builder.Services.AddScoped<ICardsService, CardsService>();
 builder.Services.AddScoped<IGroupsRepository, GroupsRepository>();
 
 builder.Services.AddScoped<IGroupsService, GroupsService>();
-
-builder.Services.AddSingleton<SpaceCardsContext>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddControllers();

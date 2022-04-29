@@ -5,21 +5,27 @@ namespace SpaceCards.BusinessLogic
     public class GroupsService : IGroupsService
     {
         private readonly IGroupsRepository _groupRepository;
+        private readonly ICardsRepository _cardsRepository;
 
-        public GroupsService(IGroupsRepository groupRepository)
+        public GroupsService(IGroupsRepository groupRepository, ICardsRepository cardsRepository)
         {
             _groupRepository = groupRepository;
+            _cardsRepository = cardsRepository;
         }
 
         public async Task<(int Result, string[] Errors)> Create(string name)
         {
-            if (string.IsNullOrWhiteSpace(name))
+            var (group, errors) = Group.Create(name);
+            if (errors.Any())
             {
-                return (default, new[] { $"'{nameof(name)}' cannot be null or whitespace." });
+                return (default, errors);
             }
 
-            var group = Group.Create(name);
-            var groupId = await _groupRepository.Add(group);
+            var (groupId, contextErrors) = await _groupRepository.Add(group);
+            if (contextErrors.Any() || groupId is default(int))
+            {
+                return (default(int), contextErrors.ToArray());
+            }
 
             return (groupId, Array.Empty<string>());
         }
@@ -31,14 +37,16 @@ namespace SpaceCards.BusinessLogic
 
         public async Task<(bool Result, string[] Errors)> AddCard(int cardId, int groupId)
         {
-            if (cardId <= default(int))
+            var card = await _cardsRepository.GetById(cardId);
+            if (card is null)
             {
-                return (false, new[] { $"'{nameof(cardId)}' cannot be null or whitespace." });
+                return (false, new[] { $"'{nameof(card)}' not found." });
             }
 
-            if (groupId <= default(int))
+            var group = await _groupRepository.GetById(groupId);
+            if (group is null)
             {
-                return (false, new[] { $"'{nameof(groupId)}' cannot be null or whitespace." });
+                return (false, new[] { $"'{nameof(group)}' not found." });
             }
 
             await _groupRepository.AddCard(cardId, groupId);
@@ -46,43 +54,20 @@ namespace SpaceCards.BusinessLogic
             return (true, Array.Empty<string>());
         }
 
-        public async Task<(bool Result, string[] Errors)> Update(int groupId, string groupUdateName)
+        public async Task<(bool Result, string[] Errors)> Update(int groupId, string groupUpdateName)
         {
-            var errors = new List<string>();
-            var errorMessage = string.Empty;
-
-            if (groupId <= default(int))
+            var group = await _groupRepository.GetById(groupId);
+            if (group is null)
             {
-                errorMessage = $"'{nameof(groupId)}' cannot be less 0 or 0.";
-                errors.Add(errorMessage);
+                return (false, new[] { $"'{nameof(group)}' not found." });
             }
 
-            if (string.IsNullOrWhiteSpace(groupUdateName))
+            var (updatedGroup, modelErrors) = Group.Create(groupUpdateName);
+            if (modelErrors.Any() || updatedGroup is null)
             {
-                errorMessage = $"'{nameof(groupUdateName)}' cannot be null or whitespace.";
-                errors.Add(errorMessage);
+                return (false, modelErrors.ToArray());
             }
 
-            var groups = _groupRepository.Get();
-            var (group, contextErrors) = await _groupRepository.GetById(groupId);
-
-            if (group == null)
-            {
-                errorMessage = $"'{nameof(group)}' cannot be null.";
-                errors.Add(errorMessage);
-            }
-
-            if (contextErrors.Any())
-            {
-                errors.AddRange(contextErrors);
-            }
-
-            if (errors.Any())
-            {
-                return (false, errors.ToArray());
-            }
-
-            var updatedGroup = Group.Create(groupUdateName);
             await _groupRepository.Update(updatedGroup with { Id = group.Id });
 
             return (true, Array.Empty<string>());
@@ -90,31 +75,15 @@ namespace SpaceCards.BusinessLogic
 
         public async Task<(bool Result, string[] Errors)> Delete(int groupId)
         {
-            var errors = new List<string>();
-            var errorMessage = string.Empty;
-
-            if (groupId <= default(int))
+            var group = await _groupRepository.GetById(groupId);
+            if (group is null)
             {
-                errorMessage = $"'{nameof(groupId)}' cannot be 0.";
-                errors.Add(errorMessage);
+                return (false, new[] { $"'{nameof(group)}' not found." });
             }
 
-            var (group, contextErrors) = await _groupRepository.GetById(groupId);
-
-            if (group == null)
+            if (group.Cards != Array.Empty<Card>())
             {
-                errorMessage = $"Group with this {nameof(groupId)} not found.";
-                errors.Add(errorMessage);
-            }
-
-            if (contextErrors.Any())
-            {
-                errors.Concat(contextErrors);
-            }
-
-            if (errors.Any())
-            {
-                return (false, errors.ToArray());
+                return (false, new[] { $"'{nameof(group)}' is not empty." });
             }
 
             await _groupRepository.Delete(groupId);

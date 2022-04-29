@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using SpaceCards.API.Contracts;
-using SpaceCards.DataAccess.Postgre;
 using SpaceCards.Domain;
 using System.Net.Mime;
 
@@ -14,11 +14,13 @@ namespace SpaceCards.API.Controllers
     {
         private readonly ILogger<GroupsController> _logger;
         private readonly IGroupsService _service;
+        private readonly IMapper _mapper;
 
-        public GroupsController(ILogger<GroupsController> logger, IGroupsService service)
+        public GroupsController(ILogger<GroupsController> logger, IGroupsService service, IMapper mapper)
         {
             _logger = logger;
             _service = service;
+            _mapper = mapper;
         }
 
         /// <summary>
@@ -70,12 +72,13 @@ namespace SpaceCards.API.Controllers
         /// </summary>
         /// <returns>Groups.</returns>
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Group[]))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Contracts.GetGroupsResponse[]))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Get()
         {
             var groups = await _service.Get();
-            return Ok(groups);
+            var groupsContract = _mapper.Map<Domain.Group[], Contracts.GetGroupsResponse[]>(groups);
+            return Ok(groupsContract);
         }
 
         /// <summary>
@@ -87,7 +90,7 @@ namespace SpaceCards.API.Controllers
         [HttpPut("{groupId:int}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Update(int groupId, [FromBody] UpdateGroupRequest request)
+        public async Task<IActionResult> Update([FromRoute] int groupId, [FromBody] UpdateGroupRequest request)
         {
             var (result, errors) = await _service.Update(groupId, request.Name);
 
@@ -108,7 +111,7 @@ namespace SpaceCards.API.Controllers
         [HttpDelete("{groupId:int}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Delete(int groupId)
+        public async Task<IActionResult> Delete([FromRoute] int groupId)
         {
             var (result, errors) = await _service.Delete(groupId);
 

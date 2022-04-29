@@ -2,13 +2,13 @@
 {
     public interface IGroupsRepository
     {
-        Task<int> Add(Group group);
+        Task<(int Result, string[] Errors)> Add(Group group);
 
         Task Delete(int groupId);
 
         Task<Group[]> Get();
 
-        Task<(Group? Card, string[] Errors)> GetById(int groupId);
+        Task<Group?> GetById(int groupId);
 
         Task Update(Group group);
 

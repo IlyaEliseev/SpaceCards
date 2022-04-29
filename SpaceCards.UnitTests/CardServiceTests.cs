@@ -2,7 +2,6 @@
 using Moq;
 using SpaceCards.BusinessLogic;
 using SpaceCards.Domain;
-using System;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
@@ -30,7 +29,7 @@ namespace SpaceCards.UnitTests
             var backSide = _fixture.Create<string>();
             var expectedCardId = _fixture.Create<int>();
 
-            var card = Card.Create(frontSide, backSide);
+            var (card, modelErrors) = Card.Create(frontSide, backSide);
 
             _cardsRepositoryMock.Setup(x => x.Add(card))
                 .ReturnsAsync(expectedCardId);
@@ -39,7 +38,7 @@ namespace SpaceCards.UnitTests
             var (result, errors) = await _service.Create(frontSide, backSide);
 
             // assert
-            Assert.NotNull(result);
+            Assert.NotNull(card);
             Assert.Empty(errors);
             Assert.Equal(expectedCardId, result);
             _cardsRepositoryMock.Verify(x => x.Add(card), Times.Once);
@@ -102,12 +101,12 @@ namespace SpaceCards.UnitTests
         }
 
         [Fact]
-        public async Task Get_GetIsValid_ReturnCards()
+        public async Task Get_ShouldGetIsValid_ReturnCards()
         {
             // arrange
             var frontSide = _fixture.Create<string>();
             var backSide = _fixture.Create<string>();
-            var card = Card.Create(frontSide, backSide);
+            var (card, modelErrors) = Card.Create(frontSide, backSide);
 
             var expectedCards = Enumerable.Range(1, 5).Select(x => card).ToArray();
 
@@ -123,10 +122,17 @@ namespace SpaceCards.UnitTests
         }
 
         [Fact]
-        public async Task Delete_DeleteIsValid_ReturnTrue()
+        public async Task Delete_DeleteIsValid_ShouldReturnTrue()
         {
             // arrange
             var cardId = _fixture.Create<int>();
+            var frontSide = _fixture.Create<string>();
+            var backSide = _fixture.Create<string>();
+
+            var (card, modelErrors) = Card.Create(frontSide, backSide);
+
+            _cardsRepositoryMock.Setup(x => x.GetById(cardId))
+                .ReturnsAsync(card);
 
             // act
             var (result, errors) = await _service.Delete(cardId);
@@ -140,7 +146,7 @@ namespace SpaceCards.UnitTests
         [InlineData(default)]
         [InlineData(-1)]
         [InlineData(-112)]
-        public async Task Delete_CardIdIsNotValid_ReturnFalseAndErrors(int cardId)
+        public async Task Delete_CardIdIsNotValid_ShouldReturnFalse(int cardId)
         {
             // arrange
 
@@ -156,16 +162,16 @@ namespace SpaceCards.UnitTests
         public async Task Update_CardIdFrontSideBackSideIsValid_ShouldReturnTrue()
         {
             // arrange
+            var cardId = _fixture.Create<int>();
             var frontSide = _fixture.Create<string>();
             var backSide = _fixture.Create<string>();
-            var cardId = _fixture.Create<int>();
-            var card = Card.Create(frontSide, backSide);
+            var newFrontSide = _fixture.Create<string>();
+            var newBackSide = _fixture.Create<string>();
 
-            var newFrontSide = "test";
-            var newBackSide = "test";
+            var (card, modelErrors) = Card.Create(frontSide, backSide);
 
             _cardsRepositoryMock.Setup(x => x.GetById(cardId))
-                .ReturnsAsync((card, Array.Empty<string>()));
+                .ReturnsAsync(card);
 
             // act
             var (result, errors) = await _service.Update(cardId, newFrontSide, newBackSide);
@@ -186,14 +192,10 @@ namespace SpaceCards.UnitTests
         [InlineData(default, "", null)]
         [InlineData(default, " ", null)]
         [InlineData(default, "   ", null)]
-        public async Task Update_CardIdFrontSideBackSideIsNotValid_ShouldReturnFaulse(int cardId, string frontSide, string backSide)
+        public async Task Update_CardIdFrontSideBackSideIsNotValid_ShouldReturnFalse(int cardId, string frontSide, string backSide)
         {
             // arrange
-            var card = Card.Create(frontSide, backSide);
-            var contextErrors = _fixture.CreateMany<string>(1).ToArray();
-
-            _cardsRepositoryMock.Setup(x => x.GetById(cardId))
-                .ReturnsAsync((null, contextErrors));
+            var (card, modelErrors) = Card.Create(frontSide, backSide);
 
             // act
             var (result, errors) = await _service.Update(cardId, frontSide, backSide);
@@ -201,7 +203,6 @@ namespace SpaceCards.UnitTests
 
             // assert
             Assert.False(result);
-            Assert.Equal(5, errorsCount);
             _cardsRepositoryMock.Verify(x => x.Update(card), Times.Never);
         }
     }

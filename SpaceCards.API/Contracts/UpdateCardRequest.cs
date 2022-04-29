@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using SpaceCards.Domain;
+using System.ComponentModel.DataAnnotations;
 
 namespace SpaceCards.API.Contracts
 {
@@ -8,12 +9,11 @@ namespace SpaceCards.API.Contracts
     public class UpdateCardRequest
     {
         [Required]
-        public int Id { get; set; }
-
-        [Required]
+        [StringLength(Card.MAX_NAME_FRONTSIDE)]
         public string FrontSide { get; set; }
 
         [Required]
+        [StringLength(Card.MAX_NAME_BACKSIDE)]
         public string BackSide { get; set; }
     }
 }
