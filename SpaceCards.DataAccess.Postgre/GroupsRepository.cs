@@ -1,63 +1,85 @@
-﻿using SpaceCards.Domain;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using SpaceCards.Domain;
 
 namespace SpaceCards.DataAccess.Postgre
 {
     public class GroupsRepository : IGroupsRepository
     {
-        private readonly SpaceCardsContext _context;
+        private readonly SpaceCardsDbContext _context;
+        private readonly IMapper _mapper;
 
-        public GroupsRepository(SpaceCardsContext context)
+        public GroupsRepository(SpaceCardsDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
-        public async Task<int> Add(Group group)
+        public async Task<(int Result, string[] Errors)> Add(Group group)
         {
-            var groupId = _context.Groups.Count + 1;
-            _context.Groups.Add(group with { Id = groupId });
-            return groupId;
+            if (group is null)
+            {
+                return (default(int), new[] { $"'{nameof(group)}' not found." });
+            }
+
+            var groupEntity = _mapper.Map<Domain.Group, Entites.Group>(group);
+            await _context.Groups.AddAsync(groupEntity);
+            await _context.SaveChangesAsync();
+
+            return (groupEntity.Id, Array.Empty<string>());
         }
 
         public async Task<Group[]> Get()
         {
-            return _context.Groups.ToArray();
+            var groups = await _context.Groups
+                .AsNoTracking()
+                .Include(x => x.Cards)
+                .ToArrayAsync();
+
+            return _mapper.Map<Entites.Group[], Domain.Group[]>(groups);
         }
 
-        public async Task<(Group? Card, string[] Errors)> GetById(int groupId)
+        public async Task<Group?> GetById(int groupId)
         {
-            if (groupId <= default(int))
-            {
-                return (null, new[] { $"'{nameof(groupId)}'cannot be less 0 or 0." });
-            }
+            var group = _context.Groups
+                .AsNoTracking()
+                .FirstOrDefault(x => x.Id == groupId);
 
-            var group = _context.Groups.FirstOrDefault(x => x.Id == groupId);
-
-            return (group, Array.Empty<string>());
+            return _mapper.Map<Entites.Group, Domain.Group>(group);
         }
 
         public async Task Update(Group group)
         {
-            var findGroup = _context.Groups.FirstOrDefault(x => x.Id == group.Id);
-            var index = _context.Groups.IndexOf(findGroup);
-            _context.Groups.RemoveAt(index);
-            _context.Groups.Insert(index, group);
+            var groupEntity = _mapper.Map<Domain.Group, Entites.Group>(group);
+            _context.Groups.Update(groupEntity);
+            await _context.SaveChangesAsync();
         }
 
         public async Task Delete(int groupId)
         {
-            var (group, errors) = await GetById(groupId);
+            var group = _context.Groups
+                .AsNoTracking()
+                .FirstOrDefault(x => x.Id == groupId);
+
             _context.Groups.Remove(group);
+            await _context.SaveChangesAsync();
         }
 
         public async Task<bool> AddCard(int cardId, int groupId)
         {
-            var card = _context.Cards.FirstOrDefault(x => x.Id == cardId);
-            var group = _context.Groups.FirstOrDefault(x => x.Id == groupId);
-            var newGroup = group with { Cards = group.Cards.Append(card).ToArray() };
+            var card = _context.Cards
+                .AsNoTracking()
+                .FirstOrDefault(x => x.Id == cardId);
 
-            var index = _context.Groups.IndexOf(group);
-            _context.Groups.RemoveAt(index);
-            _context.Groups.Insert(index, newGroup);
+            _context.Cards.Update(new Entites.Card
+            {
+                Id = cardId,
+                FrontSide = card.FrontSide,
+                BackSide = card.BackSide,
+                GroupId = groupId,
+            });
+
+            await _context.SaveChangesAsync();
 
             return true;
         }

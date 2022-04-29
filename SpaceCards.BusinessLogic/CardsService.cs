@@ -13,27 +13,13 @@ namespace SpaceCards.BusinessLogic
 
         public async Task<(int Result, string[] Errors)> Create(string frontSide, string backSide)
         {
-            var errors = new List<string>();
-            var errorMessage = string.Empty;
-
-            if (string.IsNullOrWhiteSpace(frontSide))
-            {
-                errorMessage = $"'{nameof(frontSide)}' cannot be null or whitespace.";
-                errors.Add(errorMessage);
-            }
-
-            if (string.IsNullOrWhiteSpace(backSide))
-            {
-                errorMessage = $"'{nameof(backSide)}' cannot be null or whitespace.";
-                errors.Add(errorMessage);
-            }
+            var (card, errors) = Card.Create(frontSide, backSide);
 
             if (errors.Any())
             {
                 return (default(int), errors.ToArray());
             }
 
-            var card = Card.Create(frontSide, backSide);
             var cardId = await _cardsRepository.Add(card);
 
             return (cardId, Array.Empty<string>());
@@ -41,15 +27,15 @@ namespace SpaceCards.BusinessLogic
 
         public async Task<Card[]> Get()
         {
-            var cards = await _cardsRepository.Get();
-            return cards;
+            return await _cardsRepository.Get();
         }
 
         public async Task<(bool Result, string[] Errors)> Delete(int cardId)
         {
-            if (cardId <= default(int))
+            var card = await _cardsRepository.GetById(cardId);
+            if (card is null)
             {
-                return (false, new[] { $"'{nameof(cardId)}' cannot be less 0 or 0." });
+                return (false, new[] { $"'{nameof(card)}' not found." });
             }
 
             await _cardsRepository.Delete(cardId);
@@ -57,48 +43,23 @@ namespace SpaceCards.BusinessLogic
             return (true, Array.Empty<string>());
         }
 
-        public async Task<(bool Result, string[] Errors)> Update(int cardId, string cardUpdatFrontSide, string cardUpdateBackSide)
+        public async Task<(bool Result, string[] Errors)> Update(
+                    int cardId,
+                    string cardUpdateFrontSide,
+                    string cardUpdateBackSide)
         {
-            var errors = new List<string>();
-            var errorMessage = string.Empty;
-
-            if (cardId <= default(int))
+            var card = await _cardsRepository.GetById(cardId);
+            if (card is null)
             {
-                errorMessage = $"'{nameof(cardId)}' cannot be less 0 or 0.";
-                errors.Add(errorMessage);
+                return (false, new[] { $"'{nameof(card)}' card not found." });
             }
 
-            if (string.IsNullOrWhiteSpace(cardUpdatFrontSide))
+            var (updateCard, modelErrors) = Card.Create(cardUpdateFrontSide, cardUpdateBackSide);
+            if (modelErrors.Any() || updateCard is null)
             {
-                errorMessage = $"'{nameof(cardUpdatFrontSide)}' cannot be null or whitespace.";
-                errors.Add(errorMessage);
+                return (false, modelErrors.ToArray());
             }
 
-            if (string.IsNullOrWhiteSpace(cardUpdateBackSide))
-            {
-                errorMessage = $"'{nameof(cardUpdateBackSide)}' cannot be null or whitespace.";
-                errors.Add(errorMessage);
-            }
-
-            var (card, contextErrors) = await _cardsRepository.GetById(cardId);
-
-            if (card == null)
-            {
-                errorMessage = $"'{nameof(card)}' cannot be null.";
-                errors.Add(errorMessage);
-            }
-
-            if (contextErrors.Any())
-            {
-                errors.AddRange(contextErrors);
-            }
-
-            if (errors.Any())
-            {
-                return (false, errors.ToArray());
-            }
-
-            var updateCard = Card.Create(cardUpdatFrontSide, cardUpdateBackSide);
             await _cardsRepository.Update(updateCard with { Id = card.Id });
 
             return (true, Array.Empty<string>());

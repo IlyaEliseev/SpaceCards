@@ -93,3 +93,6 @@ dotnet_diagnostic.SA1101.severity = none
 # SA1600: Elements should be documented
 dotnet_diagnostic.SA1600.severity = none
 dotnet_diagnostic.SA1200.severity = silent
+
+# SA1310: Field names should not contain underscore
+dotnet_diagnostic.SA1310.severity = none

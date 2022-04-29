@@ -1,52 +1,63 @@
-﻿using SpaceCards.Domain;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using SpaceCards.Domain;
 
 namespace SpaceCards.DataAccess.Postgre
 {
     public class CardsRepository : ICardsRepository
     {
-        private readonly SpaceCardsContext _context;
+        private readonly SpaceCardsDbContext _context;
+        private readonly IMapper _mapper;
 
-        public CardsRepository(SpaceCardsContext context)
+        public CardsRepository(SpaceCardsDbContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         public async Task<int> Add(Card card)
         {
-            var cardId = _context.Cards.Count + 1;
-            _context.Cards.Add(card with { Id = cardId });
-            return cardId;
+            var cardEntity = _mapper.Map<Domain.Card, Entites.Card>(card);
+
+            await _context.Cards.AddAsync(cardEntity);
+            await _context.SaveChangesAsync();
+
+            return cardEntity.Id;
         }
 
         public async Task<Card[]> Get()
         {
-            return _context.Cards.ToArray();
+            var cards = await _context.Cards
+                .AsNoTracking()
+                .ToArrayAsync();
+
+            return _mapper.Map<Entites.Card[], Domain.Card[]>(cards);
         }
 
-        public async Task<(Card? Card, string[] Errors)> GetById(int cardId)
+        public async Task<Card?> GetById(int cardId)
         {
-            if (cardId <= default(int))
-            {
-                return (null, new[] { $"'{nameof(cardId)}'cannot be less 0 or 0." });
-            }
+            var card = _context.Cards
+                .AsNoTracking()
+                .FirstOrDefault(x => x.Id == cardId);
 
-            var card = _context.Cards.FirstOrDefault(x => x.Id == cardId);
-
-            return (card, Array.Empty<string>());
+            return _mapper.Map<Entites.Card, Domain.Card>(card);
         }
 
         public async Task Update(Card card)
         {
-            var findCard = _context.Cards.FirstOrDefault(x => x.Id == card.Id);
-            var index = _context.Cards.IndexOf(findCard);
-            _context.Cards.RemoveAt(index);
-            _context.Cards.Insert(index, card);
+            var cardEntity = _mapper.Map<Domain.Card, Entites.Card>(card);
+            _context.Cards.Update(cardEntity);
+            await _context.SaveChangesAsync();
         }
 
         public async Task Delete(int cardId)
         {
-            var (card, errors) = await GetById(cardId);
+            var card = _context.Cards
+                .AsNoTracking()
+                .FirstOrDefault(x => x.Id == cardId);
+
             _context.Cards.Remove(card);
+            await _context.SaveChangesAsync();
         }
     }
 }

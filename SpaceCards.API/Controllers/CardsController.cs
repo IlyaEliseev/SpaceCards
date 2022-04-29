@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using SpaceCards.API.Contracts;
 using SpaceCards.Domain;
 using System.Net.Mime;
@@ -13,11 +14,13 @@ namespace SpaceCards.API.Controllers
     {
         private readonly ILogger<CardsController> _logger;
         private readonly ICardsService _service;
+        private readonly IMapper _mapper;
 
-        public CardsController(ILogger<CardsController> logger, ICardsService service)
+        public CardsController(ILogger<CardsController> logger, ICardsService service, IMapper mapper)
         {
             _logger = logger;
             _service = service;
+            _mapper = mapper;
         }
 
         /// <summary>
@@ -46,13 +49,14 @@ namespace SpaceCards.API.Controllers
         /// </summary>
         /// <returns>Cards.</returns>
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Card[]))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Contracts.GetUsersResponse[]))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Get()
         {
-            var card = await _service.Get();
+            var cards = await _service.Get();
+            var cardsContract = _mapper.Map<Domain.Card[], Contracts.GetUsersResponse[]>(cards);
 
-            return Ok(card);
+            return Ok(cardsContract);
         }
 
         /// <summary>
@@ -63,7 +67,7 @@ namespace SpaceCards.API.Controllers
         [HttpDelete("{cardId:int}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Delete(int cardId)
+        public async Task<IActionResult> Delete([FromRoute] int cardId)
         {
             var (result, errors) = await _service.Delete(cardId);
 
@@ -85,7 +89,7 @@ namespace SpaceCards.API.Controllers
         [HttpPut("{cardId:int}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Update(int cardId, [FromBody] UpdateCardRequest card)
+        public async Task<IActionResult> Update([FromRoute] int cardId, [FromBody] UpdateCardRequest card)
         {
             var (result, errors) = await _service.Update(cardId, card.FrontSide, card.BackSide);
 

@@ -13,13 +13,15 @@ namespace SpaceCards.UnitTests
     {
         private readonly Fixture _fixture;
         private readonly Mock<IGroupsRepository> _groupsRepositoryMock;
+        private readonly Mock<ICardsRepository> _cardsRepositoryMock;
         private readonly GroupsService _service;
 
         public GroupsServiceTests()
         {
             _fixture = new Fixture();
             _groupsRepositoryMock = new Mock<IGroupsRepository>();
-            _service = new GroupsService(_groupsRepositoryMock.Object);
+            _cardsRepositoryMock = new Mock<ICardsRepository>();
+            _service = new GroupsService(_groupsRepositoryMock.Object, _cardsRepositoryMock.Object);
         }
 
         [Fact]
@@ -29,10 +31,10 @@ namespace SpaceCards.UnitTests
             var name = _fixture.Create<string>();
             var expectedGroupId = _fixture.Create<int>();
 
-            var group = Group.Create(name);
+            var (group, modelErrors) = Group.Create(name);
 
             _groupsRepositoryMock.Setup(x => x.Add(group))
-                .ReturnsAsync(expectedGroupId);
+                .ReturnsAsync((expectedGroupId, Array.Empty<string>()));
 
             // act
             var (result, errors) = await _service.Create(name);
@@ -64,13 +66,15 @@ namespace SpaceCards.UnitTests
         }
 
         [Fact]
-        public async Task Get_GetIsValid_ReturnGroups()
+        public async Task Get_GetIsValid_ShouldReturnGroups()
         {
             // arrange
             var name = _fixture.Create<string>();
-            var group = Group.Create(name);
+            var (group, modelErrors) = Group.Create(name);
 
-            var expectedGroups = Enumerable.Range(1, 5).Select(x => group).ToArray();
+            var expectedGroups = Enumerable.Range(1, 5)
+                .Select(x => group)
+                .ToArray();
 
             _groupsRepositoryMock.Setup(x => x.Get()).ReturnsAsync(expectedGroups);
 
@@ -84,21 +88,23 @@ namespace SpaceCards.UnitTests
         }
 
         [Fact]
-        public async Task Delete_DeleteIsValid_ReturnTrue()
+        public async Task Delete_DeleteIsValid_ShouldReturnTrue()
         {
             // arrange
             var groupId = _fixture.Create<int>();
             var name = _fixture.Create<string>();
-            var group = Group.Create(name);
+            var (group, modelErrors) = Group.Create(name);
 
             _groupsRepositoryMock.Setup(x => x.GetById(groupId))
-                .ReturnsAsync((group, Array.Empty<string>()));
+                .ReturnsAsync(group);
 
             // act
             var (result, errors) = await _service.Delete(groupId);
+            var groups = await _service.Get();
 
             // assert
             Assert.True(result);
+            Assert.Empty(groups);
             _groupsRepositoryMock.Verify(x => x.Delete(groupId), Times.Once);
         }
 
@@ -106,7 +112,7 @@ namespace SpaceCards.UnitTests
         [InlineData(default)]
         [InlineData(-1)]
         [InlineData(-112)]
-        public async Task Delete_GroupIdIsNotValid_ReturnFalseAndErrors(int groupId)
+        public async Task Delete_GroupIdIsNotValid_ShouldReturnFalse(int groupId)
         {
             // arrange
 
@@ -119,17 +125,37 @@ namespace SpaceCards.UnitTests
         }
 
         [Fact]
+        public async Task Delete_CardsIsNotEmpty_ShouldReturnFalse()
+        {
+            // arrange
+            var frontSide = _fixture.Create<string>();
+            var backtSide = _fixture.Create<string>();
+            var groupName = _fixture.Create<string>();
+
+            var (group, groupErrors) = Group.Create(groupName);
+            var (card, cardErrors) = Card.Create(frontSide, backtSide);
+
+            var groupWhithCards = group with { Cards = new[] { card } };
+
+            // act
+            var (result, errors) = await _service.Delete(groupWhithCards.Id);
+
+            // assert
+            Assert.False(result);
+            Assert.NotEmpty(errors);
+        }
+
+        [Fact]
         public async Task Update_GroupIdNameIsValid_ShouldReturnTrue()
         {
             // arrange
             var name = _fixture.Create<string>();
             var groupId = _fixture.Create<int>();
-            var group = Group.Create(name);
-
-            var newName = "test";
+            var newName = _fixture.Create<string>();
+            var (group, modelErrors) = Group.Create(name);
 
             _groupsRepositoryMock.Setup(x => x.GetById(groupId))
-                .ReturnsAsync((group, Array.Empty<string>()));
+                .ReturnsAsync(group);
 
             // act
             var (result, errors) = await _service.Update(groupId, newName);
@@ -147,11 +173,10 @@ namespace SpaceCards.UnitTests
         public async Task Update_GroupIdNameIsNotValid_ShouldReturnFaulse(int groupId, string name)
         {
             // arrange
-            var group = Group.Create(name);
-            var contextErrors = _fixture.CreateMany<string>(1).ToArray();
+            var (group, modelErrors) = Group.Create(name);
 
             _groupsRepositoryMock.Setup(x => x.GetById(groupId))
-                .ReturnsAsync((null, contextErrors));
+                .ReturnsAsync(default(Group));
 
             // act
             var (result, errors) = await _service.Update(groupId, name);
@@ -159,7 +184,6 @@ namespace SpaceCards.UnitTests
 
             // assert
             Assert.False(result);
-            Assert.Equal(4, errorsCount);
             _groupsRepositoryMock.Verify(x => x.Update(group), Times.Never);
         }
 
@@ -169,6 +193,18 @@ namespace SpaceCards.UnitTests
             // arrange
             var cardId = _fixture.Create<int>();
             var groupId = _fixture.Create<int>();
+            var frontSide = _fixture.Create<string>();
+            var backtSide = _fixture.Create<string>();
+            var groupName = _fixture.Create<string>();
+
+            var (card, cardErrors) = Card.Create(frontSide, backtSide);
+            var (group, groupErrors) = Group.Create(groupName);
+
+            _cardsRepositoryMock.Setup(x => x.GetById(cardId))
+                .ReturnsAsync(card);
+
+            _groupsRepositoryMock.Setup(x => x.GetById(groupId))
+                .ReturnsAsync(group);
 
             // act
             var (result, errors) = await _service.AddCard(cardId, groupId);

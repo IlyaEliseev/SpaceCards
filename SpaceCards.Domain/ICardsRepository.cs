@@ -6,7 +6,7 @@
 
         Task<Card[]> Get();
 
-        Task<(Card? Card, string[] Errors)> GetById(int cardId);
+        Task<Card?> GetById(int cardId);
 
         Task Delete(int cardId);
 

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using SpaceCards.Domain;
+using System.ComponentModel.DataAnnotations;
 
 namespace SpaceCards.API.Contracts
 {
@@ -8,6 +9,7 @@ namespace SpaceCards.API.Contracts
     public class UpdateGroupRequest
     {
         [Required]
+        [StringLength(Group.MAX_NAME_LENGTH)]
         public string Name { get; set; }
     }
 }

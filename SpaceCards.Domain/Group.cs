@@ -2,6 +2,8 @@
 {
     public record Group
     {
+        public const int MAX_NAME_LENGTH = 200;
+
         private Group(int id, string name, Card[] cards)
         {
             Id = id;
@@ -15,11 +17,15 @@
 
         public Card[] Cards { get; init; }
 
-        public static Group Create(string name)
+        public static (Group? Result, string[] Errors) Create(string name)
         {
-            var group = new Group(0, name, Array.Empty<Card>());
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                return (null, new[] { $"'{nameof(name)}' cannot be null or whitespace." });
+            }
 
-            return group;
+            var group = new Group(0, name, Array.Empty<Card>());
+            return (group, Array.Empty<string>());
         }
     }
 }
