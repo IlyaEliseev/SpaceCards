@@ -1,5 +1,8 @@
 ﻿namespace SpaceCards.API.Contracts
 {
+    /// <summary>
+    /// Contract for get cards.
+    /// </summary>
     public class GetUsersResponse
     {
         public int Id { get; set; }
