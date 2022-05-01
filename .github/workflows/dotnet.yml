@@ -30,7 +30,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Test
-        run: dotnet test --verbosity normal
+        run: dotnet test SpaceCards.UnitTests\SpaceCards.UnitTests.csproj --verbosity normal 
       
 
       
@@ -43,6 +43,7 @@ jobs:
         
       - name: Setup PostgreSQL
         uses: Harmon758/postgresql-action@v1.0.0
+        
         with:
           postgresql db: SpaceCardsDb 
           postgresql password: pwd
@@ -54,7 +55,8 @@ jobs:
         run: dotnet ef database update -p SpaceCards.DataAccess.Postgre -s SpaceCards.API --connection ${{secrets.ConnectionStrings}}
         
       - name: Test
-        run: dotnet test --no-build --verbosity normal
+        run: dotnet test SpaceCards.IntegrationTests\SpaceCards.IntegrationTests.csproj --no-build --verbosity normal
+        
         
         
         
