@@ -13,5 +13,7 @@
         Task Update(Group group);
 
         Task<bool> AddCard(int cardId, int groupId);
+
+        Task<Group?> GetByIdWithCards(int groupId);
     }
 }
