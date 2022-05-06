@@ -38,7 +38,7 @@ namespace SpaceCards.BusinessLogic
                 return (false, new[] { $"'{nameof(card)}' not found." });
             }
 
-            await _cardsRepository.Delete(cardId);
+            await _cardsRepository.Delete(card.Id);
 
             return (true, Array.Empty<string>());
         }
