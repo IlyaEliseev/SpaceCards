@@ -49,12 +49,12 @@ namespace SpaceCards.API.Controllers
         /// </summary>
         /// <returns>Cards.</returns>
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Contracts.GetUsersResponse[]))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Contracts.GetCardsResponse[]))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Get()
         {
             var cards = await _service.Get();
-            var cardsContract = _mapper.Map<Domain.Card[], Contracts.GetUsersResponse[]>(cards);
+            var cardsContract = _mapper.Map<Domain.Card[], Contracts.GetCardsResponse[]>(cards);
 
             return Ok(cardsContract);
         }
