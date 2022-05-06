@@ -8,7 +8,7 @@
 
         public string BackSide { get; set; } = string.Empty;
 
-        public Group Group { get; set; }
+        public Group? Group { get; set; }
 
         public int? GroupId { get; set; }
     }

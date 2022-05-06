@@ -6,7 +6,7 @@
 
         public const int MAX_NAME_BACKSIDE = 200;
 
-        private Card(int id, string frontSide, string backSide, int groupId)
+        private Card(int id, string frontSide, string backSide, int? groupId)
         {
             Id = id;
             FrontSide = frontSide;
@@ -44,7 +44,7 @@
                 return (null, errors.ToArray());
             }
 
-            var card = new Card(0, frontSide, backSide, default);
+            var card = new Card(0, frontSide, backSide, null);
 
             return (card, Array.Empty<string>());
         }
