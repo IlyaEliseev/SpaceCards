@@ -1,7 +1,12 @@
-# Use postgres/example user/password credentials
-version: '3.1'
+version: '3.4'
 
 services:
+  spacecards.api:
+    image: ${DOCKER_REGISTRY-}spacecardsapi
+    build:
+      context: .
+      dockerfile: SpaceCards.API/Dockerfile
+    container_name: api 
 
   db:
     image: postgres
@@ -9,6 +14,6 @@ services:
     environment:
       POSTGRES_PASSWORD: pwd
     ports:
-      - 5433:5432 
+      - 5433:5432
+    container_name: db  
 
-  
