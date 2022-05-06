@@ -11,5 +11,7 @@
         Task<(bool Result, string[] Errors)> Update(int groupId, string groupUdateName);
 
         Task<(bool Result, string[] Errors)> AddCard(int cardId, int groupId);
+
+        Task<(Group? Result, string[] Errors)> GetByIdWithCards(int groupId);
     }
 }
