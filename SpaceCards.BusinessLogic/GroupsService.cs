@@ -49,7 +49,7 @@ namespace SpaceCards.BusinessLogic
                 return (false, new[] { $"'{nameof(group)}' not found." });
             }
 
-            await _groupRepository.AddCard(cardId, groupId);
+            await _groupRepository.AddCard(card.Id, group.Id);
 
             return (true, Array.Empty<string>());
         }
@@ -86,9 +86,20 @@ namespace SpaceCards.BusinessLogic
                 return (false, new[] { $"'{nameof(group)}' is not empty." });
             }
 
-            await _groupRepository.Delete(groupId);
+            await _groupRepository.Delete(group.Id);
 
             return (true, Array.Empty<string>());
+        }
+
+        public async Task<(Group? Result, string[] Errors)> GetByIdWithCards(int groupId)
+        {
+            var group = await _groupRepository.GetByIdWithCards(groupId);
+            if (group is null)
+            {
+                return (null, new[] { $"'{nameof(group)}' with cards not found." });
+            }
+
+            return (group, Array.Empty<string>());
         }
     }
 }
