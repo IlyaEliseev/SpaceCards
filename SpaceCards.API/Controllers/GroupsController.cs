@@ -123,5 +123,27 @@ namespace SpaceCards.API.Controllers
 
             return Ok(result);
         }
+
+        /// <summary>
+        /// Get group with add cards.
+        /// </summary>
+        /// <param name="groupId">Group id.</param>
+        /// <returns>Groups with cards.</returns>
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetGroupsResponse))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [HttpGet("{groupId:int}/cards")]
+        public async Task<IActionResult> GetGroupsWithCards([FromRoute] int groupId)
+        {
+            var (group, errors) = await _service.GetByIdWithCards(groupId);
+            if (errors.Any() || group is null)
+            {
+                _logger.LogError("{errors}", errors);
+                return BadRequest(errors);
+            }
+
+            var groupContract = _mapper.Map<Domain.Group, Contracts.GetGroupsResponse>(group);
+
+            return Ok(groupContract);
+        }
     }
 }
