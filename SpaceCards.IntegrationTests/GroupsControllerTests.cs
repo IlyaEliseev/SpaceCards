@@ -1,27 +1,19 @@
 ﻿using AutoFixture;
-using Microsoft.AspNetCore.Mvc.Testing;
 using SpaceCards.API.Contracts;
+using SpaceCards.Domain;
+using System.IO;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Xunit;
+using System.Net.Http;
+using Newtonsoft.Json;
 
 namespace SpaceCards.IntegrationTests
 {
-    public class GroupsControllerTests
+    public class GroupsControllerTests : BaseControllerTests
     {
-        private readonly HttpClient _client;
-        private readonly Fixture _fixture;
-
-        public GroupsControllerTests()
-        {
-            var app = new WebApplicationFactory<Program>();
-            _client = app.CreateClient();
-            _fixture = new Fixture();
-        }
-
         [Fact]
         public async Task Get_ShouldReturnOk()
         {
@@ -73,13 +65,27 @@ namespace SpaceCards.IntegrationTests
         {
             // arrange
             var groupId = _fixture.Create<int>();
-            var group = _fixture.Create<UpdateGroupRequest>();
+
+            var newGroup = _fixture.Build<CreateGroupRequest>()
+                .Create();
+
+            var postResponse = await _client.PostAsJsonAsync("groups", newGroup);
+
+            var body = await postResponse.Content.ReadAsStreamAsync();
+            using var sreamReader = new StreamReader(body);
+            using var jsonReader = new JsonTextReader(sreamReader);
+
+            var serializer = new JsonSerializer();
+
+            var groupsResponse = serializer.Deserialize<CreateGroupRequest>(jsonReader);
+
+            var updateGroup = _fixture.Create<UpdateGroupRequest>();
 
             // act
-            var response = await _client.PutAsJsonAsync($"groups/{groupId}", group);
+            var updateResponse = await _client.PutAsJsonAsync($"groups/{groupId}", updateGroup);
 
             // assert
-            response.EnsureSuccessStatusCode();
+            updateResponse.EnsureSuccessStatusCode();
         }
 
         [Theory]

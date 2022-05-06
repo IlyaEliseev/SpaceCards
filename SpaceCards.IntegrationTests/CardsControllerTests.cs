@@ -1,6 +1,10 @@
 ﻿using AutoFixture;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using SpaceCards.API.Contracts;
+using SpaceCards.DataAccess.Postgre;
+using SpaceCards.Domain;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -10,23 +14,12 @@ using Xunit;
 
 namespace SpaceCards.IntegrationTests
 {
-    public class CardsControllerTests
+    public class CardsControllerTests : BaseControllerTests
     {
-        private readonly HttpClient _client;
-        private readonly Fixture _fixture;
-
-        public CardsControllerTests()
-        {
-            var app = new WebApplicationFactory<Program>();
-            _client = app.CreateClient();
-            _fixture = new Fixture();
-        }
-
         [Fact]
         public async Task Get_ShouldReturnOk()
         {
             // arrange
-
             // act
             var response = await _client.GetAsync("cards");
 
