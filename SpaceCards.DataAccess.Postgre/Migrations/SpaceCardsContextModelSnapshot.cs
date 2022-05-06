@@ -47,7 +47,7 @@ namespace SpaceCards.DataAccess.Postgre.Migrations
 
                     b.HasIndex("GroupId");
 
-                    b.ToTable("Cards");
+                    b.ToTable("Cards", (string)null);
                 });
 
             modelBuilder.Entity("SpaceCards.DataAccess.Postgre.Entites.Group", b =>
@@ -65,7 +65,7 @@ namespace SpaceCards.DataAccess.Postgre.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Groups");
+                    b.ToTable("Groups", (string)null);
                 });
 
             modelBuilder.Entity("SpaceCards.DataAccess.Postgre.Entites.Card", b =>
