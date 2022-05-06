@@ -6,7 +6,7 @@ namespace SpaceCards.API
     {
         public ApiMappingProfile()
         {
-               CreateMap<Domain.Card, Contracts.GetUsersResponse>();
+               CreateMap<Domain.Card, Contracts.GetCardsResponse>();
                CreateMap<Domain.Group, Contracts.GetGroupsResponse>();
         }
     }
