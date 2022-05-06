@@ -36,9 +36,9 @@ namespace SpaceCards.DataAccess.Postgre
 
         public async Task<Card?> GetById(int cardId)
         {
-            var card = _context.Cards
+            var card = await _context.Cards
                 .AsNoTracking()
-                .FirstOrDefault(x => x.Id == cardId);
+                .FirstOrDefaultAsync(x => x.Id == cardId);
 
             return _mapper.Map<Entites.Card, Domain.Card>(card);
         }
@@ -52,11 +52,11 @@ namespace SpaceCards.DataAccess.Postgre
 
         public async Task Delete(int cardId)
         {
-            var card = _context.Cards
+            var card = await _context.Cards
                 .AsNoTracking()
-                .FirstOrDefault(x => x.Id == cardId);
+                .FirstOrDefaultAsync(x => x.Id == cardId);
 
-            _context.Cards.Remove(card);
+            _context.Cards.Remove(new Entites.Card { Id = card.Id });
             await _context.SaveChangesAsync();
         }
     }

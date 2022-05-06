@@ -33,7 +33,6 @@ namespace SpaceCards.DataAccess.Postgre
         {
             var groups = await _context.Groups
                 .AsNoTracking()
-                .Include(x => x.Cards)
                 .ToArrayAsync();
 
             return _mapper.Map<Entites.Group[], Domain.Group[]>(groups);
@@ -41,9 +40,9 @@ namespace SpaceCards.DataAccess.Postgre
 
         public async Task<Group?> GetById(int groupId)
         {
-            var group = _context.Groups
+            var group = await _context.Groups
                 .AsNoTracking()
-                .FirstOrDefault(x => x.Id == groupId);
+                .FirstOrDefaultAsync(x => x.Id == groupId);
 
             return _mapper.Map<Entites.Group, Domain.Group>(group);
         }
@@ -57,9 +56,9 @@ namespace SpaceCards.DataAccess.Postgre
 
         public async Task Delete(int groupId)
         {
-            var group = _context.Groups
+            var group = await _context.Groups
                 .AsNoTracking()
-                .FirstOrDefault(x => x.Id == groupId);
+                .FirstOrDefaultAsync(x => x.Id == groupId);
 
             _context.Groups.Remove(group);
             await _context.SaveChangesAsync();
@@ -67,21 +66,25 @@ namespace SpaceCards.DataAccess.Postgre
 
         public async Task<bool> AddCard(int cardId, int groupId)
         {
-            var card = _context.Cards
-                .AsNoTracking()
-                .FirstOrDefault(x => x.Id == cardId);
+            var card = await _context.Cards
+                .FirstOrDefaultAsync(x => x.Id == cardId);
 
-            _context.Cards.Update(new Entites.Card
-            {
-                Id = cardId,
-                FrontSide = card.FrontSide,
-                BackSide = card.BackSide,
-                GroupId = groupId,
-            });
+            card.GroupId = groupId;
 
             await _context.SaveChangesAsync();
 
             return true;
+        }
+
+        public async Task<Group?> GetByIdWithCards(int groupId)
+        {
+            var group = await _context.Groups
+                .AsNoTracking()
+                .Include(x => x.Cards)
+                .Where(x => x.Cards.Count != 0)
+                .FirstOrDefaultAsync(x => x.Id == groupId);
+
+            return _mapper.Map<Entites.Group, Domain.Group>(group);
         }
     }
 }
