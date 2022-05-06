@@ -8,9 +8,6 @@ EXPOSE 443
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 WORKDIR /src
 COPY ["SpaceCards.API/SpaceCards.API.csproj", "SpaceCards.API/"]
-COPY ["SpaceCards.DataAccess.Postgre/SpaceCards.DataAccess.Postgre.csproj", "SpaceCards.DataAccess.Postgre/"]
-COPY ["SpaceCards.Domain/SpaceCards.Domain.csproj", "SpaceCards.Domain/"]
-COPY ["SpaceCards.BusinessLogic/SpaceCards.BusinessLogic.csproj", "SpaceCards.BusinessLogic/"]
 RUN dotnet restore "SpaceCards.API/SpaceCards.API.csproj"
 COPY . .
 WORKDIR "/src/SpaceCards.API"
