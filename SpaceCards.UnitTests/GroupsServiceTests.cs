@@ -202,7 +202,7 @@ namespace SpaceCards.UnitTests
 
             _cardsRepositoryMock.Setup(x => x.GetById(cardId))
                 .ReturnsAsync(card);
-
+            var rere = card;
             _groupsRepositoryMock.Setup(x => x.GetById(groupId))
                 .ReturnsAsync(group);
 
@@ -234,6 +234,46 @@ namespace SpaceCards.UnitTests
             Assert.False(result);
             Assert.NotEmpty(errors);
             _groupsRepositoryMock.Verify(x => x.AddCard(cardId, groupId), Times.Never);
+        }
+
+        [Fact]
+        public async Task GetGroupByIdWithCards_IsValid_ReturnGroupWithCards()
+        {
+            // arrange
+            var groupId = _fixture.Create<int>();
+            var groupName = _fixture.Create<string>();
+            var frontSide = _fixture.Create<string>();
+            var backSide = _fixture.Create<string>();
+
+            var (cardModel, cardModelErrors) = Card.Create(frontSide, backSide);
+            var (groupModel, groupModelErrors) = Group.Create(groupName);
+
+            var card = cardModel with { GroupId = groupId };
+            var exceptedGroup = groupModel with { Cards = new[] { cardModel } };
+
+            _groupsRepositoryMock.Setup(x => x.GetByIdWithCards(groupId))
+                .ReturnsAsync(exceptedGroup);
+
+            // act
+            var (group, errors) = await _service.GetByIdWithCards(groupId);
+
+            // assert
+            Assert.NotNull(group);
+            Assert.Empty(errors);
+        }
+
+        [Fact]
+        public async Task GetGroupByIdWithCards_IsNotValid_ReturnErrorMessag()
+        {
+            // arrange
+            var groupId = _fixture.Create<int>();
+
+            // act
+            var (group, errors) = await _service.GetByIdWithCards(groupId);
+
+            // assert
+            Assert.Null(group);
+            Assert.NotEmpty(errors);
         }
     }
 }
