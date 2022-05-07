@@ -17,11 +17,6 @@ namespace SpaceCards.DataAccess.Postgre
 
         public async Task<(int Result, string[] Errors)> Add(Group group)
         {
-            if (group is null)
-            {
-                return (default(int), new[] { $"'{nameof(group)}' not found." });
-            }
-
             var groupEntity = _mapper.Map<Domain.Group, Entites.Group>(group);
             await _context.Groups.AddAsync(groupEntity);
             await _context.SaveChangesAsync();
@@ -42,6 +37,7 @@ namespace SpaceCards.DataAccess.Postgre
         {
             var group = await _context.Groups
                 .AsNoTracking()
+                .Include(x => x.Cards)
                 .FirstOrDefaultAsync(x => x.Id == groupId);
 
             return _mapper.Map<Entites.Group, Domain.Group>(group);
@@ -60,7 +56,7 @@ namespace SpaceCards.DataAccess.Postgre
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == groupId);
 
-            _context.Groups.Remove(group);
+            _context.Groups.Remove(new Entites.Group { Id = group.Id });
             await _context.SaveChangesAsync();
         }
 
