@@ -81,7 +81,7 @@ namespace SpaceCards.BusinessLogic
                 return (false, new[] { $"'{nameof(group)}' not found." });
             }
 
-            if (group.Cards != Array.Empty<Card>())
+            if (group.Cards.Count() != 0)
             {
                 return (false, new[] { $"'{nameof(group)}' is not empty." });
             }
