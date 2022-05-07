@@ -105,7 +105,6 @@ namespace SpaceCards.UnitTests
             // assert
             Assert.True(result);
             Assert.Empty(groups);
-            _groupsRepositoryMock.Verify(x => x.Delete(groupId), Times.Once);
         }
 
         [Theory]
@@ -128,6 +127,7 @@ namespace SpaceCards.UnitTests
         public async Task Delete_CardsIsNotEmpty_ShouldReturnFalse()
         {
             // arrange
+            var groupId = _fixture.Create<int>();
             var frontSide = _fixture.Create<string>();
             var backtSide = _fixture.Create<string>();
             var groupName = _fixture.Create<string>();
@@ -137,8 +137,11 @@ namespace SpaceCards.UnitTests
 
             var groupWhithCards = group with { Cards = new[] { card } };
 
+            _groupsRepositoryMock.Setup(x => x.GetById(groupId))
+                .ReturnsAsync(groupWhithCards);
+
             // act
-            var (result, errors) = await _service.Delete(groupWhithCards.Id);
+            var (result, errors) = await _service.Delete(groupId);
 
             // assert
             Assert.False(result);
@@ -212,7 +215,6 @@ namespace SpaceCards.UnitTests
             // assert
             Assert.True(result);
             Assert.Empty(errors);
-            _groupsRepositoryMock.Verify(x => x.AddCard(cardId, groupId), Times.Once);
         }
 
         [Theory]
