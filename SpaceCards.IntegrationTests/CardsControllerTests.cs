@@ -1,21 +1,22 @@
 ﻿using AutoFixture;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using SpaceCards.API.Contracts;
-using SpaceCards.DataAccess.Postgre;
 using SpaceCards.Domain;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace SpaceCards.IntegrationTests
 {
     public class CardsControllerTests : BaseControllerTests
     {
+        public CardsControllerTests(ITestOutputHelper outputHelper)
+            : base(outputHelper)
+        {
+        }
+
         [Fact]
         public async Task Get_ShouldReturnOk()
         {
@@ -72,11 +73,15 @@ namespace SpaceCards.IntegrationTests
         public async Task Update_ShouldReturnOk()
         {
             // arrange
-            var cardId = _fixture.Create<int>();
-            var card = _fixture.Create<UpdateCardRequest>();
+            var frontSide = _fixture.Create<string>();
+            var backSide = _fixture.Create<string>();
+            var (card, errors) = Card.Create(frontSide, backSide);
+            var cardId = await _cardRepository.Add(card);
+
+            var updatedCard = _fixture.Create<UpdateCardRequest>();
 
             // act
-            var response = await _client.PutAsJsonAsync($"cards/{2}", card);
+            var response = await _client.PutAsJsonAsync($"cards/{cardId}", updatedCard);
 
             // assert
             response.EnsureSuccessStatusCode();
@@ -96,7 +101,7 @@ namespace SpaceCards.IntegrationTests
         public async Task Update_ShouldReturnBadRequest(int cardId, string frontSide, string backSide)
         {
             // arrange
-            var card = _fixture.Build<UpdateCardRequest>()
+            var updatedCard = _fixture.Build<UpdateCardRequest>()
                 .With(x => x.FrontSide, frontSide)
                 .With(x => x.BackSide, backSide)
                 .Create();
@@ -104,7 +109,7 @@ namespace SpaceCards.IntegrationTests
             var errors = _fixture.CreateMany<string>().ToArray();
 
             // act
-            var response = await _client.PutAsJsonAsync($"cards/{cardId}", card);
+            var response = await _client.PutAsJsonAsync($"cards/{cardId}", updatedCard);
 
             // assert
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
@@ -114,7 +119,10 @@ namespace SpaceCards.IntegrationTests
         public async Task Delete_ShouldReturnOk()
         {
             // arrange
-            var cardId = _fixture.Create<int>();
+            var frontSide = _fixture.Create<string>();
+            var backSide = _fixture.Create<string>();
+            var (card, errors) = Card.Create(frontSide, backSide);
+            var cardId = await _cardRepository.Add(card);
 
             // act
             var response = await _client.DeleteAsync($"cards/{cardId}");
@@ -130,7 +138,6 @@ namespace SpaceCards.IntegrationTests
         public async Task Delete_ShouldReturnBadRequest(int cardId)
         {
             // arrange
-
             // act
             var response = await _client.DeleteAsync($"cards/{cardId}");
 
