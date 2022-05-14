@@ -3,7 +3,7 @@
     /// <summary>
     /// Contract for get cards.
     /// </summary>
-    public class GetCardsResponse
+    public class GetCardResponse
     {
         public int Id { get; set; }
 
