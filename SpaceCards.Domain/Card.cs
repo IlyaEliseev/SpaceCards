@@ -6,7 +6,7 @@
 
         public const int MAX_NAME_BACKSIDE = 200;
 
-        private Card(int id, string frontSide, string backSide, int? groupId)
+        private Card(int id, string? frontSide, string? backSide, int? groupId)
         {
             Id = id;
             FrontSide = frontSide;
@@ -36,6 +36,18 @@
             if (string.IsNullOrWhiteSpace(backSide))
             {
                 errorMessage = $"'{nameof(backSide)}' cannot be null or whitespace.";
+                errors.Add(errorMessage);
+            }
+
+            if (frontSide is not null && frontSide.Length > MAX_NAME_FRONTSIDE)
+            {
+                errorMessage = $"'{nameof(frontSide)}' more than {MAX_NAME_FRONTSIDE} characters.";
+                errors.Add(errorMessage);
+            }
+
+            if (backSide is not null && backSide.Length > MAX_NAME_BACKSIDE)
+            {
+                errorMessage = $"'{nameof(backSide)}' more than {MAX_NAME_BACKSIDE} characters.";
                 errors.Add(errorMessage);
             }
 
