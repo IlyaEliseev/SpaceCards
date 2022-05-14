@@ -6,11 +6,7 @@ using System.Net.Mime;
 
 namespace SpaceCards.API.Controllers
 {
-    [ApiController]
-    [Route("[controller]")]
-    [Consumes(MediaTypeNames.Application.Json)]
-    [Produces(MediaTypeNames.Application.Json)]
-    public class CardsController : ControllerBase
+    public class CardsController : BaseApiController
     {
         private readonly ILogger<CardsController> _logger;
         private readonly ICardsService _service;
@@ -49,12 +45,12 @@ namespace SpaceCards.API.Controllers
         /// </summary>
         /// <returns>Cards.</returns>
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Contracts.GetCardsResponse[]))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Contracts.GetCardResponse[]))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Get()
         {
             var cards = await _service.Get();
-            var cardsContract = _mapper.Map<Domain.Card[], Contracts.GetCardsResponse[]>(cards);
+            var cardsContract = _mapper.Map<Domain.Card[], Contracts.GetCardResponse[]>(cards);
 
             return Ok(cardsContract);
         }
