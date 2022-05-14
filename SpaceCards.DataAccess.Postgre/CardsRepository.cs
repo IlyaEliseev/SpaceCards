@@ -50,14 +50,21 @@ namespace SpaceCards.DataAccess.Postgre
             await _context.SaveChangesAsync();
         }
 
-        public async Task Delete(int cardId)
+        public async Task<bool> Delete(int cardId)
         {
             var card = await _context.Cards
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == cardId);
 
+            if (card is null)
+            {
+                return false;
+            }
+
             _context.Cards.Remove(new Entites.Card { Id = card.Id });
             await _context.SaveChangesAsync();
+
+            return true;
         }
     }
 }
