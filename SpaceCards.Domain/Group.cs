@@ -24,7 +24,13 @@
                 return (null, new[] { $"'{nameof(name)}' cannot be null or whitespace." });
             }
 
+            if (name is not null && name.Length > MAX_NAME_LENGTH)
+            {
+                return (null, new[] { $"'{nameof(name)}' more than {MAX_NAME_LENGTH} characters." });
+            }
+
             var group = new Group(0, name, Array.Empty<Card>());
+
             return (group, Array.Empty<string>());
         }
     }
