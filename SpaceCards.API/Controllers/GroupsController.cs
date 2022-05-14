@@ -126,6 +126,8 @@ namespace SpaceCards.API.Controllers
         /// <param name="groupId">Group id.</param>
         /// <returns>Group.</returns>
         [HttpGet("{groupId:int}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Contracts.GetGroupResponse))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetGroupById([FromRoute] int groupId)
         {
             var (group, errors) = await _service.GetById(groupId);
