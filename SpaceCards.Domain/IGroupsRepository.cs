@@ -2,9 +2,9 @@
 {
     public interface IGroupsRepository
     {
-        Task<(int Result, string[] Errors)> Add(Group group);
+        Task<int> Add(Group group);
 
-        Task Delete(int groupId);
+        Task<bool> Delete(int groupId);
 
         Task<Group[]> Get();
 
@@ -13,7 +13,5 @@
         Task Update(Group group);
 
         Task<bool> AddCard(int cardId, int groupId);
-
-        Task<Group?> GetByIdWithCards(int groupId);
     }
 }

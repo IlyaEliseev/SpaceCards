@@ -21,10 +21,10 @@ namespace SpaceCards.BusinessLogic
                 return (default, errors);
             }
 
-            var (groupId, contextErrors) = await _groupRepository.Add(group);
-            if (contextErrors.Any() || groupId is default(int))
+            var groupId = await _groupRepository.Add(group);
+            if (groupId is default(int))
             {
-                return (default(int), contextErrors.ToArray());
+                return (default(int), Array.Empty<string>());
             }
 
             return (groupId, Array.Empty<string>());
@@ -35,7 +35,9 @@ namespace SpaceCards.BusinessLogic
             return await _groupRepository.Get();
         }
 
-        public async Task<(bool Result, string[] Errors)> AddCard(int cardId, int groupId)
+        public async Task<(bool Result, string[] Errors)> AddCard(
+                    int cardId,
+                    int groupId)
         {
             var card = await _cardsRepository.GetById(cardId);
             if (card is null)
@@ -54,7 +56,9 @@ namespace SpaceCards.BusinessLogic
             return (true, Array.Empty<string>());
         }
 
-        public async Task<(bool Result, string[] Errors)> Update(int groupId, string groupUpdateName)
+        public async Task<(bool Result, string[] Errors)> Update(
+                    int groupId,
+                    string updatedGroupName)
         {
             var group = await _groupRepository.GetById(groupId);
             if (group is null)
@@ -62,7 +66,7 @@ namespace SpaceCards.BusinessLogic
                 return (false, new[] { $"'{nameof(group)}' not found." });
             }
 
-            var (updatedGroup, modelErrors) = Group.Create(groupUpdateName);
+            var (updatedGroup, modelErrors) = Group.Create(updatedGroupName);
             if (modelErrors.Any() || updatedGroup is null)
             {
                 return (false, modelErrors.ToArray());
@@ -91,12 +95,12 @@ namespace SpaceCards.BusinessLogic
             return (true, Array.Empty<string>());
         }
 
-        public async Task<(Group? Result, string[] Errors)> GetByIdWithCards(int groupId)
+        public async Task<(Group? Result, string[] Error)> GetById(int groupId)
         {
-            var group = await _groupRepository.GetByIdWithCards(groupId);
+            var group = await _groupRepository.GetById(groupId);
             if (group is null)
             {
-                return (null, new[] { $"'{nameof(group)}' with cards not found." });
+                return (null, new[] { $"'{nameof(group)}' not found." });
             }
 
             return (group, Array.Empty<string>());
