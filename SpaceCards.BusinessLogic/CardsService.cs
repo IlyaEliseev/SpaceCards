@@ -45,8 +45,8 @@ namespace SpaceCards.BusinessLogic
 
         public async Task<(bool Result, string[] Errors)> Update(
                     int cardId,
-                    string cardUpdateFrontSide,
-                    string cardUpdateBackSide)
+                    string updatedCardFrontSide,
+                    string updatedCardBackSide)
         {
             var card = await _cardsRepository.GetById(cardId);
             if (card is null)
@@ -54,13 +54,13 @@ namespace SpaceCards.BusinessLogic
                 return (false, new[] { $"'{nameof(card)}' card not found." });
             }
 
-            var (updateCard, modelErrors) = Card.Create(cardUpdateFrontSide, cardUpdateBackSide);
-            if (modelErrors.Any() || updateCard is null)
+            var (updatedCard, modelErrors) = Card.Create(updatedCardFrontSide, updatedCardBackSide);
+            if (modelErrors.Any() || updatedCard is null)
             {
                 return (false, modelErrors.ToArray());
             }
 
-            await _cardsRepository.Update(updateCard with { Id = card.Id });
+            await _cardsRepository.Update(updatedCard with { Id = card.Id });
 
             return (true, Array.Empty<string>());
         }
