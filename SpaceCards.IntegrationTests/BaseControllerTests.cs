@@ -1,13 +1,12 @@
 ﻿using AutoFixture;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
-using SpaceCards.API.Contracts;
-using System.Linq;
-using System.Net;
+using Microsoft.Extensions.DependencyInjection;
+using SpaceCards.DataAccess.Postgre;
+using SpaceCards.Domain;
 using System.Net.Http;
-using System.Net.Http.Json;
-using System.Threading.Tasks;
-using Xunit;
+using Xunit.Abstractions;
 
 namespace SpaceCards.IntegrationTests
 {
@@ -15,8 +14,11 @@ namespace SpaceCards.IntegrationTests
     {
         protected readonly HttpClient _client;
         protected readonly Fixture _fixture;
+        protected readonly SpaceCardsDbContext _dbContext;
+        protected readonly ICardsRepository _cardRepository;
+        protected readonly IGroupsRepository _groupRepository;
 
-        public BaseControllerTests()
+        public BaseControllerTests(ITestOutputHelper outputHelper)
         {
             var app = new WebApplicationFactory<Program>()
                 .WithWebHostBuilder(builder =>
@@ -26,8 +28,17 @@ namespace SpaceCards.IntegrationTests
                         configurationBuilder.AddUserSecrets(typeof(BaseControllerTests).Assembly);
                     });
                 });
-            _client = app.CreateClient();
+
+            _client = app.CreateDefaultClient(new LoggingHandler(outputHelper));
+
             _fixture = new Fixture();
+
+            _dbContext = app.Services.CreateScope().ServiceProvider.GetService<SpaceCardsDbContext>();
+            var mapper = app.Services.CreateScope().ServiceProvider.GetService<IMapper>();
+
+            _cardRepository = new CardsRepository(_dbContext, mapper);
+
+            _groupRepository = new GroupsRepository(_dbContext, mapper);
         }
     }
 }
