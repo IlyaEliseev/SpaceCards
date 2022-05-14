@@ -6,11 +6,7 @@ using System.Net.Mime;
 
 namespace SpaceCards.API.Controllers
 {
-    [ApiController]
-    [Route("[controller]")]
-    [Consumes(MediaTypeNames.Application.Json)]
-    [Produces(MediaTypeNames.Application.Json)]
-    public class GroupsController : ControllerBase
+    public class GroupsController : BaseApiController
     {
         private readonly ILogger<GroupsController> _logger;
         private readonly IGroupsService _service;
@@ -72,12 +68,12 @@ namespace SpaceCards.API.Controllers
         /// </summary>
         /// <returns>Groups.</returns>
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Contracts.GetGroupsResponse[]))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Contracts.GetGroupResponse[]))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Get()
         {
             var groups = await _service.Get();
-            var groupsContract = _mapper.Map<Domain.Group[], Contracts.GetGroupsResponse[]>(groups);
+            var groupsContract = _mapper.Map<Domain.Group[], Contracts.GetGroupResponse[]>(groups);
             return Ok(groupsContract);
         }
 
@@ -125,25 +121,22 @@ namespace SpaceCards.API.Controllers
         }
 
         /// <summary>
-        /// Get group with add cards.
+        /// Get group by id.
         /// </summary>
         /// <param name="groupId">Group id.</param>
-        /// <returns>Groups with cards.</returns>
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetGroupsResponse))]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [HttpGet("{groupId:int}/cards")]
-        public async Task<IActionResult> GetGroupsWithCards([FromRoute] int groupId)
+        /// <returns>Group.</returns>
+        [HttpGet("{groupId:int}")]
+        public async Task<IActionResult> GetGroupById([FromRoute] int groupId)
         {
-            var (group, errors) = await _service.GetByIdWithCards(groupId);
+            var (group, errors) = await _service.GetById(groupId);
+
             if (errors.Any() || group is null)
             {
                 _logger.LogError("{errors}", errors);
                 return BadRequest(errors);
             }
 
-            var groupContract = _mapper.Map<Domain.Group, Contracts.GetGroupsResponse>(group);
-
-            return Ok(groupContract);
+            return Ok(group);
         }
     }
 }
