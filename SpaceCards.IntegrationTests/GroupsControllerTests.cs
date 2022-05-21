@@ -23,7 +23,7 @@ namespace SpaceCards.IntegrationTests
         {
             // arrange
             // act
-            var response = await _client.GetAsync("groups");
+            var response = await Client.GetAsync("groups");
 
             // arrange
             response.EnsureSuccessStatusCode();
@@ -33,12 +33,10 @@ namespace SpaceCards.IntegrationTests
         public async Task GetById_ShouldReturnOk()
         {
             // arrange
-            var name = _fixture.Create<string>();
-            var (group, errors) = Group.Create(name);
-            var groupId = await _groupRepository.Add(group);
+            var groupId = await MakeGroup();
 
             // act
-            var response = await _client.GetAsync($"groups/{groupId}");
+            var response = await Client.GetAsync($"groups/{groupId}");
 
             // arrange
             response.EnsureSuccessStatusCode();
@@ -52,7 +50,7 @@ namespace SpaceCards.IntegrationTests
         {
             // arrange
             // act
-            var response = await _client.GetAsync($"groups/{groupId}");
+            var response = await Client.GetAsync($"groups/{groupId}");
 
             // arrange
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
@@ -62,10 +60,10 @@ namespace SpaceCards.IntegrationTests
         public async Task Create_ShouldReturnOk()
         {
             // arrange
-            var group = _fixture.Create<CreateGroupRequest>();
+            var group = Fixture.Create<CreateGroupRequest>();
 
             // act
-            var response = await _client.PostAsJsonAsync("groups", group);
+            var response = await Client.PostAsJsonAsync("groups", group);
 
             // arrange
             response.EnsureSuccessStatusCode();
@@ -79,14 +77,14 @@ namespace SpaceCards.IntegrationTests
         public async Task Create_ShouldReturnBadRequest(string name)
         {
             // arrange
-            var group = _fixture.Build<CreateGroupRequest>()
+            var group = Fixture.Build<CreateGroupRequest>()
                 .With(x => x.Name, name)
                 .Create();
 
-            var errors = _fixture.CreateMany<string>().ToArray();
+            var errors = Fixture.CreateMany<string>().ToArray();
 
             // act
-            var response = await _client.PostAsJsonAsync("groups", group);
+            var response = await Client.PostAsJsonAsync("groups", group);
 
             // arrange
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
@@ -96,14 +94,12 @@ namespace SpaceCards.IntegrationTests
         public async Task Update_ShouldReturnOk()
         {
             // arrange
-            var name = _fixture.Create<string>();
-            var (group, errors) = Group.Create(name);
-            var groupId = await _groupRepository.Add(group);
+            var groupId = await MakeGroup();
 
-            var updatedGroup = _fixture.Create<UpdateGroupRequest>();
+            var updatedGroup = Fixture.Create<UpdateGroupRequest>();
 
             // act
-            var updateResponse = await _client.PutAsJsonAsync($"groups/{groupId}", updatedGroup);
+            var updateResponse = await Client.PutAsJsonAsync($"groups/{groupId}", updatedGroup);
 
             // assert
             updateResponse.EnsureSuccessStatusCode();
@@ -117,14 +113,14 @@ namespace SpaceCards.IntegrationTests
         public async Task Update_ShouldReturnBadRequest(int groupId, string name)
         {
             // arrange
-            var group = _fixture.Build<UpdateGroupRequest>()
+            var group = Fixture.Build<UpdateGroupRequest>()
                 .With(x => x.Name, name)
                 .Create();
 
-            var errors = _fixture.CreateMany<string>().ToArray();
+            var errors = Fixture.CreateMany<string>().ToArray();
 
             // act
-            var response = await _client.PutAsJsonAsync($"groups/{groupId}", group);
+            var response = await Client.PutAsJsonAsync($"groups/{groupId}", group);
 
             // assert
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
@@ -134,12 +130,10 @@ namespace SpaceCards.IntegrationTests
         public async Task Delete_ShouldReturnOk()
         {
             // arrange
-            var name = _fixture.Create<string>();
-            var (group, errors) = Group.Create(name);
-            var groupId = await _groupRepository.Add(group);
+            var groupId = await MakeGroup();
 
             // act
-            var response = await _client.DeleteAsync($"groups/{groupId}");
+            var response = await Client.DeleteAsync($"groups/{groupId}");
 
             // assert
             response.EnsureSuccessStatusCode();
@@ -153,7 +147,7 @@ namespace SpaceCards.IntegrationTests
         {
             // arrange
             // act
-            var response = await _client.DeleteAsync($"groups/{groupId}");
+            var response = await Client.DeleteAsync($"groups/{groupId}");
 
             // assert
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
@@ -163,17 +157,11 @@ namespace SpaceCards.IntegrationTests
         public async Task AddCard_ShouldReturnOk()
         {
             // arrange
-            var frontSide = _fixture.Create<string>();
-            var backSide = _fixture.Create<string>();
-            var (card, errorsCard) = Card.Create(frontSide, backSide);
-            var cardId = await _cardRepository.Add(card);
-
-            var name = _fixture.Create<string>();
-            var (group, errorsGroup) = Group.Create(name);
-            var groupId = await _groupRepository.Add(group);
+            var cardId = await MakeCard();
+            var groupId = await MakeGroup();
 
             // act
-            var response = await _client.PostAsJsonAsync($"groups/{groupId}/cards?cardId={cardId}", cardId);
+            var response = await Client.PostAsJsonAsync($"groups/{groupId}/cards?cardId={cardId}", cardId);
 
             // assert
             response.EnsureSuccessStatusCode();
@@ -191,7 +179,7 @@ namespace SpaceCards.IntegrationTests
         {
             // arrange
             // act
-            var response = await _client.PostAsJsonAsync($"groups/{groupId}/cards?cardId={cardId}", cardId);
+            var response = await Client.PostAsJsonAsync($"groups/{groupId}/cards?cardId={cardId}", cardId);
 
             // assert
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
