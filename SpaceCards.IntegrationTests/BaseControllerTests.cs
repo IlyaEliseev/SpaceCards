@@ -1,23 +1,21 @@
 ﻿using AutoFixture;
-using AutoMapper;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Npgsql;
+using Respawn;
+using Respawn.Graph;
 using SpaceCards.DataAccess.Postgre;
-using SpaceCards.Domain;
 using System.Net.Http;
+using System.Threading.Tasks;
+using Xunit;
 using Xunit.Abstractions;
 
 namespace SpaceCards.IntegrationTests
 {
-    public abstract class BaseControllerTests
+    public abstract class BaseControllerTests : IAsyncLifetime
     {
-        protected readonly HttpClient _client;
-        protected readonly Fixture _fixture;
-        protected readonly SpaceCardsDbContext _dbContext;
-        protected readonly ICardsRepository _cardRepository;
-        protected readonly IGroupsRepository _groupRepository;
-
         public BaseControllerTests(ITestOutputHelper outputHelper)
         {
             var app = new WebApplicationFactory<Program>()
@@ -29,16 +27,73 @@ namespace SpaceCards.IntegrationTests
                     });
                 });
 
-            _client = app.CreateDefaultClient(new LoggingHandler(outputHelper));
+            Client = app.CreateDefaultClient(new LoggingHandler(outputHelper));
 
-            _fixture = new Fixture();
+            Fixture = new Fixture();
 
-            _dbContext = app.Services.CreateScope().ServiceProvider.GetService<SpaceCardsDbContext>();
-            var mapper = app.Services.CreateScope().ServiceProvider.GetService<IMapper>();
-
-            _cardRepository = new CardsRepository(_dbContext, mapper);
-
-            _groupRepository = new GroupsRepository(_dbContext, mapper);
+            DbContext = app.Services.CreateScope().ServiceProvider.GetRequiredService<SpaceCardsDbContext>();
         }
+
+        protected HttpClient Client { get; }
+
+        protected Fixture Fixture { get; }
+
+        protected SpaceCardsDbContext DbContext { get; }
+
+        protected async Task<int> MakeCard()
+        {
+            var card = Fixture.Build<DataAccess.Postgre.Entites.Card>()
+                            .Without(x => x.Id)
+                            .Without(x => x.Group)
+                            .Without(x => x.GroupId)
+                            .Create();
+
+            DbContext.Cards.Add(card);
+            await DbContext.SaveChangesAsync();
+            DbContext.ChangeTracker.Clear();
+
+            return card.Id;
+        }
+
+        protected async Task<int> MakeGroup()
+        {
+            var group = Fixture.Build<DataAccess.Postgre.Entites.Group>()
+                .Without(x => x.Id)
+                .Without(x => x.Cards)
+                .Create();
+
+            DbContext.Groups.Add(group);
+            await DbContext.SaveChangesAsync();
+            DbContext.ChangeTracker.Clear();
+
+            return group.Id;
+        }
+
+        public Task InitializeAsync()
+        {
+            return Task.CompletedTask;
+        }
+
+        public async Task DisposeAsync()
+        {
+            var connectionString = DbContext.Database.GetConnectionString();
+            using (var conn = new NpgsqlConnection(connectionString))
+            {
+                await conn.OpenAsync();
+
+                await checkpoint.Reset(conn);
+                await Task.Delay(500);
+            }
+        }
+
+        private static Checkpoint checkpoint = new Checkpoint
+        {
+            TablesToIgnore = new[]
+            {
+                new Table("__EFMigrationsHistory")
+            },
+
+            DbAdapter = DbAdapter.Postgres
+        };
     }
 }
