@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using Newtonsoft.Json.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -25,16 +26,24 @@ namespace SpaceCards.IntegrationTests
             return contentString;
         }
 
-        public void PrintJsonContent(HttpContent content)
+        private void PrintJsonContent(HttpContent content)
         {
-            var requestString = ReadFromStream(content);
-            _outputHelper.WriteLine(requestString);
+            var contentJson = ReadFromStream(content);
+            if (contentJson is not null)
+            {
+                var json = JToken.Parse(contentJson).ToString();
+                _outputHelper.WriteLine(json);
+            }
         }
 
         private async Task PrintJsonContentAsync(HttpContent content)
         {
             var contentJson = await content.ReadAsStringAsync();
-            _outputHelper.WriteLine(contentJson);
+            if (contentJson is not null)
+            {
+                var json = JToken.Parse(contentJson).ToString();
+                _outputHelper.WriteLine(json);
+            }
         }
 
         protected override HttpResponseMessage Send(HttpRequestMessage request, CancellationToken cancellationToken)
