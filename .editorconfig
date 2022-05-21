@@ -96,3 +96,6 @@ dotnet_diagnostic.SA1200.severity = silent
 
 # SA1310: Field names should not contain underscore
 dotnet_diagnostic.SA1310.severity = none
+
+# SA1413: Use trailing comma in multi-line initializers
+dotnet_diagnostic.SA1413.severity = none
