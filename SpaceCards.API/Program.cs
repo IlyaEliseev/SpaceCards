@@ -1,4 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using OpenTelemetry.Resources;
+using OpenTelemetry.Trace;
+using Serilog;
 using SpaceCards.API;
 using SpaceCards.BusinessLogic;
 using SpaceCards.DataAccess.Postgre;
@@ -6,6 +9,29 @@ using SpaceCards.Domain;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .CreateLogger();
+
+builder.Logging.AddSerilog(logger);
+
+var serviceName = "SpaceCards.API";
+
+var servieceVersion = "1.0.0";
+
+builder.Services.AddOpenTelemetryTracing(builder =>
+{
+    builder
+    .AddJaegerExporter()
+    .AddSource(serviceName)
+    .SetResourceBuilder(
+        ResourceBuilder.CreateDefault()
+        .AddService(serviceName: serviceName, serviceVersion: servieceVersion))
+    .AddHttpClientInstrumentation()
+    .AddAspNetCoreInstrumentation()
+    .AddEntityFrameworkCoreInstrumentation();
+});
 
 // Add services to the container.
 builder.Services.AddDbContext<SpaceCardsDbContext>(options =>
