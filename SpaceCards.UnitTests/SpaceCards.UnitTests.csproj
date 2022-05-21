@@ -24,10 +24,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\SpaceCards.BusinessLogic\SpaceCards.BusinessLogic.csproj" />
+		<AdditionalFiles Include="..\stylecop.json" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<AdditionalFiles Include="..\stylecop.json" />
+	  <ProjectReference Include="..\SpaceCards.BusinessLogic\SpaceCards.BusinessLogic.csproj" />
 	</ItemGroup>
 </Project>
