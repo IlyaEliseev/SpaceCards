@@ -22,7 +22,7 @@ namespace SpaceCards.IntegrationTests
         {
             // arrange
             // act
-            var response = await _client.GetAsync("cards");
+            var response = await Client.GetAsync("cards");
 
             // assert
             response.EnsureSuccessStatusCode();
@@ -32,10 +32,10 @@ namespace SpaceCards.IntegrationTests
         public async Task Create_ShouldReturnOk()
         {
             // arrange
-            var card = _fixture.Create<CreateCardRequest>();
+            var card = Fixture.Create<CreateCardRequest>();
 
             // act
-            var response = await _client.PostAsJsonAsync("cards", card);
+            var response = await Client.PostAsJsonAsync("cards", card);
 
             // assert
             response.EnsureSuccessStatusCode();
@@ -55,15 +55,15 @@ namespace SpaceCards.IntegrationTests
         public async Task Create_ShouldReturnBadRequest(string frontSide, string backSide)
         {
             // arrange
-            var card = _fixture.Build<CreateCardRequest>()
+            var card = Fixture.Build<CreateCardRequest>()
                 .With(x => x.FrontSide, frontSide)
                 .With(x => x.BackSide, backSide)
                 .Create();
 
-            var errors = _fixture.CreateMany<string>().ToArray();
+            var errors = Fixture.CreateMany<string>().ToArray();
 
             // act
-            var response = await _client.PostAsJsonAsync("cards", card);
+            var response = await Client.PostAsJsonAsync("cards", card);
 
             // assert
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
@@ -73,15 +73,12 @@ namespace SpaceCards.IntegrationTests
         public async Task Update_ShouldReturnOk()
         {
             // arrange
-            var frontSide = _fixture.Create<string>();
-            var backSide = _fixture.Create<string>();
-            var (card, errors) = Card.Create(frontSide, backSide);
-            var cardId = await _cardRepository.Add(card);
+            var cardId = await MakeCard();
 
-            var updatedCard = _fixture.Create<UpdateCardRequest>();
+            var updatedCard = Fixture.Create<UpdateCardRequest>();
 
             // act
-            var response = await _client.PutAsJsonAsync($"cards/{cardId}", updatedCard);
+            var response = await Client.PutAsJsonAsync($"cards/{cardId}", updatedCard);
 
             // assert
             response.EnsureSuccessStatusCode();
@@ -101,15 +98,15 @@ namespace SpaceCards.IntegrationTests
         public async Task Update_ShouldReturnBadRequest(int cardId, string frontSide, string backSide)
         {
             // arrange
-            var updatedCard = _fixture.Build<UpdateCardRequest>()
+            var updatedCard = Fixture.Build<UpdateCardRequest>()
                 .With(x => x.FrontSide, frontSide)
                 .With(x => x.BackSide, backSide)
                 .Create();
 
-            var errors = _fixture.CreateMany<string>().ToArray();
+            var errors = Fixture.CreateMany<string>().ToArray();
 
             // act
-            var response = await _client.PutAsJsonAsync($"cards/{cardId}", updatedCard);
+            var response = await Client.PutAsJsonAsync($"cards/{cardId}", updatedCard);
 
             // assert
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
@@ -119,13 +116,10 @@ namespace SpaceCards.IntegrationTests
         public async Task Delete_ShouldReturnOk()
         {
             // arrange
-            var frontSide = _fixture.Create<string>();
-            var backSide = _fixture.Create<string>();
-            var (card, errors) = Card.Create(frontSide, backSide);
-            var cardId = await _cardRepository.Add(card);
+            var cardId = await MakeCard();
 
             // act
-            var response = await _client.DeleteAsync($"cards/{cardId}");
+            var response = await Client.DeleteAsync($"cards/{cardId}");
 
             // assert
             response.EnsureSuccessStatusCode();
@@ -139,7 +133,7 @@ namespace SpaceCards.IntegrationTests
         {
             // arrange
             // act
-            var response = await _client.DeleteAsync($"cards/{cardId}");
+            var response = await Client.DeleteAsync($"cards/{cardId}");
 
             // assert
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
