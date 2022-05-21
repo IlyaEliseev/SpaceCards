@@ -21,17 +21,21 @@ services:
 
   jaeger:
     image: jaegertracing/all-in-one
+    environment:
+      - SAMPLING_STRATEGIES_FILE=/etc/jaeger/sampling_strategies.json
+      - COLLECTOR_ZIPKIN_HOST_PORT=:9411
     container_name: jaeger
     restart: unless-stopped
     ports:
       - 5775:5775/udp
-      - 5778:5778
       - 6831:6831/udp
       - 6832:6832/udp
-      - 9411:9411
+      - 5778:5778
+      - 16686:16686
+      - 14250:14250
       - 14268:14268
       - 14269:14269
-      - 16686:16686
+      - 9411:9411
 
   seq:
     image: datalust/seq
@@ -40,8 +44,8 @@ services:
     environment:
       - ACCEPT_EULA=Y
     ports:
-      - 5341:5341
-      - 5340:80
+      - 5341:80
+      
  
 volumes:
   db-data:
