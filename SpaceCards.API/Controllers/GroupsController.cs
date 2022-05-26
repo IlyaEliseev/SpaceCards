@@ -50,7 +50,7 @@ namespace SpaceCards.API.Controllers
         [HttpPost("{groupId:int}/cards")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> AddCard(int cardId, int groupId)
+        public async Task<IActionResult> AddCard([FromQuery] int cardId, [FromRoute] int groupId)
         {
             var (result, errors) = await _service.AddCard(cardId, groupId);
 
@@ -81,8 +81,8 @@ namespace SpaceCards.API.Controllers
         /// Update group.
         /// </summary>
         /// <param name="groupId">Group id.</param>
-        /// <param name="request">Group with new parametrs.</param>
-        /// <returns>Successful updat group.</returns>
+        /// <param name="request">Group with new parameters.</param>
+        /// <returns>Successful update group.</returns>
         [HttpPut("{groupId:int}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -139,6 +139,29 @@ namespace SpaceCards.API.Controllers
             }
 
             return Ok(group);
+        }
+
+        /// <summary>
+        /// Get random cards from all groups.
+        /// </summary>
+        /// <param name="countCards">Count cards.</param>
+        /// <returns>Random cards.</returns>
+        [HttpGet("Cards")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Contracts.GetCardResponse[]))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetRandomCards([FromQuery] int countCards)
+        {
+            var (randomCards, errors) = await _service.GetRandomCards(countCards);
+
+            if (errors.Any() || randomCards is null)
+            {
+                _logger.LogError("{errors}", errors);
+                return BadRequest(errors);
+            }
+
+            var randomCardsContract = _mapper.Map<Domain.Card[], Contracts.GetCardResponse[]>(randomCards);
+
+            return Ok(randomCardsContract);
         }
     }
 }
