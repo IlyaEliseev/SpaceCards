@@ -45,8 +45,15 @@ services:
       - ACCEPT_EULA=Y
     ports:
       - 5341:80
-      
- 
+   
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    ports:
+      - 9090:9090
+    volumes: 
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+
 volumes:
   db-data:
     driver: local
