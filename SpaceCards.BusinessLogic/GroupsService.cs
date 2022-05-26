@@ -105,5 +105,17 @@ namespace SpaceCards.BusinessLogic
 
             return (group, Array.Empty<string>());
         }
+
+        public async Task<(Card[]? Result, string[] Errors)> GetRandomCards(int countCards)
+        {
+            if (countCards <= default(int))
+            {
+                return (null, new[] { $"'{nameof(countCards)}' cannot be 0 or less 0." });
+            }
+
+            var randomCards = await _groupRepository.GetRandomCards(countCards);
+
+            return (randomCards, Array.Empty<string>());
+        }
     }
 }

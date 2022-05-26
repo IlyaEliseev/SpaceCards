@@ -184,5 +184,32 @@ namespace SpaceCards.IntegrationTests
             // assert
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         }
+
+        [Fact]
+        public async Task GetRandomCards_ShouldReturnOk()
+        {
+            // arrange
+            var countCards = 10;
+
+            // act
+            var response = await Client.GetAsync($"groups/cards?countCards={countCards}");
+
+            // assert
+            response.EnsureSuccessStatusCode();
+        }
+
+        [Theory]
+        [InlineData(-1)]
+        [InlineData(-111)]
+        [InlineData(0)]
+        public async Task GetRandomCards_ShouldReturnBadRequest(int countCards)
+        {
+            // arrange
+            // act
+            var response = await Client.GetAsync($"groups/cards?countCards={countCards}");
+
+            // assert
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        }
     }
 }
