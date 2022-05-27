@@ -9,10 +9,12 @@ namespace SpaceCards.UnitTests
     public class CardTests
     {
         private readonly Fixture _fixture;
+        private readonly StringFixture _stringFixture;
 
         public CardTests()
         {
             _fixture = new Fixture();
+            _stringFixture = new StringFixture();
         }
 
         [Fact]
@@ -77,7 +79,7 @@ namespace SpaceCards.UnitTests
         public async Task Create_FrontSideIsNotValidMoreThanMaxLength_ShouldReturnNullAndError(int frontSideLength)
         {
             // arrange
-            var frontSide = new string('a', frontSideLength);
+            var frontSide = _stringFixture.GenerateRandomString(frontSideLength);
             var backSide = _fixture.Create<string>();
             var excpectedError = $"'{nameof(frontSide)}' more than {Card.MAX_NAME_FRONTSIDE} characters.";
 
@@ -97,7 +99,7 @@ namespace SpaceCards.UnitTests
         {
             // arrange
             var frontSide = _fixture.Create<string>();
-            var backSide = new string('a', backtSideLength);
+            var backSide = _stringFixture.GenerateRandomString(backtSideLength);
             var excpectedError = $"'{nameof(backSide)}' more than {Card.MAX_NAME_BACKSIDE} characters.";
 
             // act
