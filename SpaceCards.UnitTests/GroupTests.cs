@@ -9,10 +9,12 @@ namespace SpaceCards.UnitTests
     public class GroupTests
     {
         private readonly Fixture _fixture;
+        private readonly StringFixture _stringFixture;
 
         public GroupTests()
         {
             _fixture = new Fixture();
+            _stringFixture = new StringFixture();
         }
 
         [Fact]
@@ -54,7 +56,7 @@ namespace SpaceCards.UnitTests
         public async Task Create_NameIsNotValidMoreThanMaxLength_ShouldReturnNullAndError(int nameLength)
         {
             // arrange
-            var name = new string('a', nameLength);
+            var name = _stringFixture.GenerateRandomString(nameLength);
             var excpectedError = $"'{nameof(name)}' more than {Group.MAX_NAME_LENGTH} characters.";
 
             // act
