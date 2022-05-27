@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
@@ -56,6 +57,7 @@ namespace SpaceCards.IntegrationTests
             var response = base.Send(request, cancellationToken);
             if (response.Content is not null)
             {
+                _outputHelper.WriteLine(request.RequestUri.ToString());
                 PrintJsonContent(request.Content);
             }
 
@@ -72,6 +74,7 @@ namespace SpaceCards.IntegrationTests
             var response = await base.SendAsync(request, cancellationToken);
             if (response.Content is not null)
             {
+                _outputHelper.WriteLine(request.RequestUri.ToString());
                 await PrintJsonContentAsync(response.Content);
             }
 
