@@ -78,6 +78,13 @@ app.UseHttpsRedirection();
 
 app.UseRouting();
 
+app.UseCors(x =>
+{
+    x.WithHeaders().AllowAnyHeader();
+    x.WithOrigins().AllowAnyOrigin();
+    x.AllowAnyMethod();
+});
+
 app.MapControllers();
 
 app.Run();

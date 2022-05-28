@@ -2,58 +2,55 @@ name: .NET
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
+    paths-ignore:
+      - "frontend/**"
   pull_request:
-    branches: [ main ]
+    branches: [main]
+    paths-ignore:
+      - "frontend/**"
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v2
-      with:
-        dotnet-version: 6.0.x
-    - name: Restore dependencies
-      run: dotnet restore SpaceCards.sln
-    - name: Build
-      run: dotnet build SpaceCards.sln --no-restore 
-  
-  unit_tests:  
-  
+      - uses: actions/checkout@v3
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v2
+        with:
+          dotnet-version: 6.0.x
+      - name: Restore dependencies
+        run: dotnet restore backend/SpaceCards.sln
+      - name: Build
+        run: dotnet build backend/SpaceCards.sln --no-restore
+
+  unit_tests:
     runs-on: ubuntu-latest
-  
+
     steps:
       - uses: actions/checkout@v3
       - name: Test
-        run: dotnet test SpaceCards.UnitTests/SpaceCards.UnitTests.csproj --verbosity normal 
-      
-  integretion_tests: 
-  
+        run: dotnet test backend/SpaceCards.UnitTests/SpaceCards.UnitTests.csproj --verbosity normal
+
+  integretion_tests:
     runs-on: ubuntu-latest
-  
+
     steps:
       - uses: actions/checkout@v3
-        
+
       - name: Setup PostgreSQL
         uses: Harmon758/postgresql-action@v1.0.0
-        
+
         with:
-          postgresql db: SpaceCardsDb 
+          postgresql db: SpaceCardsDb
           postgresql password: pwd
-          
+
       - name: tool restore
-        run: dotnet tool restore 
-        
+        run: dotnet tool restore
+
       - name: update database
-        run: dotnet ef database update -p SpaceCards.DataAccess.Postgre -s SpaceCards.API --connection ${{secrets.ConnectionStrings}}
-        
+        run: dotnet ef database update -p backend/SpaceCards.DataAccess.Postgre -s backend/SpaceCards.API --connection ${{secrets.ConnectionStrings}}
+
       - name: Test
-        run: dotnet test SpaceCards.IntegrationTests/SpaceCards.IntegrationTests.csproj --no-build --verbosity normal
-        
-        
-        
-        
+        run: dotnet test backend/SpaceCards.IntegrationTests/SpaceCards.IntegrationTests.csproj --no-build --verbosity normal
