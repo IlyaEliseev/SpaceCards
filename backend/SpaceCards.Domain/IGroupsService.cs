@@ -13,5 +13,7 @@
         Task<(bool Result, string[] Errors)> AddCard(int cardId, int groupId);
 
         Task<(Group? Result, string[] Error)> GetById(int groupId);
+
+        Task<(Card[]? Result, string[] Errors)> GetRandomCards(int countCards);
     }
 }

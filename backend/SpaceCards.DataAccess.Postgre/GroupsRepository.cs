@@ -83,5 +83,21 @@ namespace SpaceCards.DataAccess.Postgre
 
             return true;
         }
+
+        public async Task<Card[]> GetRandomCards(int countCards)
+        {
+            var rnd = new Random();
+
+            var randomCards = _context.Groups
+                .AsNoTracking()
+                .Select(x => x.Cards)
+                .SelectMany(x => x)
+                .AsEnumerable()
+                .OrderBy(x => rnd.Next())
+                .Take(countCards)
+                .ToArray();
+
+            return _mapper.Map<Entites.Card[], Domain.Card[]>(randomCards);
+        }
     }
 }

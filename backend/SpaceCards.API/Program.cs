@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Serilog;
@@ -10,11 +11,16 @@ using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var logger = new LoggerConfiguration()
-    .ReadFrom.Configuration(builder.Configuration)
-    .CreateLogger();
+builder.Services.AddLogging(b =>
+{
+    //var provider = b.Services.BuildServiceProvider();
 
-builder.Logging.AddSerilog(logger);
+    var logger = new LoggerConfiguration()
+        .ReadFrom.Configuration(builder.Configuration)
+        //.ReadFrom.Services(provider)
+        .CreateLogger();
+    b.AddSerilog(logger);
+});
 
 var serviceName = "SpaceCards.API";
 
@@ -23,14 +29,30 @@ var servieceVersion = "1.0.0";
 builder.Services.AddOpenTelemetryTracing(builder =>
 {
     builder
-    .AddJaegerExporter()
-    .AddSource(serviceName)
-    .SetResourceBuilder(
-        ResourceBuilder.CreateDefault()
-        .AddService(serviceName: serviceName, serviceVersion: servieceVersion))
-    .AddHttpClientInstrumentation()
-    .AddAspNetCoreInstrumentation()
-    .AddEntityFrameworkCoreInstrumentation();
+        .AddJaegerExporter(options =>
+        {
+            options.AgentHost = "jaeger";
+        })
+        .AddSource(serviceName)
+        .SetResourceBuilder(
+            ResourceBuilder.CreateDefault()
+            .AddService(serviceName: serviceName, serviceVersion: servieceVersion))
+        .AddHttpClientInstrumentation()
+        .AddAspNetCoreInstrumentation()
+        .AddEntityFrameworkCoreInstrumentation(options =>
+        {
+            options.SetDbStatementForText = true;
+        });
+});
+
+builder.Services.AddOpenTelemetryMetrics(builder =>
+{
+    builder.AddPrometheusExporter(options =>
+    {
+        options.StartHttpListener = true;
+        options.HttpListenerPrefixes = new[] { "http://prometheus:9090" };
+        options.ScrapeResponseCacheDurationMilliseconds = 0;
+    });
 });
 
 // Add services to the container.
