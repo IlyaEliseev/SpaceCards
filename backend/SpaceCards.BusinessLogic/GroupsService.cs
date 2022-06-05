@@ -7,7 +7,9 @@ namespace SpaceCards.BusinessLogic
         private readonly IGroupsRepository _groupRepository;
         private readonly ICardsRepository _cardsRepository;
 
-        public GroupsService(IGroupsRepository groupRepository, ICardsRepository cardsRepository)
+        public GroupsService(
+            IGroupsRepository groupRepository,
+            ICardsRepository cardsRepository)
         {
             _groupRepository = groupRepository;
             _cardsRepository = cardsRepository;
@@ -36,8 +38,8 @@ namespace SpaceCards.BusinessLogic
         }
 
         public async Task<(bool Result, string[] Errors)> AddCard(
-                    int cardId,
-                    int groupId)
+            int cardId,
+            int groupId)
         {
             var card = await _cardsRepository.GetById(cardId);
             if (card is null)
@@ -57,8 +59,8 @@ namespace SpaceCards.BusinessLogic
         }
 
         public async Task<(bool Result, string[] Errors)> Update(
-                    int groupId,
-                    string updatedGroupName)
+            int groupId,
+            string updatedGroupName)
         {
             var group = await _groupRepository.GetById(groupId);
             if (group is null)
