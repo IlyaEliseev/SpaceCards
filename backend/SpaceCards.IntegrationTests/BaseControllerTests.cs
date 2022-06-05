@@ -7,6 +7,7 @@ using Npgsql;
 using Respawn;
 using Respawn.Graph;
 using SpaceCards.DataAccess.Postgre;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
@@ -30,7 +31,8 @@ namespace SpaceCards.IntegrationTests
             Client = app.CreateDefaultClient(new LoggingHandler(outputHelper));
 
             Fixture = new Fixture();
-
+            Fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
+            Fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             DbContext = app.Services.CreateScope().ServiceProvider.GetRequiredService<SpaceCardsDbContext>();
         }
 
@@ -69,6 +71,54 @@ namespace SpaceCards.IntegrationTests
             return group.Id;
         }
 
+        protected async Task<(int GroupId, int CardId)> AddCardInGroup()
+        {
+            var cardId = await MakeCard();
+            var groupId = await MakeGroup();
+
+            var card = await DbContext.Cards.FirstOrDefaultAsync(x => x.Id == cardId);
+            card.GroupId = groupId;
+            await DbContext.SaveChangesAsync();
+            DbContext.ChangeTracker.Clear();
+
+            return (groupId, cardId);
+        }
+
+        protected async Task<List<int>> GenerateGroups(int groupsCount)
+        {
+            var groupsId = new List<int>();
+
+            for (int i = 0; i < groupsCount; i++)
+            {
+                var groupId = await MakeGroup();
+                groupsId.Add(groupId);
+            }
+
+            return groupsId;
+        }
+
+        protected async Task GenerateCardsInGroups(int groupsCount, int cardsCount)
+        {
+            var groupsId = await GenerateGroups(groupsCount);
+
+            for (int i = 0; i < cardsCount; i++)
+            {
+                await MakeCard();
+            }
+
+            var cards = await DbContext.Cards
+                .ToArrayAsync();
+
+            foreach (var groupId in groupsId)
+            {
+                foreach (var card in cards)
+                {
+                    card.GroupId = groupId;
+                    await DbContext.SaveChangesAsync();
+                }
+            }
+        }
+
         public Task InitializeAsync()
         {
             return Task.CompletedTask;
@@ -82,7 +132,7 @@ namespace SpaceCards.IntegrationTests
                 await conn.OpenAsync();
 
                 await checkpoint.Reset(conn);
-                await Task.Delay(500);
+                await Task.Delay(600);
             }
         }
 

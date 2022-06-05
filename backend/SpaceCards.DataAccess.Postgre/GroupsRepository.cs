@@ -99,5 +99,23 @@ namespace SpaceCards.DataAccess.Postgre
 
             return _mapper.Map<Entites.Card[], Domain.Card[]>(randomCards);
         }
+
+        public async Task<Card?> GetCardFromGroupById(int groupId, int cardId)
+        {
+            var card = await _context.Groups
+                .AsNoTracking()
+                .Include(x => x.Cards)
+                .Where(x => x.Id == groupId)
+                .Select(x => x.Cards)
+                .SelectMany(x => x)
+                .FirstOrDefaultAsync(x => x.Id == cardId);
+
+            if (card is null)
+            {
+                return null;
+            }
+
+            return _mapper.Map<Entites.Card, Domain.Card>(card);
+        }
     }
 }
