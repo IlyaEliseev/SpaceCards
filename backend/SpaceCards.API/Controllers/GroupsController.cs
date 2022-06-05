@@ -146,7 +146,7 @@ namespace SpaceCards.API.Controllers
         /// </summary>
         /// <param name="countCards">Count cards.</param>
         /// <returns>Random cards.</returns>
-        [HttpGet("Cards")]
+        [HttpGet("randomCards")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Contracts.GetCardResponse[]))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetRandomCards([FromQuery] int countCards)
