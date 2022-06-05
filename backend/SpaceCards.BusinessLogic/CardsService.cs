@@ -44,9 +44,9 @@ namespace SpaceCards.BusinessLogic
         }
 
         public async Task<(bool Result, string[] Errors)> Update(
-                    int cardId,
-                    string updatedCardFrontSide,
-                    string updatedCardBackSide)
+            int cardId,
+            string updatedCardFrontSide,
+            string updatedCardBackSide)
         {
             var card = await _cardsRepository.GetById(cardId);
             if (card is null)
