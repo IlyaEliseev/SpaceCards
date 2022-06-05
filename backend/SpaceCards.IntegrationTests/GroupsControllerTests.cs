@@ -1,4 +1,5 @@
 ﻿using AutoFixture;
+using Microsoft.EntityFrameworkCore;
 using SpaceCards.API.Contracts;
 using SpaceCards.Domain;
 using System.IO;
@@ -190,12 +191,24 @@ namespace SpaceCards.IntegrationTests
         {
             // arrange
             var countCards = 10;
+            var countGroups = 2;
+            await GenerateCardsInGroups(countGroups, countCards);
 
             // act
-            var response = await Client.GetAsync($"groups/cards?countCards={countCards}");
+            var response1 = await Client.GetAsync($"groups/randomCards?countCards={countCards}");
+            var response2 = await Client.GetAsync($"groups/randomCards?countCards={countCards}");
+
+            var cardsResponse1 = await response1.Content.ReadFromJsonAsync<DataAccess.Postgre.Entites.Card[]>();
+            var cardsResponse2 = await response2.Content.ReadFromJsonAsync<DataAccess.Postgre.Entites.Card[]>();
+
+            var result = cardsResponse1.SequenceEqual(cardsResponse2);
 
             // assert
-            response.EnsureSuccessStatusCode();
+            response1.EnsureSuccessStatusCode();
+            response2.EnsureSuccessStatusCode();
+            Assert.Equal(countCards, cardsResponse1.Length);
+            Assert.Equal(countCards, cardsResponse2.Length);
+            Assert.True(!result);
         }
 
         [Theory]
@@ -206,7 +219,7 @@ namespace SpaceCards.IntegrationTests
         {
             // arrange
             // act
-            var response = await Client.GetAsync($"groups/cards?countCards={countCards}");
+            var response = await Client.GetAsync($"groups/randomCards?countCards={countCards}");
 
             // assert
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
