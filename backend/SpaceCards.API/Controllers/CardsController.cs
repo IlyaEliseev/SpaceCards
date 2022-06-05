@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using SpaceCards.API.Contracts;
 using SpaceCards.Domain;
-using System.Net.Mime;
 
 namespace SpaceCards.API.Controllers
 {
@@ -79,8 +78,8 @@ namespace SpaceCards.API.Controllers
         /// <summary>
         /// Find card and update.
         /// </summary>
-        /// <param name="cardId">Card search parametr.</param>
-        /// <param name="card">Card with new parametrs.</param>
+        /// <param name="cardId">Card search parameter.</param>
+        /// <param name="card">Card with new parameters.</param>
         /// <returns>Successful update card.</returns>
         [HttpPut("{cardId:int}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
