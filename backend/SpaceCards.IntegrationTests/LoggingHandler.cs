@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json.Linq;
-using System;
 using System.Net.Http;
 using System.Text;
 using System.Threading;
@@ -40,7 +39,7 @@ namespace SpaceCards.IntegrationTests
         private async Task PrintJsonContentAsync(HttpContent content)
         {
             var contentJson = await content.ReadAsStringAsync();
-            if (contentJson is not null)
+            if (contentJson is not null && contentJson.Length != 0)
             {
                 var json = JToken.Parse(contentJson).ToString();
                 _outputHelper.WriteLine(json);

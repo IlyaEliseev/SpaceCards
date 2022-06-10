@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
@@ -10,6 +11,9 @@ using SpaceCards.Domain;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddAuthentication(BaseSchema.NAME)
+    .AddScheme<TestAuthenticationOption, TestAuthenticationHandler>(BaseSchema.NAME, options => { });
 
 builder.Services.AddLogging(b =>
 {
@@ -99,6 +103,10 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseRouting();
+
+app.UseAuthentication();
+
+app.UseAuthorization();
 
 app.UseCors(x =>
 {
