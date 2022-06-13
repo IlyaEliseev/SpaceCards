@@ -11,3 +11,12 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.site-layout-background {
+  background: #fff;
+}
+
+.btn-google {
+  background: #f0eae9;
+  color: #fff;
+}

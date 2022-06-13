@@ -1,35 +1,45 @@
-import React, { useEffect, useState } from "react";
-import logo from "./logo.svg";
-import "./App.css";
-import CardComponent from "./components/Card";
-import "antd/dist/antd.css";
-import { Card } from "antd";
+import React, { useEffect, useState } from 'react';
+import './App.css';
+import CardComponent from './components/Card';
+import HeaderComponent from './components/Header';
+import Sidebar from './components/Sidebar';
+import ContentComponent from './components/Content';
+import 'antd/dist/antd.min.css';
+import { Layout } from 'antd';
+import { Collection } from 'typescript';
 
 function App() {
   useEffect(() => {
     const fetchCards = async () => {
-      const data = await fetch("https://localhost:64367/cards");
+      const data = await fetch('https://localhost:49394/cards');
       const cards = await data.json();
       setCards(cards);
     };
     fetchCards().catch(console.error);
-  });
+  }, []);
+
+  useEffect(() => {
+    const fetchGroups = async () => {
+      const data = await fetch('https://localhost:49394/groups');
+      const groups = await data.json();
+      setGroups(groups);
+    };
+    fetchGroups().catch(console.error);
+  }, []);
 
   const [cards, setCards] = useState([]);
+
+  const [groups, setGroups] = useState([]);
 
   const getCards = () => {
     const cardList = cards.map(
       (card: { id: number; frontSide: string; backSide: string }) => {
         return (
-          <Card
-            key={card.id}
-            title="Space card"
-            bordered={false}
-            style={{ width: 300 }}
-          >
-            <p>{card.frontSide}</p>
-            <p>{card.backSide}</p>
-          </Card>
+          <CardComponent
+            id={card.id}
+            frontSide={card.frontSide}
+            backSide={card.backSide}
+          />
         );
       }
     );
@@ -37,9 +47,18 @@ function App() {
   };
 
   return (
-    <div className="App">
+    <div className='App'>
       <header>
-        <div className="site-card-border-less-wrapper">{getCards()}</div>
+        <Layout>
+          <HeaderComponent />
+
+          <Layout>
+            <Sidebar />
+            <ContentComponent />
+          </Layout>
+        </Layout>
+
+        {/* <div className='site-card-border-less-wrapper'>{getCards()}</div> */}
       </header>
     </div>
   );
