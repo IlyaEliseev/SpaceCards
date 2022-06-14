@@ -53,4 +53,4 @@ jobs:
         run: dotnet ef database update -p backend/SpaceCards.DataAccess.Postgre -s backend/SpaceCards.API --connection ${{secrets.ConnectionStrings}}
 
       - name: Test
-        run: dotnet test backend/SpaceCards.IntegrationTests/SpaceCards.IntegrationTests.csproj --no-build --verbosity normal
+        run: dotnet test backend/SpaceCards.IntegrationTests/SpaceCards.IntegrationTests.csproj --verbosity normal
