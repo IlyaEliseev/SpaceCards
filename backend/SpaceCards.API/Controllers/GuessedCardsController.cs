@@ -21,7 +21,7 @@ namespace SpaceCards.API.Controllers
         }
 
         /// <summary>
-        /// Get guessed card.
+        /// Save guessed card.
         /// </summary>
         /// <param name="groupId">Groups id.</param>
         /// <param name="cardId">Card id.</param>
@@ -29,9 +29,9 @@ namespace SpaceCards.API.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> TakeGuessedCard([FromBody] int groupId, [FromQuery] int cardId)
+        public async Task<IActionResult> SaveGuessedCard([FromBody] int groupId, [FromQuery] int cardId)
         {
-            var (result, errors) = await _service.TakeGuessedCard(groupId, cardId);
+            var (result, errors) = await _service.SaveGuessedCard(groupId, cardId);
 
             if (errors.Any() || result is false)
             {

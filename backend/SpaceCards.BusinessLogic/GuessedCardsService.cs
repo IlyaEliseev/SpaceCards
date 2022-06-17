@@ -15,7 +15,7 @@ namespace SpaceCards.BusinessLogic
             _groupRepository = groupRepository;
         }
 
-        public async Task<(bool Result, string[] Errors)> TakeGuessedCard(int groupId, int cardId)
+        public async Task<(bool Result, string[] Errors)> SaveGuessedCard(int groupId, int cardId)
         {
             var card = await _groupRepository.GetCardFromGroupById(groupId, cardId);
             if (card is null)

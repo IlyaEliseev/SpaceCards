@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Microsoft.EntityFrameworkCore;
 using SpaceCards.Domain;
 
 namespace SpaceCards.DataAccess.Postgre

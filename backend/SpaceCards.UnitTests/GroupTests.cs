@@ -32,10 +32,10 @@ namespace SpaceCards.UnitTests
         }
 
         [Theory]
-        [InlineData("")]
-        [InlineData(" ")]
-        [InlineData("      ")]
-        [InlineData(null)]
+        [MemberData(
+            nameof(GroupDataGenerator.GenerateSetInvalidName),
+            parameters: 5,
+            MemberType = typeof(GroupDataGenerator))]
         public async Task Create_NameIsNotValidNullOrWhitespace_ShouldReturnNullAndError(string name)
         {
             // arrange
@@ -52,11 +52,13 @@ namespace SpaceCards.UnitTests
         }
 
         [Theory]
-        [InlineData(210)]
-        public async Task Create_NameIsNotValidMoreThanMaxLength_ShouldReturnNullAndError(int nameLength)
+        [MemberData(
+            nameof(GroupDataGenerator.GenerateSetNameWithInvalidLength),
+            parameters: 5,
+            MemberType = typeof(GroupDataGenerator))]
+        public async Task Create_NameIsNotValidMoreThanMaxLength_ShouldReturnNullAndError(string name)
         {
             // arrange
-            var name = _stringFixture.GenerateRandomString(nameLength);
             var excpectedError = $"'{nameof(name)}' more than {Group.MAX_NAME_LENGTH} characters.";
 
             // act

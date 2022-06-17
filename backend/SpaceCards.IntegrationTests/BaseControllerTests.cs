@@ -31,8 +31,6 @@ namespace SpaceCards.IntegrationTests
             Client = app.CreateDefaultClient(new LoggingHandler(outputHelper));
 
             Fixture = new Fixture();
-            Fixture.Behaviors.Remove(new ThrowingRecursionBehavior());
-            Fixture.Behaviors.Add(new OmitOnRecursionBehavior());
             DbContext = app.Services.CreateScope().ServiceProvider.GetRequiredService<SpaceCardsDbContext>();
         }
 
@@ -132,7 +130,7 @@ namespace SpaceCards.IntegrationTests
                 await conn.OpenAsync();
 
                 await checkpoint.Reset(conn);
-                await Task.Delay(600);
+                await Task.Delay(1000);
             }
         }
 

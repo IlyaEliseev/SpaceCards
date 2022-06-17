@@ -33,10 +33,10 @@ namespace SpaceCards.UnitTests
         }
 
         [Theory]
-        [InlineData("")]
-        [InlineData(" ")]
-        [InlineData("      ")]
-        [InlineData(null)]
+        [MemberData(
+            nameof(CardDataGenerator.GenerateSetInvalidFrontSideOrBackSide),
+            parameters: 5,
+            MemberType = typeof(CardDataGenerator))]
         public async Task Create_FrontSideIsNotValidNullOrWhitespace_ShouldReturnNullAndError(string frontSide)
         {
             // arrange
@@ -54,10 +54,10 @@ namespace SpaceCards.UnitTests
         }
 
         [Theory]
-        [InlineData("")]
-        [InlineData(" ")]
-        [InlineData("      ")]
-        [InlineData(null)]
+        [MemberData(
+            nameof(CardDataGenerator.GenerateSetInvalidFrontSideOrBackSide),
+            parameters: 5,
+            MemberType = typeof(CardDataGenerator))]
         public async Task Create_BackSideIsNotValidNullOrWhitespace_ShouldReturnNullAndError(string backSide)
         {
             // arrange
@@ -75,11 +75,13 @@ namespace SpaceCards.UnitTests
         }
 
         [Theory]
-        [InlineData(210)]
-        public async Task Create_FrontSideIsNotValidMoreThanMaxLength_ShouldReturnNullAndError(int frontSideLength)
+        [MemberData(
+            nameof(CardDataGenerator.GenerateSetBackSideWithInvalidLength),
+            parameters: 5,
+            MemberType = typeof(CardDataGenerator))]
+        public async Task Create_FrontSideIsNotValidMoreThanMaxLength_ShouldReturnNullAndError(string frontSide)
         {
             // arrange
-            var frontSide = _stringFixture.GenerateRandomString(frontSideLength);
             var backSide = _fixture.Create<string>();
             var excpectedError = $"'{nameof(frontSide)}' more than {Card.MAX_NAME_FRONTSIDE} characters.";
 
@@ -94,12 +96,14 @@ namespace SpaceCards.UnitTests
         }
 
         [Theory]
-        [InlineData(210)]
-        public async Task Create_BackSideIsNotValidMoreThanMaxLength_ShouldReturnNullAndError(int backtSideLength)
+        [MemberData(
+            nameof(CardDataGenerator.GenerateSetBackSideWithInvalidLength),
+            parameters: 5,
+            MemberType = typeof(CardDataGenerator))]
+        public async Task Create_BackSideIsNotValidMoreThanMaxLength_ShouldReturnNullAndError(string backSide)
         {
             // arrange
             var frontSide = _fixture.Create<string>();
-            var backSide = _stringFixture.GenerateRandomString(backtSideLength);
             var excpectedError = $"'{nameof(backSide)}' more than {Card.MAX_NAME_BACKSIDE} characters.";
 
             // act

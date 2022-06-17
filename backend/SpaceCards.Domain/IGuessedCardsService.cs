@@ -2,6 +2,6 @@
 {
     public interface IGuessedCardsService
     {
-        Task<(bool Result, string[] Errors)> TakeGuessedCard(int groupId, int cardId);
+        Task<(bool Result, string[] Errors)> SaveGuessedCard(int groupId, int cardId);
     }
 }

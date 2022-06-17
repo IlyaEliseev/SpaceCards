@@ -14,7 +14,7 @@ namespace SpaceCards.IntegrationTests
         }
 
         [Fact]
-        public async Task TakeGuessedCard_ShouldReturnOk()
+        public async Task SaveGuessedCard_ShouldReturnOk()
         {
             // arrange
             var (groupId, cardId) = await AddCardInGroup();
@@ -27,24 +27,30 @@ namespace SpaceCards.IntegrationTests
         }
 
         [Theory]
-        [InlineData(-1, -1)]
-        [InlineData(-111, -111)]
-        [InlineData(0, 0)]
-        public async Task TakeGuessedCard_CardIdAndGroupIdInvalid_ShouldReturnBadRequest(int cardId, int groupId)
+        [MemberData(
+            nameof(GuessedCardsDataGenerator.GenerateSetInvalidCardIdGroupId),
+            parameters: 5,
+            MemberType = typeof(GuessedCardsDataGenerator))]
+        public async Task SaveGuessedCard_CardIdAndGroupIdInvalid_ShouldReturnBadRequest(
+            int invalidCardId,
+            int invalidGroupId)
         {
             // arrange
+            var (groupId, cardId) = await AddCardInGroup();
+
             // act
-            var response = await Client.PostAsJsonAsync($"guessedCards?cardId={cardId}", groupId);
+            var response = await Client.PostAsJsonAsync($"guessedCards?cardId={invalidCardId}", invalidGroupId);
 
             // assert
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         }
 
         [Theory]
-        [InlineData(-1)]
-        [InlineData(-111)]
-        [InlineData(0)]
-        public async Task TakeGuessedCard_CardIdInvalid_ShouldReturnBadRequest(int invalidCardId)
+        [MemberData(
+            nameof(GuessedCardsDataGenerator.GenerateSetInvalidCardIdOrGroupId),
+            parameters: 5,
+            MemberType = typeof(GuessedCardsDataGenerator))]
+        public async Task SaveGuessedCard_CardIdInvalid_ShouldReturnBadRequest(int invalidCardId)
         {
             // arrange
             var (groupId, cardId) = await AddCardInGroup();
@@ -57,10 +63,11 @@ namespace SpaceCards.IntegrationTests
         }
 
         [Theory]
-        [InlineData(-1)]
-        [InlineData(-111)]
-        [InlineData(0)]
-        public async Task TakeGuessedCard_GroupIdInvalid_ShouldReturnBadRequest(int invalidGroupId)
+        [MemberData(
+            nameof(GuessedCardsDataGenerator.GenerateSetInvalidCardIdOrGroupId),
+            parameters: 5,
+            MemberType = typeof(GuessedCardsDataGenerator))]
+        public async Task SaveGuessedCard_GroupIdInvalid_ShouldReturnBadRequest(int invalidGroupId)
         {
             // arrange
             var (groupId, cardId) = await AddCardInGroup();

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Text;
 
 namespace SpaceCards.UnitTests
 {
@@ -10,9 +11,11 @@ namespace SpaceCards.UnitTests
         public string GenerateRandomString(int length)
         {
             var rnd = new Random();
-            var result = new string(Enumerable.Repeat(_chars, length)
+            var builder = new StringBuilder(1, int.MaxValue);
+
+            var result = builder.Append(Enumerable.Repeat(_chars, length)
                 .Select(x => x[rnd.Next(x.Length)])
-                .ToArray());
+                .ToArray()).ToString();
 
             return result;
         }

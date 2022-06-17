@@ -1,7 +1,5 @@
 ﻿using AutoFixture;
-using Microsoft.EntityFrameworkCore;
 using SpaceCards.API.Contracts;
-using SpaceCards.Domain;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -44,9 +42,10 @@ namespace SpaceCards.IntegrationTests
         }
 
         [Theory]
-        [InlineData(default)]
-        [InlineData(-1)]
-        [InlineData(-111)]
+        [MemberData(
+            nameof(GroupsDataGenerator.GenerateSetInvalidGroupId),
+            parameters: 5,
+            MemberType = typeof(GroupsDataGenerator))]
         public async Task GetById_ShouldReturnBadRequest(int groupId)
         {
             // arrange
@@ -71,10 +70,10 @@ namespace SpaceCards.IntegrationTests
         }
 
         [Theory]
-        [InlineData("")]
-        [InlineData(" ")]
-        [InlineData(null)]
-        [InlineData("      ")]
+        [MemberData(
+            nameof(GroupsDataGenerator.GenerateSetInvalidName),
+            parameters: 5,
+            MemberType = typeof(GroupsDataGenerator))]
         public async Task Create_ShouldReturnBadRequest(string name)
         {
             // arrange
@@ -107,10 +106,10 @@ namespace SpaceCards.IntegrationTests
         }
 
         [Theory]
-        [InlineData(default, null)]
-        [InlineData(default, "")]
-        [InlineData(default, " ")]
-        [InlineData(default, "   ")]
+        [MemberData(
+            nameof(GroupsDataGenerator.GenerateSetInvalidGroupIdName),
+            parameters: 5,
+            MemberType = typeof(GroupsDataGenerator))]
         public async Task Update_ShouldReturnBadRequest(int groupId, string name)
         {
             // arrange
@@ -141,9 +140,10 @@ namespace SpaceCards.IntegrationTests
         }
 
         [Theory]
-        [InlineData(default)]
-        [InlineData(-1)]
-        [InlineData(-111)]
+        [MemberData(
+            nameof(GroupsDataGenerator.GenerateSetInvalidGroupId),
+            parameters: 5,
+            MemberType = typeof(GroupsDataGenerator))]
         public async Task Delete_ShouldReturnBadRequest(int groupId)
         {
             // arrange
@@ -169,13 +169,10 @@ namespace SpaceCards.IntegrationTests
         }
 
         [Theory]
-        [InlineData(default, default)]
-        [InlineData(-1, -1)]
-        [InlineData(-111, -111)]
-        [InlineData(default, -1)]
-        [InlineData(default, -111)]
-        [InlineData(-1, default)]
-        [InlineData(-111, default)]
+        [MemberData(
+            nameof(GroupsDataGenerator.GenerateSetInvalidCardIdGroupId),
+            parameters: 5,
+            MemberType = typeof(GroupsDataGenerator))]
         public async Task AddCard_ShouldReturnBadRequest(int cardId, int groupId)
         {
             // arrange
@@ -198,8 +195,11 @@ namespace SpaceCards.IntegrationTests
             var response1 = await Client.GetAsync($"groups/randomCards?countCards={countCards}");
             var response2 = await Client.GetAsync($"groups/randomCards?countCards={countCards}");
 
-            var cardsResponse1 = await response1.Content.ReadFromJsonAsync<DataAccess.Postgre.Entites.Card[]>();
-            var cardsResponse2 = await response2.Content.ReadFromJsonAsync<DataAccess.Postgre.Entites.Card[]>();
+            var cardsResponse1 = await response1.Content
+                .ReadFromJsonAsync<DataAccess.Postgre.Entites.Card[]>();
+
+            var cardsResponse2 = await response2.Content
+                .ReadFromJsonAsync<DataAccess.Postgre.Entites.Card[]>();
 
             var result = cardsResponse1.SequenceEqual(cardsResponse2);
 
@@ -212,9 +212,10 @@ namespace SpaceCards.IntegrationTests
         }
 
         [Theory]
-        [InlineData(-1)]
-        [InlineData(-111)]
-        [InlineData(0)]
+        [MemberData(
+            nameof(GroupsDataGenerator.GenerateSetInvaliCountCards),
+            parameters: 5,
+            MemberType = typeof(GroupsDataGenerator))]
         public async Task GetRandomCards_ShouldReturnBadRequest(int countCards)
         {
             // arrange
