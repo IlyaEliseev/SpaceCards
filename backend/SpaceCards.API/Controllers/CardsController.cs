@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SpaceCards.API.Contracts;
 using SpaceCards.Domain;
@@ -43,6 +44,7 @@ namespace SpaceCards.API.Controllers
         /// Get all cards.
         /// </summary>
         /// <returns>Cards.</returns>
+        [Authorize]
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Contracts.GetCardResponse[]))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

@@ -39,4 +39,8 @@
 		<AdditionalFiles Include="..\stylecop.json" />
 		<InternalsVisibleTo Include="SpaceCards.API" />
 	</ItemGroup>
+
+	<ItemGroup>
+	  <Folder Include="TestData\" />
+	</ItemGroup>
 </Project>

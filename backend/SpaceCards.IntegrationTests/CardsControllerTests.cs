@@ -1,6 +1,5 @@
 ﻿using AutoFixture;
 using SpaceCards.API.Contracts;
-using SpaceCards.Domain;
 using System.Linq;
 using System.Net;
 using System.Net.Http.Json;
@@ -42,16 +41,10 @@ namespace SpaceCards.IntegrationTests
         }
 
         [Theory]
-        [InlineData(null, null)]
-        [InlineData("", "")]
-        [InlineData(" ", " ")]
-        [InlineData("   ", "   ")]
-        [InlineData(null, "")]
-        [InlineData(null, " ")]
-        [InlineData(null, "   ")]
-        [InlineData("", null)]
-        [InlineData(" ", null)]
-        [InlineData("   ", null)]
+        [MemberData(
+            nameof(CardDataGenerator.GenerateSetInvalidFrontSideBackSide),
+            parameters: 5,
+            MemberType = typeof(CardDataGenerator))]
         public async Task Create_ShouldReturnBadRequest(string frontSide, string backSide)
         {
             // arrange
@@ -85,16 +78,10 @@ namespace SpaceCards.IntegrationTests
         }
 
         [Theory]
-        [InlineData(default, null, null)]
-        [InlineData(default, "", "")]
-        [InlineData(default, " ", " ")]
-        [InlineData(default, "   ", "   ")]
-        [InlineData(default, null, "")]
-        [InlineData(default, null, " ")]
-        [InlineData(default, null, "   ")]
-        [InlineData(default, "", null)]
-        [InlineData(default, " ", null)]
-        [InlineData(default, "   ", null)]
+        [MemberData(
+            nameof(CardDataGenerator.GenerateSetInvalidCardIdFrontSideBackSide),
+            parameters: 5,
+            MemberType = typeof(CardDataGenerator))]
         public async Task Update_ShouldReturnBadRequest(int cardId, string frontSide, string backSide)
         {
             // arrange
@@ -126,14 +113,17 @@ namespace SpaceCards.IntegrationTests
         }
 
         [Theory]
-        [InlineData(default)]
-        [InlineData(-1)]
-        [InlineData(-111)]
-        public async Task Delete_ShouldReturnBadRequest(int cardId)
+        [MemberData(
+            nameof(CardDataGenerator.GenerateSetInvalidCardId),
+            parameters: 5,
+            MemberType = typeof(CardDataGenerator))]
+        public async Task Delete_ShouldReturnBadRequest(int invalidCardId)
         {
             // arrange
+            var cardId = await MakeCard();
+
             // act
-            var response = await Client.DeleteAsync($"cards/{cardId}");
+            var response = await Client.DeleteAsync($"cards/{invalidCardId}");
 
             // assert
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
