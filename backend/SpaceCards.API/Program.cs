@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
@@ -13,7 +12,11 @@ using System.Reflection;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddAuthentication(BaseSchema.NAME)
-    .AddScheme<TestAuthenticationOption, TestAuthenticationHandler>(BaseSchema.NAME, options => { });
+    .AddScheme<CustomBearerAuthenticationOption, CustomBearerAuthenticationHandler>(
+    BaseSchema.NAME, options => { });
+
+builder.Services.Configure<JWTSecretOptions>(
+    builder.Configuration.GetSection(JWTSecretOptions.JWTSecret));
 
 builder.Services.AddLogging(b =>
 {

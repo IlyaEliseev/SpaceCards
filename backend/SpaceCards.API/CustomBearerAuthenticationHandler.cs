@@ -9,15 +9,19 @@ using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 
-public class TestAuthenticationHandler : AuthenticationHandler<TestAuthenticationOption>
+public class CustomBearerAuthenticationHandler : AuthenticationHandler<CustomBearerAuthenticationOption>
 {
-    public TestAuthenticationHandler(
-        IOptionsMonitor<TestAuthenticationOption> options,
+    private readonly JWTSecretOptions _secretOption;
+
+    public CustomBearerAuthenticationHandler(
+        IOptionsMonitor<CustomBearerAuthenticationOption> options,
         ILoggerFactory logger,
         UrlEncoder encoder,
-        ISystemClock clock)
+        ISystemClock clock,
+        IOptions<JWTSecretOptions> secretOption)
         : base(options, logger, encoder, clock)
     {
+        _secretOption = secretOption.Value;
     }
 
     protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
@@ -39,7 +43,7 @@ public class TestAuthenticationHandler : AuthenticationHandler<TestAuthenticatio
 
         var tokenClaims = JwtBuilder.Create()
                      .WithAlgorithm(new HMACSHA256Algorithm())
-                     .WithSecret("secret")
+                     .WithSecret(_secretOption.Secret)
                      .MustVerifySignature()
                      .Decode<IDictionary<string, string>>(headerValue.Parameter);
 

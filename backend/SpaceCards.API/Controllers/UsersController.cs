@@ -2,14 +2,21 @@
 using JWT.Builder;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using System.Security.Claims;
 
 namespace SpaceCards.API.Controllers
 {
     public class UsersController : BaseApiController
     {
+        private readonly JWTSecretOptions _options;
+
+        public UsersController(IOptions<JWTSecretOptions> options)
+        {
+            _options = options.Value;
+        }
+
         [AllowAnonymous]
-        //[Authorize(AuthenticationSchemes = BaseSchema.NAME)]
         [HttpGet("token")]
         public async Task<IActionResult> GetToken()
         {
@@ -17,14 +24,11 @@ namespace SpaceCards.API.Controllers
 
             var token = JwtBuilder.Create()
                       .WithAlgorithm(new HMACSHA256Algorithm())
-                      .WithSecret("secret")
+                      .WithSecret(_options.Secret)
                       .AddClaim("exp", DateTimeOffset.UtcNow.AddMinutes(3).ToUnixTimeSeconds())
-                      .AddClaim("claim2", "claim2-value")
                       .AddClaim(ClaimTypes.NameIdentifier, userId)
                       .Encode();
 
-            var user = User;
-            var isAuth = User.Identity.IsAuthenticated;
             return Ok(token);
         }
 
@@ -34,7 +38,7 @@ namespace SpaceCards.API.Controllers
         {
             var json = JwtBuilder.Create()
                      .WithAlgorithm(new HMACSHA256Algorithm())
-                     .WithSecret("secret")
+                     .WithSecret(_options.Secret)
                      .MustVerifySignature()
                      .Decode(token);
 

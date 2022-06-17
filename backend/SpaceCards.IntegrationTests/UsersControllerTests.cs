@@ -3,6 +3,8 @@ using Xunit;
 using Xunit.Abstractions;
 using Newtonsoft.Json.Linq;
 using System.Net;
+using System.Net.Http.Headers;
+using SpaceCards.API;
 
 namespace SpaceCards.IntegrationTests
 {
@@ -17,11 +19,13 @@ namespace SpaceCards.IntegrationTests
         public async Task Validate_ShouldReturnOk()
         {
             // arrange
-            var schema = "Bearer";
             var token = await Client.GetAsync("users/token");
             var tokenJson = await token.Content.ReadAsStringAsync();
             var tokenString = JToken.Parse(tokenJson).ToString();
-            Client.DefaultRequestHeaders.Add("Authorization", $"{schema} " + tokenString);
+
+            Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
+                BaseSchema.NAME,
+                tokenString);
 
             // act
             var response = await Client.GetAsync($"users/validate?token={tokenString}");

@@ -2,6 +2,6 @@
 {
     public static class BaseSchema
     {
-        public const string NAME = "Test";
+        public const string NAME = "Bearer";
     }
 }
