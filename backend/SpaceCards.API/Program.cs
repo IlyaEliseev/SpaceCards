@@ -11,6 +11,13 @@ using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddAuthentication(BaseSchema.NAME)
+    .AddScheme<CustomBearerAuthenticationOption, CustomBearerAuthenticationHandler>(
+    BaseSchema.NAME, options => { });
+
+builder.Services.Configure<JWTSecretOptions>(
+    builder.Configuration.GetSection(JWTSecretOptions.JWTSecret));
+
 builder.Services.AddLogging(b =>
 {
     //var provider = b.Services.BuildServiceProvider();
@@ -102,6 +109,10 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseRouting();
+
+app.UseAuthentication();
+
+app.UseAuthorization();
 
 app.UseCors(x =>
 {
