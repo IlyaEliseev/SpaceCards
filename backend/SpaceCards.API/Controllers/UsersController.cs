@@ -20,7 +20,7 @@ namespace SpaceCards.API.Controllers
         [HttpGet("token")]
         public async Task<IActionResult> GetToken()
         {
-            var userId = 12;
+            var userId = Guid.NewGuid();
 
             var token = JwtBuilder.Create()
                       .WithAlgorithm(new HMACSHA256Algorithm())
@@ -36,6 +36,8 @@ namespace SpaceCards.API.Controllers
         [HttpGet("validate")]
         public async Task<IActionResult> Validate(string token)
         {
+            var userId = UserId;
+
             var json = JwtBuilder.Create()
                      .WithAlgorithm(new HMACSHA256Algorithm())
                      .WithSecret(_options.Secret)

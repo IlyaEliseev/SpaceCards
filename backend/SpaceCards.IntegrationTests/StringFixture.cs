@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Text;
 
-namespace SpaceCards.UnitTests
+namespace SpaceCards.IntegrationTests
 {
     public sealed class StringFixture
     {

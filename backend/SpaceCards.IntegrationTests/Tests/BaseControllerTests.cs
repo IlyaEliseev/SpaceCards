@@ -3,19 +3,19 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Npgsql;
-using Respawn;
-using Respawn.Graph;
+using Newtonsoft.Json.Linq;
+using SpaceCards.API;
 using SpaceCards.DataAccess.Postgre;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace SpaceCards.IntegrationTests
+namespace SpaceCards.IntegrationTests.Tests
 {
-    public abstract class BaseControllerTests : IAsyncLifetime
+    public abstract class BaseControllerTests : IClassFixture<DatabaseFixture>
     {
         public BaseControllerTests(ITestOutputHelper outputHelper)
         {
@@ -38,7 +38,20 @@ namespace SpaceCards.IntegrationTests
 
         protected Fixture Fixture { get; }
 
+        protected string ConnectionString { get; }
+
         protected SpaceCardsDbContext DbContext { get; }
+
+        protected async Task SignIn()
+        {
+            var token = await Client.GetAsync("users/token");
+            var tokenJson = await token.Content.ReadAsStringAsync();
+            var tokenString = JToken.Parse(tokenJson).ToString();
+
+            Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
+                BaseSchema.NAME,
+                tokenString);
+        }
 
         protected async Task<int> MakeCard()
         {
@@ -116,32 +129,5 @@ namespace SpaceCards.IntegrationTests
                 }
             }
         }
-
-        public Task InitializeAsync()
-        {
-            return Task.CompletedTask;
-        }
-
-        public async Task DisposeAsync()
-        {
-            var connectionString = DbContext.Database.GetConnectionString();
-            using (var conn = new NpgsqlConnection(connectionString))
-            {
-                await conn.OpenAsync();
-
-                await checkpoint.Reset(conn);
-                await Task.Delay(1000);
-            }
-        }
-
-        private static Checkpoint checkpoint = new Checkpoint
-        {
-            TablesToIgnore = new[]
-            {
-                new Table("__EFMigrationsHistory")
-            },
-
-            DbAdapter = DbAdapter.Postgres
-        };
     }
 }

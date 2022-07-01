@@ -1,11 +1,23 @@
-﻿using System;
+﻿using SpaceCards.Domain;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SpaceCards.UnitTests
+namespace SpaceCards.IntegrationTests.MemberData
 {
-    public class BaseDataGenerator
+    internal class BaseDataGenerator
     {
+        public static int GetRandomLengthString()
+        {
+            var rnd = new Random();
+
+            var length = rnd.Next(
+                    Group.MAX_NAME_LENGTH + 1,
+                    int.MaxValue / 1000);
+
+            return length;
+        }
+
         public static string MakeInvalidString(params string[] invalidData)
         {
             var rnd = new Random();

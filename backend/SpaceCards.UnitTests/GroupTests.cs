@@ -1,6 +1,5 @@
 ﻿using AutoFixture;
 using SpaceCards.Domain;
-using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -34,41 +33,17 @@ namespace SpaceCards.UnitTests
         [Theory]
         [MemberData(
             nameof(GroupDataGenerator.GenerateSetInvalidName),
-            parameters: 5,
+            parameters: 20,
             MemberType = typeof(GroupDataGenerator))]
-        public async Task Create_NameIsNotValidNullOrWhitespace_ShouldReturnNullAndError(string name)
+        public async Task Create_NameIsNotValid_ShouldReturnNullAndError(string name)
         {
             // arrange
-            var excpectedError = $"'{nameof(name)}' cannot be null or whitespace.";
-
             // act
             var (group, errors) = Group.Create(name);
 
             // assert
-            var error = errors.FirstOrDefault();
             Assert.Null(group);
             Assert.NotEmpty(errors);
-            Assert.Equal(excpectedError, error);
-        }
-
-        [Theory]
-        [MemberData(
-            nameof(GroupDataGenerator.GenerateSetNameWithInvalidLength),
-            parameters: 5,
-            MemberType = typeof(GroupDataGenerator))]
-        public async Task Create_NameIsNotValidMoreThanMaxLength_ShouldReturnNullAndError(string name)
-        {
-            // arrange
-            var excpectedError = $"'{nameof(name)}' more than {Group.MAX_NAME_LENGTH} characters.";
-
-            // act
-            var (group, errors) = Group.Create(name);
-
-            // assert
-            var error = errors.FirstOrDefault();
-            Assert.Null(group);
-            Assert.NotEmpty(errors);
-            Assert.Equal(excpectedError, error);
         }
     }
 }

@@ -1,10 +1,11 @@
-﻿using System.Net;
+﻿using SpaceCards.IntegrationTests.MemberData;
+using System.Net;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace SpaceCards.IntegrationTests
+namespace SpaceCards.IntegrationTests.Tests
 {
     public class GuessedCardsControllerTests : BaseControllerTests
     {
