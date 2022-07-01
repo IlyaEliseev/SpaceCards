@@ -1,5 +1,7 @@
 ﻿using SpaceCards.Domain;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SpaceCards.UnitTests
 {
@@ -14,53 +16,25 @@ namespace SpaceCards.UnitTests
 
         public static IEnumerable<object[]> GenerateSetInvalidName(int testCount)
         {
-            var data = GetInvalidName(testCount);
+            var rnd = new Random();
 
             for (int i = 0; i < testCount; i++)
             {
-                yield return new object[]
-                {
-                    data[i]
-                };
-            }
-        }
-
-        public static IEnumerable<object[]> GenerateSetNameWithInvalidLength(int testCount)
-        {
-            for (int i = 0; i < testCount; i++)
-            {
-                var length = BaseDataGenerator.Rnd
-                    .Next(
+                var length = rnd.Next(
                     Group.MAX_NAME_LENGTH + 1,
                     int.MaxValue / 1000);
 
+                var invalidData = Enumerable.Range(0, 5)
+                   .Select(x => StringFixture.GenerateRandomString(length))
+                   .ToArray();
+
+                var invalidName = BaseDataGenerator.MakeInvalidString(invalidData);
+
                 yield return new object[]
                 {
-                    StringFixture.GenerateRandomString(length)
+                    invalidName
                 };
             }
-        }
-
-        private static List<string> GetInvalidName(int count)
-        {
-            var data = new List<string>
-            {
-                null,
-                string.Empty
-            };
-
-            for (int i = 0; i < count; i++)
-            {
-                var whiteSpace = string.Empty.PadLeft(
-                    BaseDataGenerator.Rnd.Next(1, 100), ' ');
-
-                if (!data.Contains(whiteSpace))
-                {
-                    data.Add(whiteSpace);
-                }
-            }
-
-            return data;
         }
     }
 }

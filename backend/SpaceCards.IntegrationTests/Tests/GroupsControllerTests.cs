@@ -1,5 +1,6 @@
 ﻿using AutoFixture;
 using SpaceCards.API.Contracts;
+using SpaceCards.IntegrationTests.MemberData;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace SpaceCards.IntegrationTests
+namespace SpaceCards.IntegrationTests.Tests
 {
     public class GroupsControllerTests : BaseControllerTests
     {

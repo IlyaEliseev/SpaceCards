@@ -1,5 +1,6 @@
 ﻿using AutoFixture;
 using SpaceCards.API.Contracts;
+using SpaceCards.IntegrationTests.MemberData;
 using System.Linq;
 using System.Net;
 using System.Net.Http.Json;
@@ -7,7 +8,7 @@ using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace SpaceCards.IntegrationTests
+namespace SpaceCards.IntegrationTests.Tests
 {
     public class CardsControllerTests : BaseControllerTests
     {
@@ -20,6 +21,8 @@ namespace SpaceCards.IntegrationTests
         public async Task Get_ShouldReturnOk()
         {
             // arrange
+            await SignIn();
+
             // act
             var response = await Client.GetAsync("cards");
 
