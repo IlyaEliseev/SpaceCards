@@ -52,7 +52,7 @@ jobs:
         run: dotnet tool restore
 
       - name: update database
-        run: dotnet ef database update -p backend/SpaceCards.DataAccess.Postgre -s backend/SpaceCards.API --connection ${{User ID=postgres;Password=pwd;Host=localhost;Port=5433;Database=SpaceCardsDb;Pooling=true;}}
+        run: dotnet ef database update -p backend/SpaceCards.DataAccess.Postgre -s backend/SpaceCards.API --connection ${{"User ID=postgres;Password=pwd;Host=localhost;Port=5433;Database=SpaceCardsDb;Pooling=true;"}}
 
       - name: Test
         run: dotnet test backend/SpaceCards.IntegrationTests/SpaceCards.IntegrationTests.csproj --verbosity normal
