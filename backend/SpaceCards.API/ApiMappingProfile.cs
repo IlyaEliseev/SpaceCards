@@ -8,6 +8,7 @@ namespace SpaceCards.API
         {
             CreateMap<Domain.Card, Contracts.GetCardResponse>();
             CreateMap<Domain.Group, Contracts.GetGroupResponse>();
+            CreateMap<Domain.CardGuessingStatistics, Contracts.GetCardGusessingStatistics>();
         }
     }
 }
