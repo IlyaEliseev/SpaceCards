@@ -2,9 +2,9 @@
 {
     public interface ICardsService
     {
-        Task<(int Result, string[] Errors)> Create(string frontSide, string backSide);
+        Task<(int Result, string[] Errors)> Create(string frontSide, string backSide, Guid? userId);
 
-        Task<Card[]> Get();
+        Task<Card[]> Get(Guid? userId);
 
         Task<(bool Result, string[] Errors)> Delete(int cardId);
 

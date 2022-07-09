@@ -29,7 +29,9 @@ namespace SpaceCards.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Create([FromBody] CreateCardRequest request)
         {
-            var (cardId, errors) = await _service.Create(request.FrontSide, request.BackSide);
+            var userId = UserId.Value;
+
+            var (cardId, errors) = await _service.Create(request.FrontSide, request.BackSide, userId);
 
             if (errors.Any() || cardId == default)
             {
@@ -50,14 +52,16 @@ namespace SpaceCards.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Get()
         {
-            var cards = await _service.Get();
+            var userId = UserId.Value;
+
+            var cards = await _service.Get(userId);
             var cardsContract = _mapper.Map<Domain.Card[], Contracts.GetCardResponse[]>(cards);
 
             return Ok(cardsContract);
         }
 
         /// <summary>
-        /// Delete card by card word.
+        /// Delete card by id.
         /// </summary>
         /// <param name="cardId">Card id.</param>
         /// <returns>Successful delete card.</returns>

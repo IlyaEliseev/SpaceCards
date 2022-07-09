@@ -15,9 +15,9 @@ namespace SpaceCards.BusinessLogic
             _cardsRepository = cardsRepository;
         }
 
-        public async Task<(int Result, string[] Errors)> Create(string name)
+        public async Task<(int Result, string[] Errors)> Create(string name, Guid? userId)
         {
-            var (group, errors) = Group.Create(name);
+            var (group, errors) = Group.Create(name, userId);
             if (errors.Any())
             {
                 return (default, errors);
@@ -32,9 +32,9 @@ namespace SpaceCards.BusinessLogic
             return (groupId, Array.Empty<string>());
         }
 
-        public async Task<Group[]> Get()
+        public async Task<Group[]> Get(Guid? userId)
         {
-            return await _groupRepository.Get();
+            return await _groupRepository.Get(userId);
         }
 
         public async Task<(bool Result, string[] Errors)> AddCard(
@@ -68,7 +68,7 @@ namespace SpaceCards.BusinessLogic
                 return (false, new[] { $"'{nameof(group)}' not found." });
             }
 
-            var (updatedGroup, modelErrors) = Group.Create(updatedGroupName);
+            var (updatedGroup, modelErrors) = Group.Create(updatedGroupName, group.UserId);
             if (modelErrors.Any() || updatedGroup is null)
             {
                 return (false, modelErrors.ToArray());
@@ -108,14 +108,14 @@ namespace SpaceCards.BusinessLogic
             return (group, Array.Empty<string>());
         }
 
-        public async Task<(Card[]? Result, string[] Errors)> GetRandomCards(int countCards)
+        public async Task<(Card[]? Result, string[] Errors)> GetRandomCards(int countCards, Guid? userId)
         {
             if (countCards <= default(int))
             {
                 return (null, new[] { $"'{nameof(countCards)}' cannot be 0 or less 0." });
             }
 
-            var randomCards = await _groupRepository.GetRandomCards(countCards);
+            var randomCards = await _groupRepository.GetRandomCards(countCards, userId);
 
             return (randomCards, Array.Empty<string>());
         }

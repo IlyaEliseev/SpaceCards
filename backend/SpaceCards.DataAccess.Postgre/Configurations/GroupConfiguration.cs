@@ -14,6 +14,9 @@ namespace SpaceCards.DataAccess.Postgre.Configurations
                 .HasMaxLength(Domain.Group.MAX_NAME_LENGTH)
                 .IsRequired();
 
+            builder.Property(x => x.UserId)
+                .IsRequired(true);
+
             builder.HasMany(x => x.Cards)
                 .WithOne(x => x.Group)
                 .OnDelete(DeleteBehavior.NoAction)

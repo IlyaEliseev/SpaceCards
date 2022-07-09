@@ -2,11 +2,11 @@
 {
     public interface IGroupsService
     {
-        Task<(int Result, string[] Errors)> Create(string name);
+        Task<(int Result, string[] Errors)> Create(string name, Guid? userId);
 
         Task<(bool Result, string[] Errors)> Delete(int groupId);
 
-        Task<Group[]> Get();
+        Task<Group[]> Get(Guid? userId);
 
         Task<(bool Result, string[] Errors)> Update(int groupId, string groupUdateName);
 
@@ -14,6 +14,6 @@
 
         Task<(Group? Result, string[] Error)> GetById(int groupId);
 
-        Task<(Card[]? Result, string[] Errors)> GetRandomCards(int countCards);
+        Task<(Card[]? Result, string[] Errors)> GetRandomCards(int countCards, Guid? userId);
     }
 }

@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using SpaceCards.API.Contracts;
 using SpaceCards.Domain;
-using System.Net.Mime;
 
 namespace SpaceCards.API.Controllers
 {
@@ -30,7 +29,9 @@ namespace SpaceCards.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Create([FromBody] CreateGroupRequest request)
         {
-            var (groupId, errors) = await _service.Create(request.Name);
+            var userId = UserId.Value;
+
+            var (groupId, errors) = await _service.Create(request.Name, userId);
 
             if (errors.Any() || groupId == default)
             {
@@ -72,7 +73,9 @@ namespace SpaceCards.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Get()
         {
-            var groups = await _service.Get();
+            var userId = UserId.Value;
+
+            var groups = await _service.Get(userId);
             var groupsContract = _mapper.Map<Domain.Group[], Contracts.GetGroupResponse[]>(groups);
             return Ok(groupsContract);
         }
@@ -151,7 +154,9 @@ namespace SpaceCards.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetRandomCards([FromQuery] int countCards)
         {
-            var (randomCards, errors) = await _service.GetRandomCards(countCards);
+            var userId = UserId.Value;
+
+            var (randomCards, errors) = await _service.GetRandomCards(countCards, userId);
 
             if (errors.Any() || randomCards is null)
             {

@@ -6,12 +6,13 @@
 
         public const int MAX_NAME_BACKSIDE = 200;
 
-        private Card(int id, string? frontSide, string? backSide, int? groupId)
+        private Card(int id, string? frontSide, string? backSide, int? groupId, Guid? userId)
         {
             Id = id;
             FrontSide = frontSide;
             BackSide = backSide;
             GroupId = groupId;
+            UserId = userId;
         }
 
         public int Id { get; init; }
@@ -22,7 +23,9 @@
 
         public int? GroupId { get; init; }
 
-        public static (Card? Result, string[] Errors) Create(string frontSide, string backSide)
+        public Guid? UserId { get; }
+
+        public static (Card? Result, string[] Errors) Create(string frontSide, string backSide, Guid? userId)
         {
             var errors = new List<string>();
             var errorMessage = string.Empty;
@@ -36,6 +39,12 @@
             if (string.IsNullOrWhiteSpace(backSide))
             {
                 errorMessage = $"'{nameof(backSide)}' cannot be null or whitespace.";
+                errors.Add(errorMessage);
+            }
+
+            if (userId is null)
+            {
+                errorMessage = $"{userId} cannot be null.";
                 errors.Add(errorMessage);
             }
 
@@ -56,7 +65,7 @@
                 return (null, errors.ToArray());
             }
 
-            var card = new Card(0, frontSide, backSide, null);
+            var card = new Card(0, frontSide, backSide, null, userId);
 
             return (card, Array.Empty<string>());
         }

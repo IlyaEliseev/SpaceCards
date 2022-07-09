@@ -34,6 +34,7 @@ namespace SpaceCards.IntegrationTests.Tests
         public async Task Create_ShouldReturnOk()
         {
             // arrange
+            await SignIn();
             var card = Fixture.Create<CreateCardRequest>();
 
             // act

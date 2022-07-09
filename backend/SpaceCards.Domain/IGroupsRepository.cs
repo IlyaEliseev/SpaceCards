@@ -6,7 +6,7 @@
 
         Task<bool> Delete(int groupId);
 
-        Task<Group[]> Get();
+        Task<Group[]> Get(Guid? groupId);
 
         Task<Group?> GetById(int groupId);
 
@@ -14,7 +14,7 @@
 
         Task<bool> AddCard(int cardId, int groupId);
 
-        Task<Card[]> GetRandomCards(int countCards);
+        Task<Card[]> GetRandomCards(int countCards, Guid? groupId);
 
         Task<Card?> GetCardFromGroupById(int groupId, int cardId);
     }

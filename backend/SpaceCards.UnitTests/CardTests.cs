@@ -1,5 +1,6 @@
 ﻿using AutoFixture;
 using SpaceCards.Domain;
+using System;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -22,9 +23,10 @@ namespace SpaceCards.UnitTests
             // arrange
             var frontSide = _fixture.Create<string>();
             var backSide = _fixture.Create<string>();
+            var userId = _fixture.Create<Guid>();
 
             // act
-            var (card, errors) = Card.Create(frontSide, backSide);
+            var (card, errors) = Card.Create(frontSide, backSide, userId);
 
             // assert
             Assert.NotNull(card);
@@ -40,9 +42,10 @@ namespace SpaceCards.UnitTests
         {
             // arrange
             var backSide = _fixture.Create<string>();
+            var userId = _fixture.Create<Guid>();
 
             // act
-            var (card, errors) = Card.Create(frontSide, backSide);
+            var (card, errors) = Card.Create(frontSide, backSide, userId);
 
             // assert
             Assert.Null(card);
@@ -58,9 +61,10 @@ namespace SpaceCards.UnitTests
         {
             // arrange
             var frontSide = _fixture.Create<string>();
+            var userId = _fixture.Create<Guid>();
 
             // act
-            var (card, errors) = Card.Create(frontSide, backSide);
+            var (card, errors) = Card.Create(frontSide, backSide, userId);
 
             // assert
             Assert.Null(card);

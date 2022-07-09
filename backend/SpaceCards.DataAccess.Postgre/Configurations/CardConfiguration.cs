@@ -20,6 +20,9 @@ namespace SpaceCards.DataAccess.Postgre.Configurations
             builder.Property(x => x.BackSide)
                 .HasMaxLength(Domain.Card.MAX_NAME_BACKSIDE)
                 .IsRequired(true);
+
+            builder.Property(x => x.UserId)
+                .IsRequired(true);
         }
     }
 }

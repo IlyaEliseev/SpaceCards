@@ -1,5 +1,6 @@
 ﻿using AutoFixture;
 using SpaceCards.Domain;
+using System;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -21,9 +22,10 @@ namespace SpaceCards.UnitTests
         {
             // arrange
             var name = _fixture.Create<string>();
+            var userId = _fixture.Create<Guid>();
 
             // act
-            var (group, errors) = Group.Create(name);
+            var (group, errors) = Group.Create(name, userId);
 
             // assert
             Assert.NotNull(group);
@@ -38,8 +40,10 @@ namespace SpaceCards.UnitTests
         public async Task Create_NameIsNotValid_ShouldReturnNullAndError(string name)
         {
             // arrange
+            var userId = _fixture.Create<Guid>();
+
             // act
-            var (group, errors) = Group.Create(name);
+            var (group, errors) = Group.Create(name, userId);
 
             // assert
             Assert.Null(group);
