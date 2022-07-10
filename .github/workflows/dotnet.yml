@@ -46,11 +46,17 @@ jobs:
           postgresql db: SpaceCardsDb
           postgresql password: pwd
 
+      - name: Init secrets
+        run: dotnet user-secrets set "ConnectionStrings:SpaceCardsDb" "User ID=postgres;Password=pwd;Host=localhost;Port=5433;Database=SpaceCardsDb" -p backend/SpaceCards.API
+       
+      - name: Set connection string
+        run: dotnet user-secrets set "ConnectionStrings:SpaceCardsDb" "User ID=postgres;Password=pwd;Host=localhost;Port=5433;Database=SpaceCardsDb" -p backend/SpaceCards.API
+       
       - name: tool restore
         run: dotnet tool restore
 
       - name: update database
-        run: dotnet ef database update -p backend/SpaceCards.DataAccess.Postgre -s backend/SpaceCards.API --connection  ${{secrets.ConnectionStrings}}
-
+        run: dotnet ef database update -p backend/SpaceCards.DataAccess.Postgre -s backend/SpaceCards.API 
+        
       - name: Test
         run: dotnet test backend/SpaceCards.IntegrationTests/SpaceCards.IntegrationTests.csproj --verbosity normal
