@@ -50,7 +50,7 @@ jobs:
         run: dotnet user-secrets init -p backend/SpaceCards.API
        
       - name: Set connection string
-        run: dotnet user-secrets set "ConnectionStrings:SpaceCardsDbContext" "User ID=postgres;Password=pwd;Host=localhost;Port=5432;Database=SpaceCardsDb;Pooling=true;" -p backend/SpaceCards.API
+        run: dotnet user-secrets set "ConnectionStrings:SpaceCardsDb" "User ID=postgres;Password=pwd;Host=localhost;Port=5432;Database=SpaceCardsDb;Pooling=true;" -p backend/SpaceCards.API
        
       - name: tool restore
         run: dotnet tool restore
