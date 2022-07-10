@@ -47,10 +47,10 @@ jobs:
           postgresql password: pwd
 
       - name: Init secrets
-        run: dotnet user-secrets init -p backend/SpaceCards.API
+        run: dotnet user-secrets init -p backend/SpaceCards.DataAccess.Postgre
        
       - name: Set connection string
-        run: dotnet user-secrets set "ConnectionStrings:SpaceCardsDb" "User ID=postgres;Password=pwd;Host=localhost;Port=5432;Database=SpaceCardsDb;Pooling=true;" -p backend/SpaceCards.API
+        run: dotnet user-secrets set "ConnectionStrings:SpaceCardsDb" "User ID=postgres;Password=pwd;Host=localhost;Port=5433;Database=SpaceCardsDb;Pooling=true;" -p backend/SpaceCards.DataAccess.Postgre
        
       - name: tool restore
         run: dotnet tool restore
