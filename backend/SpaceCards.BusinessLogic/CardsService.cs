@@ -11,9 +11,9 @@ namespace SpaceCards.BusinessLogic
             _cardsRepository = cardsRepository;
         }
 
-        public async Task<(int Result, string[] Errors)> Create(string frontSide, string backSide)
+        public async Task<(int Result, string[] Errors)> Create(string frontSide, string backSide, Guid? userId)
         {
-            var (card, errors) = Card.Create(frontSide, backSide);
+            var (card, errors) = Card.Create(frontSide, backSide, userId);
 
             if (errors.Any())
             {
@@ -25,9 +25,9 @@ namespace SpaceCards.BusinessLogic
             return (cardId, Array.Empty<string>());
         }
 
-        public async Task<Card[]> Get()
+        public async Task<Card[]> Get(Guid? userId)
         {
-            return await _cardsRepository.Get();
+            return await _cardsRepository.Get(userId);
         }
 
         public async Task<(bool Result, string[] Errors)> Delete(int cardId)
@@ -54,7 +54,11 @@ namespace SpaceCards.BusinessLogic
                 return (false, new[] { $"'{nameof(card)}' card not found." });
             }
 
-            var (updatedCard, modelErrors) = Card.Create(updatedCardFrontSide, updatedCardBackSide);
+            var (updatedCard, modelErrors) = Card.Create(
+                updatedCardFrontSide,
+                updatedCardBackSide,
+                card.UserId);
+
             if (modelErrors.Any() || updatedCard is null)
             {
                 return (false, modelErrors.ToArray());

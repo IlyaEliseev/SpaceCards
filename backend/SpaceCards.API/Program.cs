@@ -85,6 +85,11 @@ builder.Services.AddScoped<IGroupsService, GroupsService>();
 builder.Services.AddScoped<IGuessedCardRepository, GuessedCardRepository>();
 
 builder.Services.AddScoped<IGuessedCardsService, GuessedCardsService>();
+
+builder.Services.AddScoped<ICardsGuessingStatisticsRepository, CardsGuessingStatisticsRepository>();
+
+builder.Services.AddScoped<ICardsGuessingStatisticsService, CardsGuessingStatisticsService>();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddControllers();
 

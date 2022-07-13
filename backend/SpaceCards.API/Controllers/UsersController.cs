@@ -20,7 +20,7 @@ namespace SpaceCards.API.Controllers
         [HttpGet("token")]
         public async Task<IActionResult> GetToken()
         {
-            var userId = Guid.NewGuid();
+            var userId = "d4ddeb36-c32c-46fd-8aa1-f0a31d9a6a9b";
 
             var token = JwtBuilder.Create()
                       .WithAlgorithm(new HMACSHA256Algorithm())

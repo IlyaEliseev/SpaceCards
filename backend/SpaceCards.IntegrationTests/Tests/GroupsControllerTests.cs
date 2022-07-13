@@ -33,6 +33,7 @@ namespace SpaceCards.IntegrationTests.Tests
         public async Task GetById_ShouldReturnOk()
         {
             // arrange
+            await SignIn();
             var groupId = await MakeGroup();
 
             // act
@@ -61,6 +62,7 @@ namespace SpaceCards.IntegrationTests.Tests
         public async Task Create_ShouldReturnOk()
         {
             // arrange
+            await SignIn();
             var group = Fixture.Create<CreateGroupRequest>();
 
             // act
@@ -188,6 +190,7 @@ namespace SpaceCards.IntegrationTests.Tests
         public async Task GetRandomCards_ShouldReturnOk()
         {
             // arrange
+            await SignIn();
             var countCards = 10;
             var countGroups = 2;
             await GenerateCardsInGroups(countGroups, countCards);

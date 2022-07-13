@@ -4,7 +4,7 @@
     {
         Task<int> Add(Card card);
 
-        Task<Card[]> Get();
+        Task<Card[]> Get(Guid? userId);
 
         Task<Card?> GetById(int cardId);
 

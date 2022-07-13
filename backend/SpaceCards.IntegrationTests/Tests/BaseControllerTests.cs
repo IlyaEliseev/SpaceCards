@@ -1,14 +1,17 @@
 ﻿using AutoFixture;
+using JWT.Algorithms;
+using JWT.Builder;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json.Linq;
 using SpaceCards.API;
 using SpaceCards.DataAccess.Postgre;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
@@ -22,9 +25,22 @@ namespace SpaceCards.IntegrationTests.Tests
             var app = new WebApplicationFactory<Program>()
                 .WithWebHostBuilder(builder =>
                 {
-                    builder.ConfigureAppConfiguration((_, configurationBuilder) =>
+                    builder.ConfigureAppConfiguration((context, configurationBuilder) =>
                     {
-                        configurationBuilder.AddUserSecrets(typeof(BaseControllerTests).Assembly);
+                        var configutarion = configurationBuilder.AddJsonFile(
+                            "IntegrationTestsSettings.json",
+                            optional: true,
+                            reloadOnChange: true)
+                        .AddUserSecrets(typeof(BaseControllerTests).Assembly)
+                        .Build();
+
+                        TestUserIdConfigurationValue = configutarion
+                            .GetSection("IntegrationTestSecret:TestUserId")
+                            .Value;
+
+                        JwtTokenSecretConfigurationValue = configutarion
+                            .GetSection("IntegrationTestSecret:JwtTokenSecret")
+                            .Value;
                     });
                 });
 
@@ -38,24 +54,42 @@ namespace SpaceCards.IntegrationTests.Tests
 
         protected Fixture Fixture { get; }
 
-        protected string ConnectionString { get; }
+        protected string TestUserIdConfigurationValue { get; set; }
+
+        protected string JwtTokenSecretConfigurationValue { get; set; }
 
         protected SpaceCardsDbContext DbContext { get; }
 
+        protected Guid TestUserId { get; set; }
+
         protected async Task SignIn()
         {
-            var token = await Client.GetAsync("users/token");
-            var tokenJson = await token.Content.ReadAsStringAsync();
-            var tokenString = JToken.Parse(tokenJson).ToString();
+            var userId = await GetUserId();
+
+            var token = JwtBuilder.Create()
+                      .WithAlgorithm(new HMACSHA256Algorithm())
+                      .WithSecret(JwtTokenSecretConfigurationValue)
+                      .AddClaim("exp", DateTimeOffset.UtcNow.AddMinutes(3).ToUnixTimeSeconds())
+                      .AddClaim(ClaimTypes.NameIdentifier, userId)
+                      .Encode();
 
             Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
                 BaseSchema.NAME,
-                tokenString);
+                token);
+        }
+
+        protected async Task<Guid> GetUserId()
+        {
+            Guid.TryParse(TestUserIdConfigurationValue, out var userId);
+            return userId;
         }
 
         protected async Task<int> MakeCard()
         {
+            var userId = await GetUserId();
+
             var card = Fixture.Build<DataAccess.Postgre.Entites.Card>()
+                            .With(x => x.UserId, userId)
                             .Without(x => x.Id)
                             .Without(x => x.Group)
                             .Without(x => x.GroupId)
@@ -70,7 +104,10 @@ namespace SpaceCards.IntegrationTests.Tests
 
         protected async Task<int> MakeGroup()
         {
+            var userId = await GetUserId();
+
             var group = Fixture.Build<DataAccess.Postgre.Entites.Group>()
+                .With(x => x.UserId, userId)
                 .Without(x => x.Id)
                 .Without(x => x.Cards)
                 .Create();
@@ -80,6 +117,25 @@ namespace SpaceCards.IntegrationTests.Tests
             DbContext.ChangeTracker.Clear();
 
             return group.Id;
+        }
+
+        protected async Task<int> MakeCardGuessingSttistics()
+        {
+            var userId = await GetUserId();
+            var rnd = new Random();
+
+            var cardGuessingStatistics = Fixture
+                .Build<DataAccess.Postgre.Entites.CardGuessingStatistics>()
+                .Without(x => x.Id)
+                .With(x => x.UserId, userId)
+                .With(x => x.Success, rnd.Next(0, 2))
+                .Create();
+
+            await DbContext.CardsGuessingStatistics.AddAsync(cardGuessingStatistics);
+            await DbContext.SaveChangesAsync();
+            DbContext.ChangeTracker.Clear();
+
+            return cardGuessingStatistics.Id;
         }
 
         protected async Task<(int GroupId, int CardId)> AddCardInGroup()

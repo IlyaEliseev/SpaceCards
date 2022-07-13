@@ -24,10 +24,11 @@ namespace SpaceCards.DataAccess.Postgre
             return groupEntity.Id;
         }
 
-        public async Task<Group[]> Get()
+        public async Task<Group[]> Get(Guid? userId)
         {
             var groups = await _context.Groups
                 .AsNoTracking()
+                .Where(x => x.UserId == userId)
                 .ToArrayAsync();
 
             return _mapper.Map<Entites.Group[], Domain.Group[]>(groups);
@@ -84,12 +85,13 @@ namespace SpaceCards.DataAccess.Postgre
             return true;
         }
 
-        public async Task<Card[]> GetRandomCards(int countCards)
+        public async Task<Card[]> GetRandomCards(int countCards, Guid? userId)
         {
             var rnd = new Random();
 
             var randomCards = _context.Groups
                 .AsNoTracking()
+                .Where(x => x.UserId == userId)
                 .Select(x => x.Cards)
                 .SelectMany(x => x)
                 .AsEnumerable()

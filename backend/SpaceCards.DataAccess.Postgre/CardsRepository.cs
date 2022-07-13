@@ -18,17 +18,17 @@ namespace SpaceCards.DataAccess.Postgre
         public async Task<int> Add(Card card)
         {
             var cardEntity = _mapper.Map<Domain.Card, Entites.Card>(card);
-
             await _context.Cards.AddAsync(cardEntity);
             await _context.SaveChangesAsync();
 
             return cardEntity.Id;
         }
 
-        public async Task<Card[]> Get()
+        public async Task<Card[]> Get(Guid? userId)
         {
             var cards = await _context.Cards
                 .AsNoTracking()
+                .Where(x => x.UserId == userId)
                 .ToArrayAsync();
 
             return _mapper.Map<Entites.Card[], Domain.Card[]>(cards);

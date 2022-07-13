@@ -40,5 +40,22 @@ namespace SpaceCards.IntegrationTests.MemberData
 
             return invalidString;
         }
+
+        public static int MakeInvalidSuccess()
+        {
+            var rnd = new Random();
+
+            var successValid = new List<int>
+            {
+                0, 1
+            };
+
+            var invalidSuccess = Enumerable.Range(0, 10)
+                .Select(x => rnd.Next(int.MinValue, int.MaxValue))
+                .Where(x => (x != successValid[0] && x != successValid[1]))
+                .ToArray();
+
+            return invalidSuccess[rnd.Next(0, invalidSuccess.Count())];
+        }
     }
 }
