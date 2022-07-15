@@ -1,10 +1,12 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SpaceCards.API.Contracts;
 using SpaceCards.Domain;
 
 namespace SpaceCards.API.Controllers
 {
+    [Authorize]
     public class GroupsController : BaseApiController
     {
         private readonly ILogger<GroupsController> _logger;

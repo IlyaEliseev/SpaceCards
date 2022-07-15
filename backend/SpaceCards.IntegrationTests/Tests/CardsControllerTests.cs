@@ -52,6 +52,7 @@ namespace SpaceCards.IntegrationTests.Tests
         public async Task Create_ShouldReturnBadRequest(string frontSide, string backSide)
         {
             // arrange
+            await SignIn();
             var card = Fixture.Build<CreateCardRequest>()
                 .With(x => x.FrontSide, frontSide)
                 .With(x => x.BackSide, backSide)
@@ -70,6 +71,7 @@ namespace SpaceCards.IntegrationTests.Tests
         public async Task Update_ShouldReturnOk()
         {
             // arrange
+            await SignIn();
             var cardId = await MakeCard();
 
             var updatedCard = Fixture.Create<UpdateCardRequest>();
@@ -89,6 +91,7 @@ namespace SpaceCards.IntegrationTests.Tests
         public async Task Update_ShouldReturnBadRequest(int cardId, string frontSide, string backSide)
         {
             // arrange
+            await SignIn();
             var updatedCard = Fixture.Build<UpdateCardRequest>()
                 .With(x => x.FrontSide, frontSide)
                 .With(x => x.BackSide, backSide)
@@ -107,6 +110,7 @@ namespace SpaceCards.IntegrationTests.Tests
         public async Task Delete_ShouldReturnOk()
         {
             // arrange
+            await SignIn();
             var cardId = await MakeCard();
 
             // act
@@ -123,7 +127,8 @@ namespace SpaceCards.IntegrationTests.Tests
             MemberType = typeof(CardDataGenerator))]
         public async Task Delete_ShouldReturnBadRequest(int invalidCardId)
         {
-            // arrange
+            // arrange 
+            await SignIn();
             var cardId = await MakeCard();
 
             // act

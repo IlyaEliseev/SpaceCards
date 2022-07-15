@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SpaceCards.Domain;
 
 namespace SpaceCards.API.Controllers
 {
+    [Authorize]
     public class GuessedCardsController : BaseApiController
     {
         private readonly ILogger<GuessedCardsController> _logger;

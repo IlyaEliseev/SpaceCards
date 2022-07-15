@@ -18,6 +18,7 @@ namespace SpaceCards.IntegrationTests.Tests
         public async Task SaveGuessedCard_ShouldReturnOk()
         {
             // arrange
+            await SignIn();
             var (groupId, cardId) = await AddCardInGroup();
 
             // act
@@ -37,6 +38,7 @@ namespace SpaceCards.IntegrationTests.Tests
             int invalidGroupId)
         {
             // arrange
+            await SignIn();
             var (groupId, cardId) = await AddCardInGroup();
 
             // act
@@ -54,6 +56,7 @@ namespace SpaceCards.IntegrationTests.Tests
         public async Task SaveGuessedCard_CardIdInvalid_ShouldReturnBadRequest(int invalidCardId)
         {
             // arrange
+            await SignIn();
             var (groupId, cardId) = await AddCardInGroup();
 
             // act
@@ -71,6 +74,7 @@ namespace SpaceCards.IntegrationTests.Tests
         public async Task SaveGuessedCard_GroupIdInvalid_ShouldReturnBadRequest(int invalidGroupId)
         {
             // arrange
+            await SignIn();
             var (groupId, cardId) = await AddCardInGroup();
 
             // act

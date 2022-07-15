@@ -22,6 +22,8 @@ namespace SpaceCards.IntegrationTests.Tests
         public async Task Get_ShouldReturnOk()
         {
             // arrange
+            await SignIn();
+
             // act
             var response = await Client.GetAsync("groups");
 
@@ -51,6 +53,8 @@ namespace SpaceCards.IntegrationTests.Tests
         public async Task GetById_ShouldReturnBadRequest(int groupId)
         {
             // arrange
+            await SignIn();
+
             // act
             var response = await Client.GetAsync($"groups/{groupId}");
 
@@ -80,6 +84,8 @@ namespace SpaceCards.IntegrationTests.Tests
         public async Task Create_ShouldReturnBadRequest(string name)
         {
             // arrange
+            await SignIn();
+
             var group = Fixture.Build<CreateGroupRequest>()
                 .With(x => x.Name, name)
                 .Create();
@@ -97,6 +103,7 @@ namespace SpaceCards.IntegrationTests.Tests
         public async Task Update_ShouldReturnOk()
         {
             // arrange
+            await SignIn();
             var groupId = await MakeGroup();
 
             var updatedGroup = Fixture.Create<UpdateGroupRequest>();
@@ -116,6 +123,7 @@ namespace SpaceCards.IntegrationTests.Tests
         public async Task Update_ShouldReturnBadRequest(int groupId, string name)
         {
             // arrange
+            await SignIn();
             var group = Fixture.Build<UpdateGroupRequest>()
                 .With(x => x.Name, name)
                 .Create();
@@ -133,6 +141,7 @@ namespace SpaceCards.IntegrationTests.Tests
         public async Task Delete_ShouldReturnOk()
         {
             // arrange
+            await SignIn();
             var groupId = await MakeGroup();
 
             // act
@@ -150,6 +159,8 @@ namespace SpaceCards.IntegrationTests.Tests
         public async Task Delete_ShouldReturnBadRequest(int groupId)
         {
             // arrange
+            await SignIn();
+
             // act
             var response = await Client.DeleteAsync($"groups/{groupId}");
 
@@ -161,6 +172,7 @@ namespace SpaceCards.IntegrationTests.Tests
         public async Task AddCard_ShouldReturnOk()
         {
             // arrange
+            await SignIn();
             var cardId = await MakeCard();
             var groupId = await MakeGroup();
 
@@ -179,6 +191,8 @@ namespace SpaceCards.IntegrationTests.Tests
         public async Task AddCard_ShouldReturnBadRequest(int cardId, int groupId)
         {
             // arrange
+            await SignIn();
+
             // act
             var response = await Client.PostAsJsonAsync($"groups/{groupId}/cards?cardId={cardId}", cardId);
 
@@ -223,6 +237,8 @@ namespace SpaceCards.IntegrationTests.Tests
         public async Task GetRandomCards_ShouldReturnBadRequest(int countCards)
         {
             // arrange
+            await SignIn();
+
             // act
             var response = await Client.GetAsync($"groups/randomCards?countCards={countCards}");
 
