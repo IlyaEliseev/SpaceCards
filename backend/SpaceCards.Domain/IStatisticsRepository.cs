@@ -1,6 +1,6 @@
 ﻿namespace SpaceCards.Domain
 {
-    public interface ICardsGuessingStatisticsRepository
+    public interface IStatisticsRepository
     {
         Task<int> AddCard(Domain.CardGuessingStatistics cardStatistics);
 

@@ -4,12 +4,12 @@ using SpaceCards.Domain;
 
 namespace SpaceCards.DataAccess.Postgre
 {
-    public class CardsGuessingStatisticsRepository : ICardsGuessingStatisticsRepository
+    public class StatisticsRepository : IStatisticsRepository
     {
         private readonly SpaceCardsDbContext _context;
         private readonly IMapper _mapper;
 
-        public CardsGuessingStatisticsRepository(SpaceCardsDbContext context, IMapper mapper)
+        public StatisticsRepository(SpaceCardsDbContext context, IMapper mapper)
         {
             _context = context;
             _mapper = mapper;

@@ -7,9 +7,9 @@ using Xunit.Abstractions;
 
 namespace SpaceCards.IntegrationTests.Tests
 {
-    public class CardGuessingStatisticsTests : BaseControllerTests
+    public class StatisticsControllerTests : BaseControllerTests
     {
-        public CardGuessingStatisticsTests(ITestOutputHelper outputHelper)
+        public StatisticsControllerTests(ITestOutputHelper outputHelper)
             : base(outputHelper)
         {
         }
@@ -18,13 +18,13 @@ namespace SpaceCards.IntegrationTests.Tests
         public async Task CollectCardStatistics_ShouldReturnOk()
         {
             // arrange
-            var rnd = new Random();
             await SignIn();
+            var rnd = new Random();
             var cardId = await MakeCard();
             var success = rnd.Next(0, 2);
 
             // act
-            var response = await Client.PostAsync($"cardsguessingstatistics/card/{cardId}?successValue={success}", null);
+            var response = await Client.PostAsync($"statistics/{cardId}?successValue={success}", null);
 
             // assert
             response.EnsureSuccessStatusCode();
@@ -38,13 +38,12 @@ namespace SpaceCards.IntegrationTests.Tests
         public async Task CollectCardStatistic_ShouldReturnBadRequest(int cardId, int success)
         {
             // arrange
-            var rnd = new Random();
             await SignIn();
             await MakeCard();
 
             // act
             var response = await Client.PostAsync(
-                $"cardsguessingstatistics/card/{cardId}?successValue={success}", null);
+                $"statistics/{cardId}?successValue={success}", null);
 
             // assert
             Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
@@ -55,10 +54,10 @@ namespace SpaceCards.IntegrationTests.Tests
         {
             // arrange
             await SignIn();
-            await MakeCardGuessingSttistics();
+            await MakeCardGuessingStatistics();
 
             // act
-            var response = await Client.GetAsync($"cardsguessingstatistics/statistics");
+            var response = await Client.GetAsync($"statistics");
 
             // assert
             response.EnsureSuccessStatusCode();

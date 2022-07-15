@@ -2,14 +2,14 @@
 
 namespace SpaceCards.BusinessLogic
 {
-    public class CardsGuessingStatisticsService : ICardsGuessingStatisticsService
+    public class StatisticsService : IStatisticsService
     {
         private readonly ICardsRepository _cardsRepository;
-        private readonly ICardsGuessingStatisticsRepository _cardsGuessingStatisticsRepository;
+        private readonly IStatisticsRepository _cardsGuessingStatisticsRepository;
 
-        public CardsGuessingStatisticsService(
+        public StatisticsService(
             ICardsRepository cardsRepository,
-            ICardsGuessingStatisticsRepository cardsGuessingStatisticsRepository)
+            IStatisticsRepository cardsGuessingStatisticsRepository)
         {
             _cardsRepository = cardsRepository;
             _cardsGuessingStatisticsRepository = cardsGuessingStatisticsRepository;
@@ -18,7 +18,7 @@ namespace SpaceCards.BusinessLogic
         public async Task<(bool Result, string[] Errors)> CollectCardStatistics(
             int cardId,
             int successValue,
-            Guid? userId)
+            Guid userId)
         {
             var card = await _cardsRepository.GetById(cardId);
             if (card is null)
@@ -41,7 +41,7 @@ namespace SpaceCards.BusinessLogic
             return (true, Array.Empty<string>());
         }
 
-        public async Task<CardGuessingStatistics[]> GetGuessingCardStatistics(Guid? userId)
+        public async Task<CardGuessingStatistics[]> GetGuessingCardStatistics(Guid userId)
         {
             var cardGuessingStatistics = await _cardsGuessingStatisticsRepository
                 .GetCardGuessingStatistics(userId);

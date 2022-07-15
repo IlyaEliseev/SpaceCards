@@ -1,12 +1,12 @@
 ﻿namespace SpaceCards.Domain
 {
-    public interface ICardsGuessingStatisticsService
+    public interface IStatisticsService
     {
         Task<(bool Result, string[] Errors)> CollectCardStatistics(
             int cardId,
             int successValue,
-            Guid? userId);
+            Guid userId);
 
-        Task<Domain.CardGuessingStatistics[]> GetGuessingCardStatistics(Guid? userId);
+        Task<Domain.CardGuessingStatistics[]> GetGuessingCardStatistics(Guid userId);
     }
 }

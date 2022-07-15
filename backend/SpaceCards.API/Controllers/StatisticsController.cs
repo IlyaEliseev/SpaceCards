@@ -1,19 +1,21 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SpaceCards.API.Contracts;
 using SpaceCards.Domain;
 
 namespace SpaceCards.API.Controllers
 {
-    public class CardsGuessingStatisticsController : BaseApiController
+    [Authorize]
+    public class StatisticsController : BaseApiController
     {
         private readonly ILogger _logger;
-        private readonly ICardsGuessingStatisticsService _service;
+        private readonly IStatisticsService _service;
         private readonly IMapper _mapper;
 
-        public CardsGuessingStatisticsController(
-            ILogger<CardsGuessingStatisticsController> logger,
-            ICardsGuessingStatisticsService service,
+        public StatisticsController(
+            ILogger<StatisticsController> logger,
+            IStatisticsService service,
             IMapper mapper)
         {
             _logger = logger;
@@ -27,7 +29,7 @@ namespace SpaceCards.API.Controllers
         /// <param name="cardId">Card id.</param>
         /// <param name="successValue">Result of guessing - 0 or 1.</param>
         /// <returns>Successful result.</returns>
-        [HttpPost("card/{cardId:int}")]
+        [HttpPost("{cardId:int}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CollectCardStatistics(
@@ -50,16 +52,16 @@ namespace SpaceCards.API.Controllers
         /// Get cards guessing statistics.
         /// </summary>
         /// <returns>Cards guessing statistics.</returns>
-        [HttpGet("statistics")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetCardGusessingStatistics[]))]
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(GetCardGusessingStatisticsResponse[]))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetCardGuessingStatistics()
+        public async Task<IActionResult> GetStatistics()
         {
             var userId = UserId.Value;
             var cardGuessingStatistics = await _service.GetGuessingCardStatistics(userId);
 
             var cardGuessingStatisticsContract = _mapper.Map<Domain.CardGuessingStatistics[],
-                Contracts.GetCardGusessingStatistics[]>(cardGuessingStatistics);
+                Contracts.GetCardGusessingStatisticsResponse[]>(cardGuessingStatistics);
 
             return Ok(cardGuessingStatisticsContract);
         }
