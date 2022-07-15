@@ -42,7 +42,7 @@ namespace SpaceCards.UnitTests
         public async Task Create_CardIdIsInvalid_ShouldReturnNullAndError(
             int cardId,
             int success,
-            Guid? userId)
+            Guid userId)
         {
             // arrange
             // act

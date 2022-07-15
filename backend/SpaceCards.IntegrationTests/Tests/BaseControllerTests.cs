@@ -119,7 +119,7 @@ namespace SpaceCards.IntegrationTests.Tests
             return group.Id;
         }
 
-        protected async Task<int> MakeCardGuessingSttistics()
+        protected async Task<int> MakeCardGuessingStatistics()
         {
             var userId = await GetUserId();
             var rnd = new Random();

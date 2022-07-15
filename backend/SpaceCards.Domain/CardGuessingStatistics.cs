@@ -2,7 +2,7 @@
 {
     public record CardGuessingStatistics
     {
-        private CardGuessingStatistics(int id, int cardId, int success, Guid? userId)
+        private CardGuessingStatistics(int id, int cardId, int success, Guid userId)
         {
             Id = id;
             CardId = cardId;
@@ -16,9 +16,9 @@
 
         public int Success { get; }
 
-        public Guid? UserId { get; }
+        public Guid UserId { get; }
 
-        public static (CardGuessingStatistics? Result, string[] Errors) Create(int cardId, int success,  Guid? userId)
+        public static (CardGuessingStatistics? Result, string[] Errors) Create(int cardId, int success,  Guid userId)
         {
             if (cardId <= default(int))
             {
@@ -28,11 +28,6 @@
             if (success > 1 || success < 0)
             {
                 return (null, new[] { $"{nameof(success)} should be 0 or 1" });
-            }
-
-            if (userId is null)
-            {
-                return (null, new[] { $"{userId} cannot be null." });
             }
 
             var cardStatistics = new CardGuessingStatistics(0, cardId, success, userId);
