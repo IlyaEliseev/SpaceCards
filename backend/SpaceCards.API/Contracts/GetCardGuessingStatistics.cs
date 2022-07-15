@@ -3,7 +3,7 @@
     /// <summary>
     /// Contract for get card guessing statistics.
     /// </summary>
-    public class GetCardGusessingStatistics
+    public class GetCardGusessingStatisticsResponse
     {
         public int Id { get; set; }
 
