@@ -6,29 +6,85 @@ import Sidebar from './components/Sidebar';
 import ContentComponent from './components/Content';
 import 'antd/dist/antd.min.css';
 import { Layout } from 'antd';
-import { Collection } from 'typescript';
+
+const token =
+  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTgxMzQzOTgsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiZDRkZGViMzYtYzMyYy00NmZkLThhYTEtZjBhMzFkOWE2YTliIn0._ALvrg-khrSMihWwDx5JXhZ1bFdtDp64Tz_w4o4SHGA';
+
+const group = { name: 'Brazilian' };
+const card = { frontSide: 'Apple', backSide: 'Яблоко' };
 
 function App() {
-  useEffect(() => {
-    const fetchCards = async () => {
-      const data = await fetch('https://localhost:49394/cards');
-      const cards = await data.json();
-      setCards(cards);
-    };
-    fetchCards().catch(console.error);
-  }, []);
+  // const fetchCards = async () => {
+  //   const data = await fetch('https://localhost:49394/cards', {
+  //     method: 'get',
+  //     headers: new Headers({
+  //       'Content-type': 'application/json',
+  //       Authorization: `Bearer ${token}`,
+  //     }),
+  //   });
+  //   const cards = await data.json();
+  //   setCards(cards);
+  // };
+
+  // useEffect(() => {
+  //   const fetchCards = async () => {
+  //     const data = await fetch('https://localhost:49394/cards', {
+  //       method: 'get',
+  //       headers: new Headers({
+  //         'Content-type': 'application/json',
+  //         Authorization: `Bearer ${token}`,
+  //       }),
+  //     });
+  //     const cards = await data.json();
+  //     setCards(cards);
+  //   };
+  //   fetchCards().catch(console.error);
+  // }, []);
 
   useEffect(() => {
     const fetchGroups = async () => {
-      const data = await fetch('https://localhost:49394/groups');
+      const data = await fetch('https://localhost:49394/groups', {
+        method: 'get',
+        headers: new Headers({
+          'Content-type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        }),
+      });
       const groups = await data.json();
       setGroups(groups);
     };
     fetchGroups().catch(console.error);
   }, []);
 
-  const [cards, setCards] = useState([]);
+  // useEffect(() => {
+  //   const createGroup = async () => {
+  //     const data = await fetch('https://localhost:49394/groups', {
+  //       method: 'post',
+  //       headers: new Headers({
+  //         'Content-type': 'application/json',
+  //         Authorization: `Bearer ${token}`,
+  //       }),
+  //       body: JSON.stringify(group),
+  //     });
+  //   };
+  //   createGroup().catch(console.error);
+  // }, []);
 
+  // useEffect(() => {
+  //   const createCard = async () => {
+  //     const data = await fetch('https://localhost:49394/cards', {
+  //       method: 'post',
+  //       headers: new Headers({
+  //         'Content-type': 'application/json',
+  //         Authorization: `Bearer ${token}`,
+  //       }),
+  //       body: JSON.stringify(card),
+  //     });
+  //   };
+  //   createCard().catch(console.error);
+  // }, []);
+
+  const [cards, setCards] = useState([]);
   const [groups, setGroups] = useState([]);
 
   const getCards = () => {
@@ -51,14 +107,10 @@ function App() {
       <header>
         <Layout>
           <HeaderComponent />
-
           <Layout>
-            <Sidebar />
-            <ContentComponent />
+            <Sidebar groupsProps={groups} cardsProps={cards} />
           </Layout>
         </Layout>
-
-        {/* <div className='site-card-border-less-wrapper'>{getCards()}</div> */}
       </header>
     </div>
   );

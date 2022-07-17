@@ -1,43 +1,125 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Layout, Menu } from 'antd';
-import {
-  LaptopOutlined,
-  NotificationOutlined,
-  UserOutlined,
-} from '@ant-design/icons';
 import type { MenuProps } from 'antd';
-
+import ContentComponent from './Content';
+import AddGroupButton from './AddGroupButton';
+import DeleteGroupButton from './DeleteGroupButton';
 const { Sider } = Layout;
 
-const items2: MenuProps['items'] = [1, 2, 3, 4, 5].map((icon, index) => {
-  const key = String(index + 1);
+const token =
+  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTgxMzQzOTgsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiZDRkZGViMzYtYzMyYy00NmZkLThhYTEtZjBhMzFkOWE2YTliIn0._ALvrg-khrSMihWwDx5JXhZ1bFdtDp64Tz_w4o4SHGA';
+const group = { name: '99' };
 
-  return {
-    key: `sub${key}`,
-    // icon: React.createElement(icon),
-    label: `Cards ${key}`,
+function Sidebar(props: { groupsProps: never[]; cardsProps: never[] }) {
+  // const groups = props.groupsProps;
+  // const cards = props.cardsProps;
+  const [cards, setCards] = useState([]);
+  const [groups, setGroups] = useState([]);
 
-    // children: new Array(4).fill(null).map((_, j) => {
-    //   const subKey = index * 4 + j + 1;
-    //   return {
-    //     key: subKey,
-    //     label: `option${subKey}`,
-    //   };
-    // }),
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    const fetchCards = async () => {
+      const data = await fetch('https://localhost:49394/cards', {
+        method: 'get',
+        headers: new Headers({
+          'Content-type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        }),
+      });
+      const cards = await data.json();
+      setCards(cards);
+    };
+    fetchCards().catch(console.error);
+  }, []);
+
+  useEffect(() => {
+    const fetchGroups = async () => {
+      const data = await fetch('https://localhost:49394/groups', {
+        method: 'get',
+        headers: new Headers({
+          'Content-type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        }),
+      });
+      const groups = await data.json();
+      setGroups(groups);
+    };
+    fetchGroups().catch(console.error);
+    console.log(groups);
+  }, [count]);
+
+  const createGroup = async () => {
+    const data = await fetch('https://localhost:49394/groups', {
+      method: 'post',
+      headers: new Headers({
+        'Content-type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      }),
+      body: JSON.stringify(group),
+    });
+    setCount(count + 1);
   };
-});
 
-function Sidebar() {
+  const deleteGroup = async (groupId: number) => {
+    const data = await fetch(`https://localhost:49394/groups/${groupId}`, {
+      method: 'delete',
+      headers: new Headers({
+        'Content-type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      }),
+    });
+    const groupId1 = await data.json();
+    setCount(count - 1);
+  };
+
+  const [groupId, setGroupId] = useState(0);
+
+  const items1: MenuProps['items'] = groups.map(
+    (group: { id: number; name: string }, index) => {
+      const key = String(index + 1);
+      return {
+        id: group.id,
+        key: `${group.id}`,
+        label: `${group.name}`,
+      };
+    }
+  );
+
+  const items2: MenuProps['items'] = [1].map((icon, index) => {
+    const key = String(index + 1);
+
+    return {
+      key: `sub${key}`,
+      label: `Cards`,
+    };
+  });
+
   return (
-    <Sider width={200} className='site-layout-background'>
-      <Menu
-        mode='inline'
-        defaultSelectedKeys={['1']}
-        defaultOpenKeys={['sub']}
-        style={{ height: '100%', borderRight: 0 }}
-        items={items2}
-      />
-    </Sider>
+    <>
+      <Sider width={200} className='site-layout-background'>
+        <div className='flexContainerSidebar'>
+          <Menu
+            mode='inline'
+            defaultSelectedKeys={['1']}
+            defaultOpenKeys={['sub']}
+            style={{ height: '100%', borderRight: 0 }}
+            items={items2}
+          />
+          <Menu
+            mode='inline'
+            defaultSelectedKeys={['1']}
+            defaultOpenKeys={['sub']}
+            style={{ height: '100%', borderRight: 0 }}
+            items={items1}
+            onClick={(e) => setGroupId(Number(e.key))}
+          />
+          <AddGroupButton createGroup={createGroup} />
+          <DeleteGroupButton id={groupId} deleteGroup={deleteGroup} />
+        </div>
+      </Sider>
+      <ContentComponent cardsProps={cards} />
+    </>
   );
 }
 

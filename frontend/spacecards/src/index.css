@@ -13,10 +13,38 @@ code {
 }
 
 .site-layout-background {
-  background: #fff;
+  background: #ececec;
 }
 
 .btn-google {
   background: #f0eae9;
   color: #fff;
+}
+
+.flexContainerHeader {
+  display: flex;
+  align-items: center;
+  margin: 0 -10px;
+}
+
+.push-left {
+  margin-right: auto;
+}
+
+.flexContainerContent {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  column-gap: 20px;
+  row-gap: 20px;
+}
+
+.flexContainerSidebar {
+  display: flex;
+  flex-direction: column;
+}
+
+.flexContainerMenu {
+  display: flex;
+  flex-direction: row;
 }

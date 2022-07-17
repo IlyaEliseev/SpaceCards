@@ -1,21 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from 'antd';
 import type { SizeType } from 'antd/es/config-provider/SizeContext';
 import { GoogleOutlined } from '@ant-design/icons';
 
-function GoogleAuthButton() {
+function AddGroupButton(props: { createGroup: () => void }) {
   const [size, setSize] = useState<SizeType>('middle');
 
   return (
     <Button
       type='primary'
-      icon={<GoogleOutlined />}
       size={size}
-      href='https://google.com'
+      onClick={() => {
+        props.createGroup();
+      }}
     >
-      Sign in with Google
+      Add group
     </Button>
   );
 }
 
-export default GoogleAuthButton;
+export default AddGroupButton;

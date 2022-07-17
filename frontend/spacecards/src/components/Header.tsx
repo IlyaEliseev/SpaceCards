@@ -9,12 +9,16 @@ const { Header } = Layout;
 function HeaderComponent() {
   return (
     <Header className='header'>
-      <div className='logo' />
-      <ContainerOutlined
-        style={{ fontSize: '35px', color: '#08c', left: '100' }}
-      />
-      <GoogleAuthButton />
-      <GithubAuthButton />
+      <div className='flexContainerHeader'>
+        <div className='push-left'>
+          <div className='logo' />
+          <ContainerOutlined
+            style={{ fontSize: '35px', color: '#08c', left: '100' }}
+          />
+        </div>
+        <GoogleAuthButton />
+        <GithubAuthButton />
+      </div>
     </Header>
   );
 }
