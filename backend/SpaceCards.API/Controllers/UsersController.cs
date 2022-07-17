@@ -25,7 +25,7 @@ namespace SpaceCards.API.Controllers
             var token = JwtBuilder.Create()
                       .WithAlgorithm(new HMACSHA256Algorithm())
                       .WithSecret(_options.Secret)
-                      .AddClaim("exp", DateTimeOffset.UtcNow.AddMinutes(3).ToUnixTimeSeconds())
+                      .AddClaim("exp", DateTimeOffset.UtcNow.AddDays(3).ToUnixTimeSeconds())
                       .AddClaim(ClaimTypes.NameIdentifier, userId)
                       .Encode();
 
