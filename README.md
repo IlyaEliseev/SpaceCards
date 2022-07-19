@@ -6,28 +6,58 @@ Space Cards is a application for guessing foreign words. App allows create a for
 
 Follow these steps to get your development environment set up:
 
-1. Clone the repository
-2. At the root directory, restore required packages by running:
+1. Install `wsl` and Linux distribution:
+
+   ```
+   wsl --install
+   wsl --install -d <Distribution Name>
+   ```
+
+2. Install `Docker desktop` https://docs.docker.com/desktop/install/windows-install/
+
+3. Clone the repository
+
+4. At the root directory, restore required packages by running:
+
    ```
    dotnet restore
    ```
-3. Next, build the solution by running:
+
+5. At the root directory, restore required packages by running:
+   ```
+   dotnet restore
+   ```
+6. Next, build the solution by running:
+
    ```
    dotnet build
    ```
-4. Next, within the `\backend\SpaceCards.API` directory, launch the back end by running:
+
+7. Next, run `cmd` or `PowerShell` and install `dotnet ef`:
+
+   ```
+   dotnet tool install --global dotnet-ef
+   ```
+
+8. Next, within the `\backend` directory run `cmd` and update database:
+
+   ```
+   dotnet ef database updata -p SpaceCards.DataAccess.Postgre -s SpaceCards.API
+   ```
+
+9. Next, within the `\backend\SpaceCards.API` directory, launch the back end by running:
 
    ```
    dotnet run
    ```
 
-5. Next, within the `\frontend\spacecards` directory, launch the front end by running:
+10. Next, within the `\frontend\spacecards` directory, launch the front end by running:
 
-   ```
-   npm start
-   ```
+```
+npm start
+```
 
-6. Launch [https://localhost:49394/swagger/index.html](https://localhost:49394/swagger/index.html) in your browser to view the API
+11. Launch [https://localhost:49394/swagger/index.html](https://localhost:49394/swagger/index.html) in your browser to view the API
 
 ## Technologies
 
@@ -47,16 +77,16 @@ Follow these steps to get your development environment set up:
 ### Logging and Tracing
 
 - Seq
-- OpenTelemetry
+- Jaeger
 
 ### Unit and Integration tests
 
 - XUnit
 
-Architecture and design Api
+## Architecture and design Api
 
 ![DesignApi](https://github.com/IlyaEliseev/SpaceCards/blob/main/Docs/ArchitectureDesignApi.jpg)
 
-Database schema
+## Database schema
 
 ![DbSchema](https://github.com/IlyaEliseev/SpaceCards/blob/main/Docs/SpaceCardsDbSchema.jpg)
