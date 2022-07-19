@@ -7,7 +7,7 @@ import DeleteGroupButton from './DeleteGroupButton';
 const { Sider } = Layout;
 
 const token =
-  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTgxMzQzOTgsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiZDRkZGViMzYtYzMyYy00NmZkLThhYTEtZjBhMzFkOWE2YTliIn0._ALvrg-khrSMihWwDx5JXhZ1bFdtDp64Tz_w4o4SHGA';
+  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTgzMzUxMjgsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiZDRkZGViMzYtYzMyYy00NmZkLThhYTEtZjBhMzFkOWE2YTliIn0.RCvED_pM7O0NEMVchAxEiNjy_KRwlm5-yApqlYpe--M';
 const group = { name: '99' };
 
 function Sidebar(props: { groupsProps: never[]; cardsProps: never[] }) {
@@ -17,21 +17,6 @@ function Sidebar(props: { groupsProps: never[]; cardsProps: never[] }) {
   const [groups, setGroups] = useState([]);
 
   const [count, setCount] = useState(0);
-
-  useEffect(() => {
-    const fetchCards = async () => {
-      const data = await fetch('https://localhost:49394/cards', {
-        method: 'get',
-        headers: new Headers({
-          'Content-type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        }),
-      });
-      const cards = await data.json();
-      setCards(cards);
-    };
-    fetchCards().catch(console.error);
-  }, []);
 
   useEffect(() => {
     const fetchGroups = async () => {
@@ -77,7 +62,6 @@ function Sidebar(props: { groupsProps: never[]; cardsProps: never[] }) {
 
   const items1: MenuProps['items'] = groups.map(
     (group: { id: number; name: string }, index) => {
-      const key = String(index + 1);
       return {
         id: group.id,
         key: `${group.id}`,

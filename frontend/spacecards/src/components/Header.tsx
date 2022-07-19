@@ -2,7 +2,7 @@ import React from 'react';
 import { Layout } from 'antd';
 import GoogleAuthButton from './GoogleAuthButton';
 import GithubAuthButton from './GithubAuthButton';
-import { ContainerOutlined } from '@ant-design/icons';
+import Logo from './Logo';
 
 const { Header } = Layout;
 
@@ -10,12 +10,7 @@ function HeaderComponent() {
   return (
     <Header className='header'>
       <div className='flexContainerHeader'>
-        <div className='push-left'>
-          <div className='logo' />
-          <ContainerOutlined
-            style={{ fontSize: '35px', color: '#08c', left: '100' }}
-          />
-        </div>
+        <Logo />
         <GoogleAuthButton />
         <GithubAuthButton />
       </div>

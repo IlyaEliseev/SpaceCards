@@ -2,17 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { Breadcrumb, Layout, Menu } from 'antd';
 import CardComponent from './Card';
 import AddCardButton from './AddCardButton';
+import DeleteCardButton from './DeleteCardButton';
 const { Content } = Layout;
 
 const token =
-  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTgxMzQzOTgsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiZDRkZGViMzYtYzMyYy00NmZkLThhYTEtZjBhMzFkOWE2YTliIn0._ALvrg-khrSMihWwDx5JXhZ1bFdtDp64Tz_w4o4SHGA';
+  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTgzMzUxMjgsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiZDRkZGViMzYtYzMyYy00NmZkLThhYTEtZjBhMzFkOWE2YTliIn0.RCvED_pM7O0NEMVchAxEiNjy_KRwlm5-yApqlYpe--M';
 const card = { frontSide: 'Apple', backSide: 'Яблоко' };
 
 function ContentComponent(props: { cardsProps: never[] }) {
-  // const cards = props.cardsProps;
-
   const [cards, setCards] = useState([]);
   const [count, setCount] = useState(0);
+  const [cardId, setCardId] = useState(0);
+  const [message, setMessage] = useState('');
 
   useEffect(() => {
     const fetchCards = async () => {
@@ -41,7 +42,21 @@ function ContentComponent(props: { cardsProps: never[] }) {
     setCount(count + 1);
   };
 
-  const getCards = () => {
+  const deleteCard = async (cardId: number) => {
+    const data = await fetch(`https://localhost:49394/cards/${cardId}`, {
+      method: 'delete',
+      headers: new Headers({
+        'Content-type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      }),
+      body: JSON.stringify(card),
+    });
+    console.log(cardId);
+
+    setCount(count + 1);
+  };
+
+  const getCards = (deleteCard: (id: number) => void) => {
     const cardList = cards.map(
       (card: { id: number; frontSide: string; backSide: string }) => {
         return (
@@ -50,6 +65,7 @@ function ContentComponent(props: { cardsProps: never[] }) {
             id={card.id}
             frontSide={card.frontSide}
             backSide={card.backSide}
+            deleteCard={deleteCard}
           />
         );
       }
@@ -69,7 +85,7 @@ function ContentComponent(props: { cardsProps: never[] }) {
         }}
       >
         <div className='flexContainerContent'>
-          {getCards()}
+          {getCards(deleteCard)}
           <AddCardButton createCard={createCard} />
         </div>
       </Content>

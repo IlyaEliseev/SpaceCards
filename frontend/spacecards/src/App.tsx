@@ -8,7 +8,7 @@ import 'antd/dist/antd.min.css';
 import { Layout } from 'antd';
 
 const token =
-  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTgxMzQzOTgsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiZDRkZGViMzYtYzMyYy00NmZkLThhYTEtZjBhMzFkOWE2YTliIn0._ALvrg-khrSMihWwDx5JXhZ1bFdtDp64Tz_w4o4SHGA';
+  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTgzMzUxMjgsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiZDRkZGViMzYtYzMyYy00NmZkLThhYTEtZjBhMzFkOWE2YTliIn0.RCvED_pM7O0NEMVchAxEiNjy_KRwlm5-yApqlYpe--M';
 
 const group = { name: 'Brazilian' };
 const card = { frontSide: 'Apple', backSide: 'Яблоко' };
@@ -86,21 +86,6 @@ function App() {
 
   const [cards, setCards] = useState([]);
   const [groups, setGroups] = useState([]);
-
-  const getCards = () => {
-    const cardList = cards.map(
-      (card: { id: number; frontSide: string; backSide: string }) => {
-        return (
-          <CardComponent
-            id={card.id}
-            frontSide={card.frontSide}
-            backSide={card.backSide}
-          />
-        );
-      }
-    );
-    return cardList;
-  };
 
   return (
     <div className='App'>
