@@ -13,15 +13,10 @@ import GithubAuthButton from './GithubAuthButton';
 import DeleteCardButton from './DeleteCardButton';
 import Input from 'antd/lib/input/Input';
 
-function CardComponent(props: {
-  key: number;
-  id: number;
-  frontSide: string;
-  backSide: string;
-  deleteCard: (value: number) => void;
+function CardCreation(props: {
   setFrontSide: React.Dispatch<React.SetStateAction<string>>;
   setBackSide: React.Dispatch<React.SetStateAction<string>>;
-  updateCard: (cardId: number) => void;
+  createCard: () => void;
 }) {
   const [size, setSize] = useState<SizeType>('large');
   const [isClick, setClick] = useState(false);
@@ -32,22 +27,8 @@ function CardComponent(props: {
     </div>
   );
 
-  return isClick === false ? (
+  return (
     <Card
-      key={props.id}
-      title={props.frontSide}
-      size='default'
-      bordered={false}
-      style={{ width: 250 }}
-      hoverable={true}
-      actions={[
-        <EditOutlined key='edit' onClick={() => setClick(true)} />,
-        <DeleteCardButton id={props.id} deleteCard={props.deleteCard} />,
-      ]}
-    ></Card>
-  ) : (
-    <Card
-      key={props.id}
       size='default'
       bordered={false}
       style={{ width: 250 }}
@@ -57,7 +38,7 @@ function CardComponent(props: {
           key='edit'
           onClick={() => {
             setClick(false);
-            props.updateCard(props.id);
+            props.createCard();
           }}
         />,
       ]}
@@ -74,4 +55,4 @@ function CardComponent(props: {
   );
 }
 
-export default CardComponent;
+export default CardCreation;

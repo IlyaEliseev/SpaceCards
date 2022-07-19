@@ -3,17 +3,22 @@ import { Breadcrumb, Layout, Menu } from 'antd';
 import CardComponent from './Card';
 import AddCardButton from './AddCardButton';
 import DeleteCardButton from './DeleteCardButton';
+import CardCreation from './CardCreation';
 const { Content } = Layout;
 
 const token =
   'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTgzMzUxMjgsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiZDRkZGViMzYtYzMyYy00NmZkLThhYTEtZjBhMzFkOWE2YTliIn0.RCvED_pM7O0NEMVchAxEiNjy_KRwlm5-yApqlYpe--M';
-const card = { frontSide: 'Apple', backSide: 'Яблоко' };
 
 function ContentComponent(props: { cardsProps: never[] }) {
   const [cards, setCards] = useState([]);
   const [count, setCount] = useState(0);
   const [cardId, setCardId] = useState(0);
   const [message, setMessage] = useState('');
+
+  const [frontSideState, setFrontSide] = useState('');
+  const [backSideState, setBackSide] = useState('');
+  const card = { frontSide: frontSideState, backSide: backSideState };
+  console.log(frontSideState);
 
   useEffect(() => {
     const fetchCards = async () => {
@@ -56,7 +61,25 @@ function ContentComponent(props: { cardsProps: never[] }) {
     setCount(count + 1);
   };
 
-  const getCards = (deleteCard: (id: number) => void) => {
+  const updateCard = async (cardId: number) => {
+    const data = await fetch(`https://localhost:49394/cards/${cardId}`, {
+      method: 'put',
+      headers: new Headers({
+        'Content-type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      }),
+      body: JSON.stringify(card),
+    });
+    // console.log(cardId);
+
+    setCount(count + 1);
+  };
+  const getCards = (
+    deleteCard: (id: number) => void,
+    setFrontSide: React.Dispatch<React.SetStateAction<string>>,
+    setBackSide: React.Dispatch<React.SetStateAction<string>>,
+    updateCard: (cardId: number) => void
+  ) => {
     const cardList = cards.map(
       (card: { id: number; frontSide: string; backSide: string }) => {
         return (
@@ -66,6 +89,9 @@ function ContentComponent(props: { cardsProps: never[] }) {
             frontSide={card.frontSide}
             backSide={card.backSide}
             deleteCard={deleteCard}
+            setFrontSide={setFrontSide}
+            setBackSide={setBackSide}
+            updateCard={updateCard}
           />
         );
       }
@@ -85,8 +111,13 @@ function ContentComponent(props: { cardsProps: never[] }) {
         }}
       >
         <div className='flexContainerContent'>
-          {getCards(deleteCard)}
-          <AddCardButton createCard={createCard} />
+          {getCards(deleteCard, setFrontSide, setBackSide, updateCard)}
+          <CardCreation
+            setBackSide={setBackSide}
+            setFrontSide={setFrontSide}
+            createCard={createCard}
+          />
+          {/* <AddCardButton createCard={createCard} /> */}
         </div>
       </Content>
     </Layout>
