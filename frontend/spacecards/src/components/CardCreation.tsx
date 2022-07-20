@@ -20,6 +20,14 @@ function CardCreation(props: {
 }) {
   const [size, setSize] = useState<SizeType>('large');
   const [isClick, setClick] = useState(false);
+  const [frontSide, setfrontSide] = useState('');
+  const [backSide, setbackSide] = useState('');
+
+  const clearinput = () => {
+    setfrontSide('');
+    setbackSide('');
+  };
+
   const content = (
     <div>
       <Input placeholder='Translate' maxLength={2} size={'small'} />
@@ -39,17 +47,28 @@ function CardCreation(props: {
           onClick={() => {
             setClick(false);
             props.createCard();
+            props.setFrontSide('');
+            props.setBackSide('');
+            clearinput();
           }}
         />,
       ]}
     >
       <Input
         placeholder='Word'
-        onChange={(e) => props.setFrontSide(e.target.value)}
+        value={frontSide}
+        onChange={(e) => {
+          props.setFrontSide(e.target.value);
+          setfrontSide(e.target.value);
+        }}
       />
       <Input
         placeholder='Translate'
-        onChange={(e) => props.setBackSide(e.target.value)}
+        value={backSide}
+        onChange={(e) => {
+          props.setBackSide(e.target.value);
+          setbackSide(e.target.value);
+        }}
       />
     </Card>
   );
