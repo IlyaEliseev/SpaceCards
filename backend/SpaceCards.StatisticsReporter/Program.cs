@@ -12,7 +12,8 @@ IHost host = Host.CreateDefaultBuilder(args)
             return new TelegramBotClient(hostContext.Configuration.GetSection("TelegramToken").Value);
         });
 
-        services.AddHostedService<Worker>();
+        services.AddHostedService<EmailStatisticsWorker>();
+        services.AddHostedService<TelegramStatisticsWorker>();
 
         services.Configure<MailSettingsOptions>(
             hostContext.Configuration

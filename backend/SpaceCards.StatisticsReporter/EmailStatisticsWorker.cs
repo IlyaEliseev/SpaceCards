@@ -1,17 +1,17 @@
 using SpaceCards.StatisticsReporter.Models;
 using SpaceCards.StatisticsReporter.Services;
 using StackExchange.Redis;
-using Telegram.Bot;
-using Telegram.Bot.Types;
 
 namespace SpaceCards.StatisticsReporter
 {
-    public class Worker : BackgroundService
+    public class EmailStatisticsWorker : BackgroundService
     {
         private readonly IServiceProvider _provider;
-        private readonly ILogger<Worker> _logger;
+        private readonly ILogger<EmailStatisticsWorker> _logger;
 
-        public Worker(IServiceProvider provider, ILogger<Worker> logger)
+        public EmailStatisticsWorker(
+            IServiceProvider provider,
+            ILogger<EmailStatisticsWorker> logger)
         {
             _provider = provider;
             _logger = logger;
@@ -19,13 +19,13 @@ namespace SpaceCards.StatisticsReporter
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            ConnectionMultiplexer redis = ConnectionMultiplexer.Connect("localhost:6380");
-            IDatabase db = redis.GetDatabase();
+            //ConnectionMultiplexer redis = ConnectionMultiplexer.Connect("localhost:6380");
+            //IDatabase db = redis.GetDatabase();
 
-            string value = "abcdefg";
-            db.StringSet("mykey", value);
-            string value1 = db.StringGet("mykey");
-            Console.WriteLine(value1);
+            //string value = "abcdefg";
+            //db.StringSet("mykey", value);
+            //string value1 = db.StringGet("mykey");
+            //Console.WriteLine(value1);
 
             while (!stoppingToken.IsCancellationRequested)
             {
@@ -36,16 +36,10 @@ namespace SpaceCards.StatisticsReporter
                 if (new TimeSpan(
                     currentDate.Hours,
                     currentDate.Minutes,
-                    currentDate.Seconds) == new TimeSpan(18, 21, 0))
+                    currentDate.Seconds) == new TimeSpan(11, 48, 0))
                 {
                     using var scope = _provider.CreateScope();
                     var mailService = scope.ServiceProvider.GetRequiredService<IMailService>();
-                    var botClient = scope.ServiceProvider.GetRequiredService<ITelegramBotClient>();
-
-                    Message message = await botClient.SendTextMessageAsync(
-                        chatId: "@SpaceCardsAlerts",
-                        text: "Trying *all the parameters* of `sendMessage` method",
-                        cancellationToken: stoppingToken);
 
                     var mailRequest = new MailRequest
                     {
