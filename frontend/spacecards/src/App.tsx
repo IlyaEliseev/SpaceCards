@@ -8,38 +8,14 @@ import 'antd/dist/antd.min.css';
 import { Layout } from 'antd';
 
 const token =
-  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTgzMzUxMjgsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiZDRkZGViMzYtYzMyYy00NmZkLThhYTEtZjBhMzFkOWE2YTliIn0.RCvED_pM7O0NEMVchAxEiNjy_KRwlm5-yApqlYpe--M';
+  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTg2NjU0NTcsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiZDRkZGViMzYtYzMyYy00NmZkLThhYTEtZjBhMzFkOWE2YTliIn0.EVFZppOc2sjh57w4d2MlWI3ECzWCbEof-03n0xUT0ko';
 
 const group = { name: 'Brazilian' };
 const card = { frontSide: 'Apple', backSide: 'Яблоко' };
 
 function App() {
-  // const fetchCards = async () => {
-  //   const data = await fetch('https://localhost:49394/cards', {
-  //     method: 'get',
-  //     headers: new Headers({
-  //       'Content-type': 'application/json',
-  //       Authorization: `Bearer ${token}`,
-  //     }),
-  //   });
-  //   const cards = await data.json();
-  //   setCards(cards);
-  // };
-
-  // useEffect(() => {
-  //   const fetchCards = async () => {
-  //     const data = await fetch('https://localhost:49394/cards', {
-  //       method: 'get',
-  //       headers: new Headers({
-  //         'Content-type': 'application/json',
-  //         Authorization: `Bearer ${token}`,
-  //       }),
-  //     });
-  //     const cards = await data.json();
-  //     setCards(cards);
-  //   };
-  //   fetchCards().catch(console.error);
-  // }, []);
+  const [groupId, setGroupId] = useState(0);
+  const [cardsByGroup, setCardsByGroup] = useState([]);
 
   useEffect(() => {
     const fetchGroups = async () => {
@@ -54,6 +30,23 @@ function App() {
       setGroups(groups);
     };
     fetchGroups().catch(console.error);
+  }, []);
+
+  useEffect(() => {
+    const getCardsByGroupId = async (groupId: number) => {
+      const data = await fetch(`https://localhost:49394/groups/${groupId}`, {
+        method: 'get',
+        headers: new Headers({
+          'Content-type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        }),
+      });
+      const group = await data.json();
+      const cardsByGroup = group.cards;
+      setCardsByGroup(cardsByGroup);
+    };
+    getCardsByGroupId(groupId).catch(console.error);
+    console.log(cardsByGroup);
   }, []);
 
   // useEffect(() => {
@@ -93,7 +86,15 @@ function App() {
         <Layout>
           <HeaderComponent />
           <Layout>
-            <Sidebar groupsProps={groups} cardsProps={cards} />
+            <Sidebar
+              groupsProps={groups}
+              cardsProps={cards}
+              setGroupId={setGroupId}
+              groupId={groupId}
+            />
+            <Layout style={{ padding: '0 24px 24px' }}>
+              <ContentComponent groupId={groupId} />
+            </Layout>
           </Layout>
         </Layout>
       </header>

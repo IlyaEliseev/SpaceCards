@@ -7,15 +7,18 @@ import DeleteGroupButton from './DeleteGroupButton';
 const { Sider } = Layout;
 
 const token =
-  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTgzMzUxMjgsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiZDRkZGViMzYtYzMyYy00NmZkLThhYTEtZjBhMzFkOWE2YTliIn0.RCvED_pM7O0NEMVchAxEiNjy_KRwlm5-yApqlYpe--M';
+  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTg2NjU0NTcsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiZDRkZGViMzYtYzMyYy00NmZkLThhYTEtZjBhMzFkOWE2YTliIn0.EVFZppOc2sjh57w4d2MlWI3ECzWCbEof-03n0xUT0ko';
 const group = { name: '34' };
+const firstGroup = { id: 0, name: 'Cards' };
 
-function Sidebar(props: { groupsProps: never[]; cardsProps: never[] }) {
-  // const groups = props.groupsProps;
-  // const cards = props.cardsProps;
+function Sidebar(props: {
+  groupsProps: never[];
+  cardsProps: never[];
+  groupId: number;
+  setGroupId: React.Dispatch<React.SetStateAction<number>>;
+}) {
   const [cards, setCards] = useState([]);
   const [groups, setGroups] = useState([]);
-
   const [count, setCount] = useState(0);
 
   useEffect(() => {
@@ -28,6 +31,7 @@ function Sidebar(props: { groupsProps: never[]; cardsProps: never[] }) {
         }),
       });
       const groups = await data.json();
+      groups.unshift(firstGroup);
       setGroups(groups);
     };
     fetchGroups().catch(console.error);
@@ -58,8 +62,6 @@ function Sidebar(props: { groupsProps: never[]; cardsProps: never[] }) {
     setCount(count - 1);
   };
 
-  const [groupId, setGroupId] = useState(0);
-
   const items1: MenuProps['items'] = groups.map(
     (group: { id: number; name: string }, index) => {
       return {
@@ -70,14 +72,17 @@ function Sidebar(props: { groupsProps: never[]; cardsProps: never[] }) {
     }
   );
 
-  const items2: MenuProps['items'] = [1].map((icon, index) => {
-    const key = String(index + 1);
-
-    return {
-      key: `sub${key}`,
-      label: `Cards`,
-    };
-  });
+  const getCardsByGroupId = async (groupId: number) => {
+    const data = await fetch(`https://localhost:49394/groups/${groupId}`, {
+      method: 'get',
+      headers: new Headers({
+        'Content-type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      }),
+    });
+    const group = await data.json();
+    const cardsByGroup = group.cards;
+  };
 
   return (
     <>
@@ -88,21 +93,16 @@ function Sidebar(props: { groupsProps: never[]; cardsProps: never[] }) {
             defaultSelectedKeys={['1']}
             defaultOpenKeys={['sub']}
             style={{ height: '100%', borderRight: 0 }}
-            items={items2}
-          />
-          <Menu
-            mode='inline'
-            defaultSelectedKeys={['1']}
-            defaultOpenKeys={['sub']}
-            style={{ height: '100%', borderRight: 0 }}
             items={items1}
-            onClick={(e) => setGroupId(Number(e.key))}
+            onClick={(e) => {
+              props.setGroupId(Number(e.key));
+              console.log(`${props.groupId}`);
+            }}
           />
           <AddGroupButton createGroup={createGroup} />
-          <DeleteGroupButton id={groupId} deleteGroup={deleteGroup} />
+          <DeleteGroupButton id={props.groupId} deleteGroup={deleteGroup} />
         </div>
       </Sider>
-      <ContentComponent cardsProps={cards} />
     </>
   );
 }

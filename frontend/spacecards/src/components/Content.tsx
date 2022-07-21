@@ -7,18 +7,16 @@ import CardCreation from './CardCreation';
 const { Content } = Layout;
 
 const token =
-  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTgzMzUxMjgsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiZDRkZGViMzYtYzMyYy00NmZkLThhYTEtZjBhMzFkOWE2YTliIn0.RCvED_pM7O0NEMVchAxEiNjy_KRwlm5-yApqlYpe--M';
+  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTg2NjU0NTcsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiZDRkZGViMzYtYzMyYy00NmZkLThhYTEtZjBhMzFkOWE2YTliIn0.EVFZppOc2sjh57w4d2MlWI3ECzWCbEof-03n0xUT0ko';
 
-function ContentComponent(props: { cardsProps: never[] }) {
+function ContentComponent(props: { groupId: number }) {
   const [cards, setCards] = useState([]);
   const [count, setCount] = useState(0);
-  const [cardId, setCardId] = useState(0);
-  const [message, setMessage] = useState('');
-
   const [frontSideState, setFrontSide] = useState('');
   const [backSideState, setBackSide] = useState('');
   const card = { frontSide: frontSideState, backSide: backSideState };
   console.log(frontSideState);
+  const groupId = props.groupId;
 
   useEffect(() => {
     const fetchCards = async () => {
@@ -70,10 +68,9 @@ function ContentComponent(props: { cardsProps: never[] }) {
       }),
       body: JSON.stringify(card),
     });
-    // console.log(cardId);
-
     setCount(count + 1);
   };
+
   const getCards = (
     deleteCard: (id: number) => void,
     setFrontSide: React.Dispatch<React.SetStateAction<string>>,
@@ -99,9 +96,8 @@ function ContentComponent(props: { cardsProps: never[] }) {
     return cardList;
   };
 
-  return (
-    <Layout style={{ padding: '0 24px 24px' }}>
-      <Breadcrumb style={{ margin: '14px 0' }}></Breadcrumb>
+  return props.groupId === 0 ? (
+    <>
       <Content
         className='site-layout-background'
         style={{
@@ -117,11 +113,10 @@ function ContentComponent(props: { cardsProps: never[] }) {
             setFrontSide={setFrontSide}
             createCard={createCard}
           />
-          {/* <AddCardButton createCard={createCard} /> */}
         </div>
       </Content>
-    </Layout>
-  );
+    </>
+  ) : null;
 }
 
 export default ContentComponent;
