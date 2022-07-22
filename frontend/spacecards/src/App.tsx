@@ -15,7 +15,10 @@ const card = { frontSide: 'Apple', backSide: 'Яблоко' };
 
 function App() {
   const [groupId, setGroupId] = useState(0);
-  const [cardsByGroup, setCardsByGroup] = useState([]);
+  const [cardsFromGroup, setCardsByGroup] = useState([]);
+  const [count, setCount] = useState(0);
+  const [cards, setCards] = useState([]);
+  const [groups, setGroups] = useState([]);
 
   useEffect(() => {
     const fetchGroups = async () => {
@@ -27,27 +30,47 @@ function App() {
         }),
       });
       const groups = await data.json();
+      const firstGroup = { id: 0, name: 'Cards' };
+      groups.unshift(firstGroup);
       setGroups(groups);
     };
     fetchGroups().catch(console.error);
-  }, []);
+    console.log(groupId);
+  }, [count]);
+
+  // useEffect(() => {
+  //   const fetchGroups = async () => {
+  //     const data = await fetch('https://localhost:49394/groups', {
+  //       method: 'get',
+  //       headers: new Headers({
+  //         'Content-type': 'application/json',
+  //         Authorization: `Bearer ${token}`,
+  //       }),
+  //     });
+  //     const groups = await data.json();
+  //     setGroups(groups);
+  //   };
+  //   fetchGroups().catch(console.error);
+  // }, []);
 
   useEffect(() => {
-    const getCardsByGroupId = async (groupId: number) => {
-      const data = await fetch(`https://localhost:49394/groups/${groupId}`, {
-        method: 'get',
-        headers: new Headers({
-          'Content-type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        }),
-      });
-      const group = await data.json();
-      const cardsByGroup = group.cards;
-      setCardsByGroup(cardsByGroup);
-    };
-    getCardsByGroupId(groupId).catch(console.error);
-    console.log(cardsByGroup);
-  }, []);
+    if (groupId > 0) {
+      const getCardsByGroupId = async (groupId: number) => {
+        const data = await fetch(`https://localhost:49394/groups/${groupId}`, {
+          method: 'get',
+          headers: new Headers({
+            'Content-type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          }),
+        });
+        const group = await data.json();
+        const cardsByGroup = group.cards;
+        setCardsByGroup(cardsByGroup);
+      };
+      getCardsByGroupId(groupId).catch(console.error);
+    }
+    console.log(cardsFromGroup);
+  }, [groupId, count]);
 
   // useEffect(() => {
   //   const createGroup = async () => {
@@ -77,9 +100,6 @@ function App() {
   //   createCard().catch(console.error);
   // }, []);
 
-  const [cards, setCards] = useState([]);
-  const [groups, setGroups] = useState([]);
-
   return (
     <div className='App'>
       <header>
@@ -87,13 +107,18 @@ function App() {
           <HeaderComponent />
           <Layout>
             <Sidebar
-              groupsProps={groups}
-              cardsProps={cards}
+              count={count}
+              setCount={setCount}
               setGroupId={setGroupId}
               groupId={groupId}
+              groups={groups}
             />
             <Layout style={{ padding: '0 24px 24px' }}>
-              <ContentComponent groupId={groupId} />
+              <ContentComponent
+                cardsFromGroup={cardsFromGroup}
+                groups={groups}
+                groupId={groupId}
+              />
             </Layout>
           </Layout>
         </Layout>

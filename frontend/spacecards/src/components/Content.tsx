@@ -9,13 +9,16 @@ const { Content } = Layout;
 const token =
   'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTg2NjU0NTcsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiZDRkZGViMzYtYzMyYy00NmZkLThhYTEtZjBhMzFkOWE2YTliIn0.EVFZppOc2sjh57w4d2MlWI3ECzWCbEof-03n0xUT0ko';
 
-function ContentComponent(props: { groupId: number }) {
+function ContentComponent(props: {
+  groupId: number;
+  groups: never[];
+  cardsFromGroup: never[];
+}) {
   const [cards, setCards] = useState([]);
   const [count, setCount] = useState(0);
   const [frontSideState, setFrontSide] = useState('');
   const [backSideState, setBackSide] = useState('');
   const card = { frontSide: frontSideState, backSide: backSideState };
-  console.log(frontSideState);
   const groupId = props.groupId;
 
   useEffect(() => {
@@ -89,11 +92,38 @@ function ContentComponent(props: { groupId: number }) {
             setFrontSide={setFrontSide}
             setBackSide={setBackSide}
             updateCard={updateCard}
+            groups={props.groups}
           />
         );
       }
     );
     return cardList;
+  };
+
+  const getCardsFromGroup = (
+    deleteCard: (id: number) => void,
+    setFrontSide: React.Dispatch<React.SetStateAction<string>>,
+    setBackSide: React.Dispatch<React.SetStateAction<string>>,
+    updateCard: (cardId: number) => void
+  ) => {
+    const cardsFromGroupList = props.cardsFromGroup.map(
+      (card: { id: number; frontSide: string; backSide: string }) => {
+        return (
+          <CardComponent
+            key={card.id}
+            id={card.id}
+            frontSide={card.frontSide}
+            backSide={card.backSide}
+            deleteCard={deleteCard}
+            setFrontSide={setFrontSide}
+            setBackSide={setBackSide}
+            updateCard={updateCard}
+            groups={props.groups}
+          />
+        );
+      }
+    );
+    return cardsFromGroupList;
   };
 
   return props.groupId === 0 ? (
@@ -116,7 +146,22 @@ function ContentComponent(props: { groupId: number }) {
         </div>
       </Content>
     </>
-  ) : null;
+  ) : (
+    <>
+      <Content
+        className='site-layout-background'
+        style={{
+          padding: 24,
+          margin: 0,
+          minHeight: 280,
+        }}
+      >
+        <div className='flexContainerContent'>
+          {getCardsFromGroup(deleteCard, setFrontSide, setBackSide, updateCard)}
+        </div>
+      </Content>
+    </>
+  );
 }
 
 export default ContentComponent;

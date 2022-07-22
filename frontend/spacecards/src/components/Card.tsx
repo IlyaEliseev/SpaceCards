@@ -12,12 +12,14 @@ import { Avatar, Skeleton, Switch } from 'antd';
 import GithubAuthButton from './GithubAuthButton';
 import DeleteCardButton from './DeleteCardButton';
 import Input from 'antd/lib/input/Input';
+import GroupSelector from './GroupSelector';
 
 function CardComponent(props: {
   key: number;
   id: number;
   frontSide: string;
   backSide: string;
+  groups: never[];
   deleteCard: (value: number) => void;
   setFrontSide: React.Dispatch<React.SetStateAction<string>>;
   setBackSide: React.Dispatch<React.SetStateAction<string>>;
@@ -25,6 +27,7 @@ function CardComponent(props: {
 }) {
   const [size, setSize] = useState<SizeType>('large');
   const [isClick, setClick] = useState(false);
+
   const content = (
     <div>
       <Input placeholder='Translate' maxLength={2} size={'small'} />
@@ -44,7 +47,9 @@ function CardComponent(props: {
         <EditOutlined key='edit' onClick={() => setClick(true)} />,
         <DeleteCardButton id={props.id} deleteCard={props.deleteCard} />,
       ]}
-    ></Card>
+    >
+      <GroupSelector cardId={props.id} groups={props.groups} />
+    </Card>
   ) : (
     <Card
       key={props.id}
