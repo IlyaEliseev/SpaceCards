@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { EditOutlined } from '@ant-design/icons';
 import { Layout, Menu } from 'antd';
 import type { MenuProps } from 'antd';
-import ContentComponent from './Content';
 import AddGroupButton from './AddGroupButton';
 import DeleteGroupButton from './DeleteGroupButton';
 import Input from 'antd/lib/input/Input';
@@ -10,8 +9,6 @@ const { Sider } = Layout;
 
 const token =
   'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTkxMjQ5ODcsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiZDRkZGViMzYtYzMyYy00NmZkLThhYTEtZjBhMzFkOWE2YTliIn0.WJ24HDscDyC6Ft8qyGC33VZ9g6gFv8WhTEaqOw2lc4w';
-const group = { name: '34' };
-// const firstGroup = { id: 0, name: 'Cards' };
 
 function Sidebar(props: {
   count: number;
@@ -20,29 +17,9 @@ function Sidebar(props: {
   setCount: React.Dispatch<React.SetStateAction<number>>;
   setGroupId: React.Dispatch<React.SetStateAction<number>>;
 }) {
-  // const [cards, setCards] = useState([]);
-  // const [groups, setGroups] = useState([]);
   const [groupName, setGroupName] = useState('');
   const count = props.count;
   const setCount = props.setCount;
-  // const [count, setCount] = useState(0);
-
-  // useEffect(() => {
-  //   const fetchGroups = async () => {
-  //     const data = await fetch('https://localhost:49394/groups', {
-  //       method: 'get',
-  //       headers: new Headers({
-  //         'Content-type': 'application/json',
-  //         Authorization: `Bearer ${token}`,
-  //       }),
-  //     });
-  //     const groups = await data.json();
-  //     groups.unshift(firstGroup);
-  //     setGroups(groups);
-  //   };
-  //   fetchGroups().catch(console.error);
-  //   console.log(groups);
-  // }, [count]);
 
   const createGroup = async () => {
     const data = await fetch('https://localhost:49394/groups', {

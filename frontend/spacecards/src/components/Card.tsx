@@ -28,6 +28,13 @@ function CardComponent(props: {
 }) {
   const [size, setSize] = useState<SizeType>('large');
   const [isClick, setClick] = useState(false);
+  const [frontSide, setFrontSide] = useState('');
+  const [backSide, setBackSide] = useState('');
+
+  const clearInput = () => {
+    setFrontSide('');
+    setBackSide('');
+  };
 
   const content = (
     <div>
@@ -49,6 +56,7 @@ function CardComponent(props: {
         <CloseCircleOutlined
           onClick={() => {
             props.deleteCard(props.id);
+            clearInput();
           }}
         />,
       ]}
@@ -67,6 +75,8 @@ function CardComponent(props: {
           key='edit'
           onClick={() => {
             setClick(false);
+            props.setFrontSide('');
+            props.setBackSide('');
             props.updateCard(props.id);
           }}
         />,
@@ -74,11 +84,19 @@ function CardComponent(props: {
     >
       <Input
         placeholder='Word'
-        onChange={(e) => props.setFrontSide(e.target.value)}
+        value={frontSide}
+        onChange={(e) => {
+          props.setFrontSide(e.target.value);
+          setFrontSide(e.target.value);
+        }}
       />
       <Input
         placeholder='Translate'
-        onChange={(e) => props.setBackSide(e.target.value)}
+        value={backSide}
+        onChange={(e) => {
+          props.setBackSide(e.target.value);
+          setBackSide(e.target.value);
+        }}
       />
     </Card>
   );
