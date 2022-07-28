@@ -5,6 +5,7 @@ import type { SizeType } from 'antd/es/config-provider/SizeContext';
 import { MenuClickEventHandler } from 'rc-menu/lib/interface';
 import {
   EditOutlined,
+  CloseCircleOutlined,
   EllipsisOutlined,
   SettingOutlined,
 } from '@ant-design/icons';
@@ -45,7 +46,11 @@ function CardComponent(props: {
       hoverable={true}
       actions={[
         <EditOutlined key='edit' onClick={() => setClick(true)} />,
-        <DeleteCardButton id={props.id} deleteCard={props.deleteCard} />,
+        <CloseCircleOutlined
+          onClick={() => {
+            props.deleteCard(props.id);
+          }}
+        />,
       ]}
     >
       <GroupSelector cardId={props.id} groups={props.groups} />

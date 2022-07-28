@@ -3,7 +3,7 @@ import { group } from 'console';
 import React, { useEffect, useState } from 'react';
 
 const token =
-  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTg2NjU0NTcsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiZDRkZGViMzYtYzMyYy00NmZkLThhYTEtZjBhMzFkOWE2YTliIn0.EVFZppOc2sjh57w4d2MlWI3ECzWCbEof-03n0xUT0ko';
+  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTkxMjQ5ODcsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiZDRkZGViMzYtYzMyYy00NmZkLThhYTEtZjBhMzFkOWE2YTliIn0.WJ24HDscDyC6Ft8qyGC33VZ9g6gFv8WhTEaqOw2lc4w';
 
 function GroupSelector(props: { groups: never[]; cardId: number }) {
   const { Option } = Select;
@@ -60,6 +60,8 @@ function GroupSelector(props: { groups: never[]; cardId: number }) {
     <Select
       showSearch
       placeholder='Select group'
+      defaultValue={groupName}
+      style={{ width: 120 }}
       optionFilterProp='children'
       onChange={onChange}
       onSearch={onSearch}

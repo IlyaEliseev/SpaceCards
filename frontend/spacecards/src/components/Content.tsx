@@ -7,7 +7,7 @@ import CardCreation from './CardCreation';
 const { Content } = Layout;
 
 const token =
-  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTg2NjU0NTcsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiZDRkZGViMzYtYzMyYy00NmZkLThhYTEtZjBhMzFkOWE2YTliIn0.EVFZppOc2sjh57w4d2MlWI3ECzWCbEof-03n0xUT0ko';
+  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTkxMjQ5ODcsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiZDRkZGViMzYtYzMyYy00NmZkLThhYTEtZjBhMzFkOWE2YTliIn0.WJ24HDscDyC6Ft8qyGC33VZ9g6gFv8WhTEaqOw2lc4w';
 
 function ContentComponent(props: {
   groupId: number;
@@ -72,6 +72,7 @@ function ContentComponent(props: {
       body: JSON.stringify(card),
     });
     setCount(count + 1);
+    console.log(card);
   };
 
   const getCards = (
@@ -128,38 +129,45 @@ function ContentComponent(props: {
 
   return props.groupId === 0 ? (
     <>
-      <Content
-        className='site-layout-background'
-        style={{
-          padding: 24,
-          margin: 0,
-          minHeight: 280,
-        }}
-      >
-        <div className='flexContainerContent'>
-          {getCards(deleteCard, setFrontSide, setBackSide, updateCard)}
-          <CardCreation
-            setBackSide={setBackSide}
-            setFrontSide={setFrontSide}
-            createCard={createCard}
-          />
-        </div>
-      </Content>
+      <div className='flexContainerContent'>
+        <Content
+          style={{
+            padding: 24,
+            margin: 0,
+            minHeight: 280,
+          }}
+        >
+          <div className='flexContainerContent'>
+            {getCards(deleteCard, setFrontSide, setBackSide, updateCard)}
+            <CardCreation
+              setBackSide={setBackSide}
+              setFrontSide={setFrontSide}
+              createCard={createCard}
+            />
+          </div>
+        </Content>
+      </div>
     </>
   ) : (
     <>
-      <Content
-        className='site-layout-background'
-        style={{
-          padding: 24,
-          margin: 0,
-          minHeight: 280,
-        }}
-      >
-        <div className='flexContainerContent'>
-          {getCardsFromGroup(deleteCard, setFrontSide, setBackSide, updateCard)}
-        </div>
-      </Content>
+      <div className='flexContainerContent'>
+        <Content
+          style={{
+            padding: 24,
+            margin: 0,
+            minHeight: 280,
+          }}
+        >
+          <div className='flexContainerContent'>
+            {getCardsFromGroup(
+              deleteCard,
+              setFrontSide,
+              setBackSide,
+              updateCard
+            )}
+          </div>
+        </Content>
+      </div>
     </>
   );
 }

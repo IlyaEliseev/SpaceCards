@@ -3,6 +3,7 @@ import { Layout } from 'antd';
 import GoogleAuthButton from './GoogleAuthButton';
 import GithubAuthButton from './GithubAuthButton';
 import Logo from './Logo';
+import SignInButton from './SignInButton';
 
 const { Header } = Layout;
 
@@ -11,8 +12,9 @@ function HeaderComponent() {
     <Header className='header'>
       <div className='flexContainerHeader'>
         <Logo />
-        <GoogleAuthButton />
-        <GithubAuthButton />
+        {/* <GoogleAuthButton />
+        <GithubAuthButton /> */}
+        <SignInButton />
       </div>
     </Header>
   );

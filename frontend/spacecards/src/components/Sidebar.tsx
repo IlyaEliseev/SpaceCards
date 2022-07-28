@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
+import { EditOutlined } from '@ant-design/icons';
 import { Layout, Menu } from 'antd';
 import type { MenuProps } from 'antd';
 import ContentComponent from './Content';
 import AddGroupButton from './AddGroupButton';
 import DeleteGroupButton from './DeleteGroupButton';
+import Input from 'antd/lib/input/Input';
 const { Sider } = Layout;
 
 const token =
-  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTg2NjU0NTcsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiZDRkZGViMzYtYzMyYy00NmZkLThhYTEtZjBhMzFkOWE2YTliIn0.EVFZppOc2sjh57w4d2MlWI3ECzWCbEof-03n0xUT0ko';
+  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTkxMjQ5ODcsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiZDRkZGViMzYtYzMyYy00NmZkLThhYTEtZjBhMzFkOWE2YTliIn0.WJ24HDscDyC6Ft8qyGC33VZ9g6gFv8WhTEaqOw2lc4w';
 const group = { name: '34' };
 // const firstGroup = { id: 0, name: 'Cards' };
 
@@ -20,7 +22,7 @@ function Sidebar(props: {
 }) {
   // const [cards, setCards] = useState([]);
   // const [groups, setGroups] = useState([]);
-
+  const [groupName, setGroupName] = useState('');
   const count = props.count;
   const setCount = props.setCount;
   // const [count, setCount] = useState(0);
@@ -49,9 +51,10 @@ function Sidebar(props: {
         'Content-type': 'application/json',
         Authorization: `Bearer ${token}`,
       }),
-      body: JSON.stringify(group),
+      body: JSON.stringify({ name: groupName }),
     });
     setCount(count + 1);
+    setGroupName('');
   };
 
   const deleteGroup = async (groupId: number) => {
@@ -68,11 +71,20 @@ function Sidebar(props: {
 
   const items1: MenuProps['items'] = props.groups.map(
     (group: { id: number; name: string }, index) => {
-      return {
-        id: group.id,
-        key: `${group.id}`,
-        label: `${group.name}`,
-      };
+      if (index === 0) {
+        return {
+          id: group.id,
+          key: `${group.id}`,
+          label: `${group.name}`,
+        };
+      } else {
+        return {
+          id: group.id,
+          key: `${group.id}`,
+          icon: <EditOutlined />,
+          label: `${group.name}`,
+        };
+      }
     }
   );
 
@@ -92,24 +104,31 @@ function Sidebar(props: {
 
   return (
     <>
-      <Sider width={200} className='site-layout-background'>
-        <div className='flexContainerSidebar'>
-          <Menu
-            mode='inline'
-            defaultSelectedKeys={['1']}
-            defaultOpenKeys={['sub']}
-            style={{ height: '100%', borderRight: 0 }}
-            items={items1}
-            onClick={(e) => {
-              props.setGroupId(Number(e.key));
-              // console.log(`${props.groupId}`);
-              // console.log(`${Number(e.key)}`);
-            }}
-          />
-          <AddGroupButton createGroup={createGroup} />
-          <DeleteGroupButton id={props.groupId} deleteGroup={deleteGroup} />
-        </div>
-      </Sider>
+      <div className='flexContainerSidebar'>
+        <Sider width={190} className='site-layout-background'>
+          <div className='flexContainerSidebar'>
+            <Menu
+              mode='inline'
+              defaultSelectedKeys={['1']}
+              defaultOpenKeys={['sub']}
+              style={{ height: '100%', borderRight: 0 }}
+              items={items1}
+              onClick={(e) => {
+                props.setGroupId(Number(e.key));
+              }}
+            />
+            <Input
+              placeholder='Group name'
+              value={groupName}
+              onChange={(e) => {
+                setGroupName(e.target.value);
+              }}
+            />
+            <AddGroupButton createGroup={createGroup} />
+            <DeleteGroupButton id={props.groupId} deleteGroup={deleteGroup} />
+          </div>
+        </Sider>
+      </div>
     </>
   );
 }

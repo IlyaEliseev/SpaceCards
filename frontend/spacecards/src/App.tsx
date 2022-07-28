@@ -5,15 +5,17 @@ import HeaderComponent from './components/Header';
 import Sidebar from './components/Sidebar';
 import ContentComponent from './components/Content';
 import 'antd/dist/antd.min.css';
-import { Layout } from 'antd';
+import { Layout, Modal } from 'antd';
+import SignInForm from './components/SignInForm';
 
 const token =
-  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTg2NjU0NTcsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiZDRkZGViMzYtYzMyYy00NmZkLThhYTEtZjBhMzFkOWE2YTliIn0.EVFZppOc2sjh57w4d2MlWI3ECzWCbEof-03n0xUT0ko';
+  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTkxMjQ5ODcsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiZDRkZGViMzYtYzMyYy00NmZkLThhYTEtZjBhMzFkOWE2YTliIn0.WJ24HDscDyC6Ft8qyGC33VZ9g6gFv8WhTEaqOw2lc4w';
 
 const group = { name: 'Brazilian' };
 const card = { frontSide: 'Apple', backSide: 'Яблоко' };
 
 function App() {
+  const { Header, Content, Footer, Sider } = Layout;
   const [groupId, setGroupId] = useState(0);
   const [cardsFromGroup, setCardsByGroup] = useState([]);
   const [count, setCount] = useState(0);
@@ -70,7 +72,7 @@ function App() {
       getCardsByGroupId(groupId).catch(console.error);
     }
     console.log(cardsFromGroup);
-  }, [groupId, count]);
+  }, [groupId]);
 
   // useEffect(() => {
   //   const createGroup = async () => {
@@ -105,7 +107,7 @@ function App() {
       <header>
         <Layout>
           <HeaderComponent />
-          <Layout>
+          <Layout className='site-layout-background'>
             <Sidebar
               count={count}
               setCount={setCount}
@@ -113,14 +115,13 @@ function App() {
               groupId={groupId}
               groups={groups}
             />
-            <Layout style={{ padding: '0 24px 24px' }}>
-              <ContentComponent
-                cardsFromGroup={cardsFromGroup}
-                groups={groups}
-                groupId={groupId}
-              />
-            </Layout>
+            <ContentComponent
+              cardsFromGroup={cardsFromGroup}
+              groups={groups}
+              groupId={groupId}
+            />
           </Layout>
+          <SignInForm />
         </Layout>
       </header>
     </div>
