@@ -14,6 +14,7 @@ import GithubAuthButton from './GithubAuthButton';
 import DeleteCardButton from './DeleteCardButton';
 import Input from 'antd/lib/input/Input';
 import GroupSelector from './GroupSelector';
+import Meta from 'antd/lib/card/Meta';
 
 function CardComponent(props: {
   key: number;
@@ -30,6 +31,7 @@ function CardComponent(props: {
   const [isClick, setClick] = useState(false);
   const [frontSide, setFrontSide] = useState('');
   const [backSide, setBackSide] = useState('');
+  const [selectGroupName, setSelectGroupName] = useState([]);
 
   const clearInput = () => {
     setFrontSide('');
@@ -61,7 +63,13 @@ function CardComponent(props: {
         />,
       ]}
     >
-      <GroupSelector cardId={props.id} groups={props.groups} />
+      <Meta title='Europe Street beat' />
+      <GroupSelector
+        cardId={props.id}
+        groups={props.groups}
+        selectGroupName={selectGroupName}
+        setSelectGroupName={setSelectGroupName}
+      />
     </Card>
   ) : (
     <Card

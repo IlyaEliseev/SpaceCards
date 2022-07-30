@@ -3,25 +3,29 @@ import { group } from 'console';
 import React, { useEffect, useState } from 'react';
 
 const token =
-  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTkxMjQ5ODcsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiZDRkZGViMzYtYzMyYy00NmZkLThhYTEtZjBhMzFkOWE2YTliIn0.WJ24HDscDyC6Ft8qyGC33VZ9g6gFv8WhTEaqOw2lc4w';
+  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTk0NTE2MTgsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiZDRkZGViMzYtYzMyYy00NmZkLThhYTEtZjBhMzFkOWE2YTliIn0.MBwc7CYKj79OAUnQutHaO9Ee8CU7--Ya4o43_Z3WXk0';
 
-function GroupSelector(props: { groups: never[]; cardId: number }) {
+function GroupSelector(props: {
+  groups: never[];
+  cardId: number;
+  selectGroupName: never[];
+  setSelectGroupName: React.Dispatch<React.SetStateAction<never[]>>;
+}) {
   const { Option } = Select;
 
-  const onChange = (value: string) => {
-    setPickGroup(Number(value));
-    setGroupName(value);
-    console.log(value);
+  const [pickGroup, setPickGroup] = useState(0);
+  const cardId = props.cardId;
+  const groupId = pickGroup;
+  const selectGroupName = props.selectGroupName;
+
+  const onChange = (value: { value: string; label: React.ReactNode }) => {
+    setPickGroup(Number(value.value));
+    localStorage.setItem(String(props.cardId), String(value.label));
   };
 
   const onSearch = (value: string) => {
     console.log('search:', value);
   };
-
-  const [pickGroup, setPickGroup] = useState(0);
-  const [groupName, setGroupName] = useState('');
-  const cardId = props.cardId;
-  const groupId = pickGroup;
 
   useEffect(() => {
     if (cardId > 0 && groupId > 0) {
@@ -38,7 +42,6 @@ function GroupSelector(props: { groups: never[]; cardId: number }) {
         );
       };
       addCardOnGroup(cardId, groupId).catch(console.error);
-      console.log('card' + cardId);
     }
   }, [groupId]);
 
@@ -46,21 +49,25 @@ function GroupSelector(props: { groups: never[]; cardId: number }) {
     const selectGroups = props.groups.map(
       (group: { id: number; name: string }) => {
         return (
-          <Option key={`${group.id}`} value={`${group.id}`}>
+          <Option key={`${group.id}`} value={`${group.id}`} label={group.name}>
             {group.name}
           </Option>
         );
       }
     );
-
     return selectGroups;
   };
 
   return (
     <Select
+      labelInValue
       showSearch
-      placeholder='Select group'
-      defaultValue={groupName}
+      placeholder={
+        localStorage.getItem(String(props.cardId)) != null &&
+        localStorage.getItem(String(props.cardId)) != 'Cards'
+          ? localStorage.getItem(String(props.cardId))
+          : 'Group name'
+      }
       style={{ width: 120 }}
       optionFilterProp='children'
       onChange={onChange}
