@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Breadcrumb, Layout, Menu } from 'antd';
+import { Layout } from 'antd';
 import CardComponent from './Card';
-import AddCardButton from './AddCardButton';
-import DeleteCardButton from './DeleteCardButton';
 import CardCreation from './CardCreation';
 const { Content } = Layout;
 
@@ -49,30 +47,31 @@ function ContentComponent(props: {
   };
 
   const deleteCard = async (cardId: number) => {
-    const data = await fetch(`https://localhost:49394/cards/${cardId}`, {
-      method: 'delete',
-      headers: new Headers({
-        'Content-type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      }),
-      body: JSON.stringify(card),
-    });
-    console.log(cardId);
-
-    setCount(count + 1);
+    if (cardId > 0) {
+      const data = await fetch(`https://localhost:49394/cards/${cardId}`, {
+        method: 'delete',
+        headers: new Headers({
+          'Content-type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        }),
+        body: JSON.stringify(card),
+      });
+      setCount(count + 1);
+    }
   };
 
   const updateCard = async (cardId: number) => {
-    const data = await fetch(`https://localhost:49394/cards/${cardId}`, {
-      method: 'put',
-      headers: new Headers({
-        'Content-type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      }),
-      body: JSON.stringify(card),
-    });
-    setCount(count + 1);
-    console.log(card);
+    if (cardId > 0) {
+      const data = await fetch(`https://localhost:49394/cards/${cardId}`, {
+        method: 'put',
+        headers: new Headers({
+          'Content-type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        }),
+        body: JSON.stringify(card),
+      });
+      setCount(count + 1);
+    }
   };
 
   const getCards = (

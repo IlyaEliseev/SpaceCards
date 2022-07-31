@@ -49,10 +49,22 @@ code {
   flex-direction: row;
 }
 
-.login-form {
-  max-width: 300px;
+.signInForm {
+  padding: 20px;
+  width: 350px;
+  height: 280px;
   background-color: white;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.input {
+  margin-top: 20px;
+}
+
+.login-form {
+  max-width: 300px;
+  max-height: 400;
+  background-color: white;
 }
 .login-form-forgot {
   float: right;

@@ -2,15 +2,7 @@ import React, { useState } from 'react';
 import { Card, Button, Popover } from 'antd';
 import 'antd/dist/antd.min.css';
 import type { SizeType } from 'antd/es/config-provider/SizeContext';
-import { MenuClickEventHandler } from 'rc-menu/lib/interface';
-import {
-  EditOutlined,
-  EllipsisOutlined,
-  SettingOutlined,
-} from '@ant-design/icons';
-import { Avatar, Skeleton, Switch } from 'antd';
-import GithubAuthButton from './GithubAuthButton';
-import DeleteCardButton from './DeleteCardButton';
+import { EditOutlined } from '@ant-design/icons';
 import Input from 'antd/lib/input/Input';
 
 function CardCreation(props: {
@@ -19,7 +11,6 @@ function CardCreation(props: {
   createCard: () => void;
 }) {
   const [size, setSize] = useState<SizeType>('large');
-  const [isClick, setClick] = useState(false);
   const [frontSide, setfrontSide] = useState('');
   const [backSide, setbackSide] = useState('');
 
@@ -45,7 +36,6 @@ function CardCreation(props: {
         <EditOutlined
           key='edit'
           onClick={() => {
-            setClick(false);
             props.createCard();
             props.setFrontSide('');
             props.setBackSide('');
