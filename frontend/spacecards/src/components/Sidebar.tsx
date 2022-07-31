@@ -98,46 +98,44 @@ function Sidebar(props: {
 
   return (
     <>
-      <div className='flexContainerSidebar'>
-        <Sider width={190} className='site-layout-background'>
-          <div className='flexContainerSidebar'>
-            <Menu
-              mode='inline'
-              defaultSelectedKeys={['1']}
-              defaultOpenKeys={['sub']}
-              style={{ height: '100%', borderRight: 0 }}
-              items={items1}
-              onClick={(e) => {
-                props.setGroupId(Number(e.key));
+      <Sider width={190} className='site-layout-background'>
+        <div className='flexContainerSidebar'>
+          <Menu
+            mode='inline'
+            defaultSelectedKeys={['1']}
+            defaultOpenKeys={['sub']}
+            style={{ height: '100%', borderRight: 0 }}
+            items={items1}
+            onClick={(e) => {
+              props.setGroupId(Number(e.key));
+            }}
+          />
+          {isVisibleCreateInput === false ? null : (
+            <Input
+              placeholder='Group name'
+              value={groupName}
+              onChange={(e) => {
+                setGroupName(e.target.value);
               }}
             />
-            {isVisibleCreateInput === false ? null : (
-              <Input
-                placeholder='Group name'
-                value={groupName}
-                onChange={(e) => {
-                  setGroupName(e.target.value);
-                }}
-              />
-            )}
-            {isVisibleEditInput === false ? null : (
-              <Input
-                placeholder='Group name'
-                value={editGroupName}
-                onChange={(e) => {
-                  setEditGroupName(e.target.value);
-                }}
-              />
-            )}
-            <AddGroupButton
-              createGroup={createGroup}
-              isVisibleCreateInput={isVisibleCreateInput}
-              setIsVisibleCreateInput={setIsVisibleCreateInput}
+          )}
+          {isVisibleEditInput === false ? null : (
+            <Input
+              placeholder='Group name'
+              value={editGroupName}
+              onChange={(e) => {
+                setEditGroupName(e.target.value);
+              }}
             />
-            <DeleteGroupButton id={props.groupId} deleteGroup={deleteGroup} />
-          </div>
-        </Sider>
-      </div>
+          )}
+          <AddGroupButton
+            createGroup={createGroup}
+            isVisibleCreateInput={isVisibleCreateInput}
+            setIsVisibleCreateInput={setIsVisibleCreateInput}
+          />
+          <DeleteGroupButton id={props.groupId} deleteGroup={deleteGroup} />
+        </div>
+      </Sider>
     </>
   );
 }

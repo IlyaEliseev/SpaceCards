@@ -7,7 +7,7 @@ import ContentComponent from './components/Content';
 import 'antd/dist/antd.min.css';
 import { Layout, Modal } from 'antd';
 import SignInForm from './components/SignInForm';
-
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 const token =
   'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTk0NTE2MTgsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiZDRkZGViMzYtYzMyYy00NmZkLThhYTEtZjBhMzFkOWE2YTliIn0.MBwc7CYKj79OAUnQutHaO9Ee8CU7--Ya4o43_Z3WXk0';
 
@@ -21,7 +21,20 @@ function App() {
   const [count, setCount] = useState(0);
   const [cards, setCards] = useState([]);
   const [groups, setGroups] = useState([]);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
+  const showModal = () => {
+    setIsModalVisible(true);
+    console.log(isModalVisible);
+  };
+
+  const handleOk = () => {
+    setIsModalVisible(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalVisible(false);
+  };
   useEffect(() => {
     const fetchGroups = async () => {
       const data = await fetch('https://localhost:49394/groups', {
@@ -103,28 +116,52 @@ function App() {
   // }, []);
 
   return (
-    <div className='App'>
-      <header>
-        <Layout>
-          <HeaderComponent />
-          <Layout className='site-layout-background'>
-            <Sidebar
-              count={count}
-              setCount={setCount}
-              setGroupId={setGroupId}
-              groupId={groupId}
-              groups={groups}
-            />
-            <ContentComponent
-              cardsFromGroup={cardsFromGroup}
-              groups={groups}
-              groupId={groupId}
-            />
-          </Layout>
-          <SignInForm />
-        </Layout>
-      </header>
-    </div>
+    <Router>
+      <Routes>
+        <Route
+          path='/'
+          element={
+            <div className='App'>
+              <header>
+                <Layout>
+                  <HeaderComponent showModal={showModal} />
+                  <Layout className='site-layout-background'>
+                    <div>
+                      <Sidebar
+                        count={count}
+                        setCount={setCount}
+                        setGroupId={setGroupId}
+                        groupId={groupId}
+                        groups={groups}
+                      />
+                    </div>
+                    <div>
+                      <ContentComponent
+                        cardsFromGroup={cardsFromGroup}
+                        groups={groups}
+                        groupId={groupId}
+                      />
+                    </div>
+                  </Layout>
+                </Layout>
+                <Footer
+                  style={{ textAlign: 'center', minHeight: 590 }}
+                ></Footer>
+              </header>
+            </div>
+          }
+        />
+        <Route
+          path='/signin'
+          element={
+            <div>
+              <HeaderComponent showModal={showModal} />
+              <SignInForm isModalVisible={isModalVisible} />
+            </div>
+          }
+        />
+      </Routes>
+    </Router>
   );
 }
 

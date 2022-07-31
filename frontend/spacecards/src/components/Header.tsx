@@ -7,14 +7,12 @@ import SignInButton from './SignInButton';
 
 const { Header } = Layout;
 
-function HeaderComponent() {
+function HeaderComponent(props: { showModal: () => void }) {
   return (
     <Header className='header'>
       <div className='flexContainerHeader'>
         <Logo />
-        {/* <GoogleAuthButton />
-        <GithubAuthButton /> */}
-        <SignInButton />
+        <SignInButton showModal={props.showModal} />
       </div>
     </Header>
   );

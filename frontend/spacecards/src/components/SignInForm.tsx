@@ -1,8 +1,9 @@
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Button, Checkbox, Form, Input } from 'antd';
 import React from 'react';
+import ReactDOM from 'react-dom';
 
-function SignInForm() {
+function SignInForm(props: { isModalVisible: boolean }) {
   const onFinish = (values: any) => {
     console.log('Received values of form: ', values);
   };
@@ -11,7 +12,6 @@ function SignInForm() {
     <div className='signInForm'>
       <Form
         name='normal_login'
-        className='login-form'
         initialValues={{ remember: true }}
         onFinish={onFinish}
       >
