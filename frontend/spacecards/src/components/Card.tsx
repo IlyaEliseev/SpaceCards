@@ -31,7 +31,6 @@ function CardComponent(props: {
   const [isClick, setClick] = useState(false);
   const [frontSide, setFrontSide] = useState('');
   const [backSide, setBackSide] = useState('');
-  const [selectGroupName, setSelectGroupName] = useState([]);
 
   const clearInput = () => {
     setFrontSide('');
@@ -63,13 +62,7 @@ function CardComponent(props: {
         />,
       ]}
     >
-      <Meta title='Europe Street beat' />
-      <GroupSelector
-        cardId={props.id}
-        groups={props.groups}
-        selectGroupName={selectGroupName}
-        setSelectGroupName={setSelectGroupName}
-      />
+      <GroupSelector cardId={props.id} groups={props.groups} />
     </Card>
   ) : (
     <Card

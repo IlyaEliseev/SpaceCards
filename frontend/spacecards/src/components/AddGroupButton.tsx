@@ -3,7 +3,11 @@ import { Button } from 'antd';
 import type { SizeType } from 'antd/es/config-provider/SizeContext';
 import { GoogleOutlined } from '@ant-design/icons';
 
-function AddGroupButton(props: { createGroup: () => void }) {
+function AddGroupButton(props: {
+  createGroup: () => void;
+  isVisibleCreateInput: boolean;
+  setIsVisibleCreateInput: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
   const [size, setSize] = useState<SizeType>('middle');
 
   return (
@@ -12,6 +16,7 @@ function AddGroupButton(props: { createGroup: () => void }) {
       size={size}
       onClick={() => {
         props.createGroup();
+        props.setIsVisibleCreateInput(!props.isVisibleCreateInput);
       }}
     >
       Add group

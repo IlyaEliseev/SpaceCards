@@ -5,18 +5,12 @@ import React, { useEffect, useState } from 'react';
 const token =
   'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTk0NTE2MTgsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiZDRkZGViMzYtYzMyYy00NmZkLThhYTEtZjBhMzFkOWE2YTliIn0.MBwc7CYKj79OAUnQutHaO9Ee8CU7--Ya4o43_Z3WXk0';
 
-function GroupSelector(props: {
-  groups: never[];
-  cardId: number;
-  selectGroupName: never[];
-  setSelectGroupName: React.Dispatch<React.SetStateAction<never[]>>;
-}) {
+function GroupSelector(props: { groups: never[]; cardId: number }) {
   const { Option } = Select;
 
   const [pickGroup, setPickGroup] = useState(0);
   const cardId = props.cardId;
   const groupId = pickGroup;
-  const selectGroupName = props.selectGroupName;
 
   const onChange = (value: { value: string; label: React.ReactNode }) => {
     setPickGroup(Number(value.value));

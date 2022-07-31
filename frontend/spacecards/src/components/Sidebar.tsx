@@ -18,32 +18,56 @@ function Sidebar(props: {
   setGroupId: React.Dispatch<React.SetStateAction<number>>;
 }) {
   const [groupName, setGroupName] = useState('');
+  const [editGroupName, setEditGroupName] = useState('');
+  const [isClicked, setIsClicked] = useState(false);
+  const [isVisibleCreateInput, setIsVisibleCreateInput] = useState(false);
+  const [isVisibleEditInput, setIsVisibleEditInput] = useState(false);
+
   const count = props.count;
   const setCount = props.setCount;
 
   const createGroup = async () => {
-    const data = await fetch('https://localhost:49394/groups', {
-      method: 'post',
-      headers: new Headers({
-        'Content-type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      }),
-      body: JSON.stringify({ name: groupName }),
-    });
-    setCount(count + 1);
-    setGroupName('');
+    if (groupName.length > 0) {
+      const data = await fetch('https://localhost:49394/groups', {
+        method: 'post',
+        headers: new Headers({
+          'Content-type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        }),
+        body: JSON.stringify({ name: groupName }),
+      });
+      setCount(count + 1);
+      setGroupName('');
+    }
   };
 
   const deleteGroup = async (groupId: number) => {
-    const data = await fetch(`https://localhost:49394/groups/${groupId}`, {
-      method: 'delete',
-      headers: new Headers({
-        'Content-type': 'application/json',
-        Authorization: `Bearer ${token}`,
-      }),
-    });
-    const groupId1 = await data.json();
-    setCount(count - 1);
+    if (groupId > 0) {
+      const data = await fetch(`https://localhost:49394/groups/${groupId}`, {
+        method: 'delete',
+        headers: new Headers({
+          'Content-type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        }),
+      });
+      const groupId1 = await data.json();
+      setCount(count - 1);
+    }
+  };
+
+  const editGroupById = async (groupId: number) => {
+    if (groupId > 0 && editGroupName.length > 0) {
+      const data = await fetch(`https://localhost:49394/groups/${groupId}`, {
+        method: 'put',
+        headers: new Headers({
+          'Content-type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        }),
+        body: JSON.stringify({ name: editGroupName }),
+      });
+      setCount(count + 1);
+      setEditGroupName('');
+    }
   };
 
   const items1: MenuProps['items'] = props.groups.map(
@@ -58,26 +82,19 @@ function Sidebar(props: {
         return {
           id: group.id,
           key: `${group.id}`,
-          icon: <EditOutlined />,
+          icon: (
+            <EditOutlined
+              onClick={(e) => {
+                setIsVisibleEditInput(!isVisibleEditInput);
+                editGroupById(group.id);
+              }}
+            />
+          ),
           label: `${group.name}`,
         };
       }
     }
   );
-
-  const getCardsByGroupId = async (groupId: number) => {
-    if (groupId > 0) {
-      const data = await fetch(`https://localhost:49394/groups/${groupId}`, {
-        method: 'get',
-        headers: new Headers({
-          'Content-type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        }),
-      });
-      const group = await data.json();
-      const cardsByGroup = group.cards;
-    }
-  };
 
   return (
     <>
@@ -94,14 +111,29 @@ function Sidebar(props: {
                 props.setGroupId(Number(e.key));
               }}
             />
-            <Input
-              placeholder='Group name'
-              value={groupName}
-              onChange={(e) => {
-                setGroupName(e.target.value);
-              }}
+            {isVisibleCreateInput === false ? null : (
+              <Input
+                placeholder='Group name'
+                value={groupName}
+                onChange={(e) => {
+                  setGroupName(e.target.value);
+                }}
+              />
+            )}
+            {isVisibleEditInput === false ? null : (
+              <Input
+                placeholder='Group name'
+                value={editGroupName}
+                onChange={(e) => {
+                  setEditGroupName(e.target.value);
+                }}
+              />
+            )}
+            <AddGroupButton
+              createGroup={createGroup}
+              isVisibleCreateInput={isVisibleCreateInput}
+              setIsVisibleCreateInput={setIsVisibleCreateInput}
             />
-            <AddGroupButton createGroup={createGroup} />
             <DeleteGroupButton id={props.groupId} deleteGroup={deleteGroup} />
           </div>
         </Sider>
