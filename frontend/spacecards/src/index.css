@@ -49,15 +49,19 @@ code {
   flex-direction: row;
 }
 
+.flexContainerSigninForm {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 70vh;
+}
+
 .signInForm {
   padding: 20px;
   width: 350px;
   height: 280px;
   background-color: white;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  align-items: center;
-  justify-content: center;
-  margin: auto;
 }
 
 .input {
@@ -69,12 +73,15 @@ code {
   max-height: 400;
   background-color: white;
 }
+
 .login-form-forgot {
   float: right;
 }
+
 .ant-col-rtl .login-form-forgot {
   float: left;
 }
+
 .login-form-button {
   width: 100%;
 }

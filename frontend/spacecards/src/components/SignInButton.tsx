@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Button } from 'antd';
 import type { SizeType } from 'antd/es/config-provider/SizeContext';
-import { GoogleOutlined, ImportOutlined } from '@ant-design/icons';
+import { ImportOutlined } from '@ant-design/icons';
 
-function SignInButton(props: { showModal: () => void }) {
+function SignInButton() {
   const [size, setSize] = useState<SizeType>('middle');
 
   return (

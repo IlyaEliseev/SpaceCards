@@ -1,10 +1,10 @@
 import react from 'react';
 import SignInForm from './SignInForm';
 
-function SignInPages(props: { isModalVisible: boolean }) {
+function SignInPages() {
   return (
     <>
-      <SignInForm isModalVisible={props.isModalVisible} />
+      <SignInForm />
     </>
   );
 }

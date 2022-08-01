@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import './App.css';
-import CardComponent from './components/Card';
 import HeaderComponent from './components/Header';
 import Sidebar from './components/Sidebar';
 import ContentComponent from './components/Content';
 import 'antd/dist/antd.min.css';
-import { Layout, Modal } from 'antd';
+import { Breadcrumb, Layout, Modal } from 'antd';
 import SignInForm from './components/SignInForm';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 const token =
@@ -19,22 +18,8 @@ function App() {
   const [groupId, setGroupId] = useState(0);
   const [cardsFromGroup, setCardsByGroup] = useState([]);
   const [count, setCount] = useState(0);
-  const [cards, setCards] = useState([]);
   const [groups, setGroups] = useState([]);
-  const [isModalVisible, setIsModalVisible] = useState(false);
 
-  const showModal = () => {
-    setIsModalVisible(true);
-    console.log(isModalVisible);
-  };
-
-  const handleOk = () => {
-    setIsModalVisible(false);
-  };
-
-  const handleCancel = () => {
-    setIsModalVisible(false);
-  };
   useEffect(() => {
     const fetchGroups = async () => {
       const data = await fetch('https://localhost:49394/groups', {
@@ -52,21 +37,6 @@ function App() {
     fetchGroups().catch(console.error);
     console.log(groupId);
   }, [count]);
-
-  // useEffect(() => {
-  //   const fetchGroups = async () => {
-  //     const data = await fetch('https://localhost:49394/groups', {
-  //       method: 'get',
-  //       headers: new Headers({
-  //         'Content-type': 'application/json',
-  //         Authorization: `Bearer ${token}`,
-  //       }),
-  //     });
-  //     const groups = await data.json();
-  //     setGroups(groups);
-  //   };
-  //   fetchGroups().catch(console.error);
-  // }, []);
 
   useEffect(() => {
     if (groupId > 0) {
@@ -87,34 +57,6 @@ function App() {
     console.log(cardsFromGroup);
   }, [groupId]);
 
-  // useEffect(() => {
-  //   const createGroup = async () => {
-  //     const data = await fetch('https://localhost:49394/groups', {
-  //       method: 'post',
-  //       headers: new Headers({
-  //         'Content-type': 'application/json',
-  //         Authorization: `Bearer ${token}`,
-  //       }),
-  //       body: JSON.stringify(group),
-  //     });
-  //   };
-  //   createGroup().catch(console.error);
-  // }, []);
-
-  // useEffect(() => {
-  //   const createCard = async () => {
-  //     const data = await fetch('https://localhost:49394/cards', {
-  //       method: 'post',
-  //       headers: new Headers({
-  //         'Content-type': 'application/json',
-  //         Authorization: `Bearer ${token}`,
-  //       }),
-  //       body: JSON.stringify(card),
-  //     });
-  //   };
-  //   createCard().catch(console.error);
-  // }, []);
-
   return (
     <Router>
       <Routes>
@@ -124,7 +66,7 @@ function App() {
             <div className='App'>
               <header>
                 <Layout>
-                  <HeaderComponent showModal={showModal} />
+                  <HeaderComponent />
                   <Layout className='site-layout-background'>
                     <div>
                       <Sidebar
@@ -155,8 +97,14 @@ function App() {
           path='/signin'
           element={
             <div>
-              <HeaderComponent showModal={showModal} />
-              <SignInForm isModalVisible={isModalVisible} />
+              <HeaderComponent />
+              <Breadcrumb style={{ margin: '16px 0' }}>
+                <Breadcrumb.Item href='/'>Home</Breadcrumb.Item>
+                <Breadcrumb.Item>SignIn</Breadcrumb.Item>
+              </Breadcrumb>
+              <div className='flexContainerSigninForm'>
+                <SignInForm />
+              </div>
             </div>
           }
         />

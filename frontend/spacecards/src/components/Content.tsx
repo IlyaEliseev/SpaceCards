@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Layout } from 'antd';
 import CardComponent from './Card';
 import CardCreation from './CardCreation';
+import GroupCard from './GroupCard';
+
 const { Content } = Layout;
 
 const token =
@@ -109,16 +111,11 @@ function ContentComponent(props: {
     const cardsFromGroupList = props.cardsFromGroup.map(
       (card: { id: number; frontSide: string; backSide: string }) => {
         return (
-          <CardComponent
+          <GroupCard
             key={card.id}
             id={card.id}
             frontSide={card.frontSide}
             backSide={card.backSide}
-            deleteCard={deleteCard}
-            setFrontSide={setFrontSide}
-            setBackSide={setBackSide}
-            updateCard={updateCard}
-            groups={props.groups}
           />
         );
       }

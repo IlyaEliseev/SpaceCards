@@ -19,7 +19,6 @@ function Sidebar(props: {
 }) {
   const [groupName, setGroupName] = useState('');
   const [editGroupName, setEditGroupName] = useState('');
-  const [isClicked, setIsClicked] = useState(false);
   const [isVisibleCreateInput, setIsVisibleCreateInput] = useState(false);
   const [isVisibleEditInput, setIsVisibleEditInput] = useState(false);
 
@@ -112,7 +111,7 @@ function Sidebar(props: {
           />
           {isVisibleCreateInput === false ? null : (
             <Input
-              placeholder='Group name'
+              placeholder='New group name'
               value={groupName}
               onChange={(e) => {
                 setGroupName(e.target.value);
@@ -121,7 +120,7 @@ function Sidebar(props: {
           )}
           {isVisibleEditInput === false ? null : (
             <Input
-              placeholder='Group name'
+              placeholder='Edit group name'
               value={editGroupName}
               onChange={(e) => {
                 setEditGroupName(e.target.value);

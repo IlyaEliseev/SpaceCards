@@ -7,12 +7,12 @@ import SignInButton from './SignInButton';
 
 const { Header } = Layout;
 
-function HeaderComponent(props: { showModal: () => void }) {
+function HeaderComponent() {
   return (
     <Header className='header'>
       <div className='flexContainerHeader'>
         <Logo />
-        <SignInButton showModal={props.showModal} />
+        <SignInButton />
       </div>
     </Header>
   );

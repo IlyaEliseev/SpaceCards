@@ -3,7 +3,7 @@ import { Button, Checkbox, Form, Input } from 'antd';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-function SignInForm(props: { isModalVisible: boolean }) {
+function SignInForm() {
   const onFinish = (values: any) => {
     console.log('Received values of form: ', values);
   };
