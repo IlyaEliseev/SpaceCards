@@ -1,4 +1,3 @@
-import { SearchOutlined } from '@ant-design/icons';
 import { Button, Tooltip } from 'antd';
 import React from 'react';
 

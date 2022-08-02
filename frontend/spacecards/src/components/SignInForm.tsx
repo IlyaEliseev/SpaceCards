@@ -1,7 +1,6 @@
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Button, Checkbox, Form, Input } from 'antd';
 import React from 'react';
-import ReactDOM from 'react-dom';
 
 function SignInForm() {
   const onFinish = (values: any) => {
@@ -59,4 +58,5 @@ function SignInForm() {
     </div>
   );
 }
+
 export default SignInForm;

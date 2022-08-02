@@ -7,7 +7,7 @@ import GroupCard from './GroupCard';
 const { Content } = Layout;
 
 const token =
-  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTk0NTE2MTgsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiZDRkZGViMzYtYzMyYy00NmZkLThhYTEtZjBhMzFkOWE2YTliIn0.MBwc7CYKj79OAUnQutHaO9Ee8CU7--Ya4o43_Z3WXk0';
+  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTk3MTU3OTUsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiZDRkZGViMzYtYzMyYy00NmZkLThhYTEtZjBhMzFkOWE2YTliIn0.5SIsfJCcwYpByVLOoRqmQtDK64FKRqMVr6zPb37suuo';
 
 function ContentComponent(props: {
   groupId: number;
@@ -102,12 +102,7 @@ function ContentComponent(props: {
     return cardList;
   };
 
-  const getCardsFromGroup = (
-    deleteCard: (id: number) => void,
-    setFrontSide: React.Dispatch<React.SetStateAction<string>>,
-    setBackSide: React.Dispatch<React.SetStateAction<string>>,
-    updateCard: (cardId: number) => void
-  ) => {
+  const getCardsFromGroup = () => {
     const cardsFromGroupList = props.cardsFromGroup.map(
       (card: { id: number; frontSide: string; backSide: string }) => {
         return (
@@ -154,14 +149,7 @@ function ContentComponent(props: {
             minHeight: 280,
           }}
         >
-          <div className='flexContainerContent'>
-            {getCardsFromGroup(
-              deleteCard,
-              setFrontSide,
-              setBackSide,
-              updateCard
-            )}
-          </div>
+          <div className='flexContainerContent'>{getCardsFromGroup()}</div>
         </Content>
       </div>
     </>

@@ -1,20 +1,13 @@
 import React, { useState } from 'react';
-import { Card, Button, Popover } from 'antd';
+import { Card} from 'antd';
 import 'antd/dist/antd.min.css';
 import type { SizeType } from 'antd/es/config-provider/SizeContext';
-import { MenuClickEventHandler } from 'rc-menu/lib/interface';
 import {
   EditOutlined,
   CloseCircleOutlined,
-  EllipsisOutlined,
-  SettingOutlined,
 } from '@ant-design/icons';
-import { Avatar, Skeleton, Switch } from 'antd';
-import GithubAuthButton from './GithubAuthButton';
-import DeleteCardButton from './DeleteCardButton';
 import Input from 'antd/lib/input/Input';
 import GroupSelector from './GroupSelector';
-import Meta from 'antd/lib/card/Meta';
 
 function CardComponent(props: {
   key: number;

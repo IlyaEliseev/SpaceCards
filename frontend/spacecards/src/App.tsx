@@ -4,11 +4,13 @@ import HeaderComponent from './components/Header';
 import Sidebar from './components/Sidebar';
 import ContentComponent from './components/Content';
 import 'antd/dist/antd.min.css';
-import { Breadcrumb, Layout, Modal } from 'antd';
+import { Breadcrumb, Divider, Layout, Modal } from 'antd';
 import SignInForm from './components/SignInForm';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import GetRandomCardButton from './components/GetRandomCardButton';
+import GuessingCardPage from './GuessingCardPage';
 const token =
-  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTk0NTE2MTgsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiZDRkZGViMzYtYzMyYy00NmZkLThhYTEtZjBhMzFkOWE2YTliIn0.MBwc7CYKj79OAUnQutHaO9Ee8CU7--Ya4o43_Z3WXk0';
+  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTk3MTU3OTUsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiZDRkZGViMzYtYzMyYy00NmZkLThhYTEtZjBhMzFkOWE2YTliIn0.5SIsfJCcwYpByVLOoRqmQtDK64FKRqMVr6zPb37suuo';
 
 const group = { name: 'Brazilian' };
 const card = { frontSide: 'Apple', backSide: 'Яблоко' };
@@ -35,7 +37,6 @@ function App() {
       setGroups(groups);
     };
     fetchGroups().catch(console.error);
-    console.log(groupId);
   }, [count]);
 
   useEffect(() => {
@@ -54,7 +55,6 @@ function App() {
       };
       getCardsByGroupId(groupId).catch(console.error);
     }
-    console.log(cardsFromGroup);
   }, [groupId]);
 
   return (
@@ -97,13 +97,27 @@ function App() {
           path='/signin'
           element={
             <div>
-              <HeaderComponent />
+              {/* <HeaderComponent /> */}
               <Breadcrumb style={{ margin: '16px 0' }}>
                 <Breadcrumb.Item href='/'>Home</Breadcrumb.Item>
                 <Breadcrumb.Item>SignIn</Breadcrumb.Item>
               </Breadcrumb>
               <div className='flexContainerSigninForm'>
                 <SignInForm />
+              </div>
+            </div>
+          }
+        />
+        <Route
+          path='/guessingCards'
+          element={
+            <div>
+              <Breadcrumb style={{ margin: '16px 0' }}>
+                <Breadcrumb.Item href='/'>Home</Breadcrumb.Item>
+                <Breadcrumb.Item>Guessed cards</Breadcrumb.Item>
+              </Breadcrumb>
+              <div className='flexContainerGuessingCard'>
+                <GuessingCardPage />
               </div>
             </div>
           }
