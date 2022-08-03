@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import GuessedCard from './GuessedCard';
 import { Layout } from 'antd';
+import { NumericLiteral } from 'typescript';
 const token =
   'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTk3MTU3OTUsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiZDRkZGViMzYtYzMyYy00NmZkLThhYTEtZjBhMzFkOWE2YTliIn0.5SIsfJCcwYpByVLOoRqmQtDK64FKRqMVr6zPb37suuo';
 const { Content } = Layout;
@@ -11,20 +12,17 @@ function GuessingCardPage() {
 
   const [count, setCount] = useState(0);
 
-  const getRandomCardFromGroup = async (countRandomCards: number) => {
+  const setStatistics = async (cardId: Number, successValue: Number) => {
     const data = await fetch(
-      `https://localhost:49394/groups/randomCards?countCards=${countRandomCards}`,
+      `https://localhost:49394/Statistics/${cardId}?successValue=${successValue}`,
       {
-        method: 'get',
+        method: 'post',
         headers: new Headers({
           'Content-type': 'application/json',
           Authorization: `Bearer ${token}`,
         }),
       }
     );
-    const cards = await data.json();
-    setRandomCards(cards);
-    console.log(cards);
   };
 
   useEffect(() => {
@@ -57,6 +55,7 @@ function GuessingCardPage() {
             backSide={card.backSide}
             setCount={setCount}
             count={count}
+            setStatistics={setStatistics}
           />
         );
       }
@@ -66,7 +65,11 @@ function GuessingCardPage() {
 
   const te = getRandomCards();
 
-  return <div className='guessingCardForm'>{getRandomCards()[count]}</div>;
+  return count < randomCards.length ? (
+    <div className='guessingCardForm'>{getRandomCards()[count]}</div>
+  ) : (
+    <div></div>
+  );
 }
 
 export default GuessingCardPage;

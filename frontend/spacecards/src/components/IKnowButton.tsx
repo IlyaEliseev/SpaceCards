@@ -5,6 +5,8 @@ import React from 'react';
 function IKnowButton(props: {
   count: number;
   setCount: React.Dispatch<React.SetStateAction<number>>;
+  setStatistics: (cardId: Number, successValue: Number) => void;
+  cardId: number;
 }) {
   const successGuessing = 1;
 
@@ -13,6 +15,7 @@ function IKnowButton(props: {
       size='large'
       onClick={() => {
         props.setCount(props.count + 1);
+        props.setStatistics(props.cardId, successGuessing);
       }}
     >
       I know

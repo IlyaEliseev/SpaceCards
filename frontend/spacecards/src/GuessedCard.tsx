@@ -15,10 +15,12 @@ function GuessedCard(props: {
   frontSide: string;
   backSide: string;
   count:number
-  setCount: React.Dispatch<React.SetStateAction<number>>
+  setCount: React.Dispatch<React.SetStateAction<number>>,
+  setStatistics: (cardId: Number, successValue: Number) => void
 }) {
   const [size, setSize] = useState<SizeType>('large');
   const setCount = props.setCount;
+
   return (
     <Card
       key={props.id}
@@ -28,8 +30,16 @@ function GuessedCard(props: {
       style={{ width: 250 }}
       hoverable={true}
       actions={[
-        <IKnowButton setCount={setCount} count={props.count}/>,
-        <IDontKnowButton setCount={setCount} count={props.count}/>
+        <IKnowButton
+          setCount={setCount} 
+          count={props.count} 
+          cardId={props.id} 
+          setStatistics={props.setStatistics}/>,
+        <IDontKnowButton 
+          setCount={setCount} 
+          count={props.count} 
+          cardId={props.id} 
+          setStatistics={props.setStatistics}/>
       ]}
     >
     </Card>
