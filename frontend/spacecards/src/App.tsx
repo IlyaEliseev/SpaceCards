@@ -8,7 +8,7 @@ import { Breadcrumb, Divider, Layout, Modal } from 'antd';
 import SignInForm from './components/SignInForm';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import GetRandomCardButton from './components/GetRandomCardButton';
-import GuessingCardPage from './GuessingCardPage';
+import GuessingCardPage from './components/GuessingCardPage';
 const token =
   'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTk3MTU3OTUsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiZDRkZGViMzYtYzMyYy00NmZkLThhYTEtZjBhMzFkOWE2YTliIn0.5SIsfJCcwYpByVLOoRqmQtDK64FKRqMVr6zPb37suuo';
 

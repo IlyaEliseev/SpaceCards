@@ -82,6 +82,28 @@ code {
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
+.guessingStatistics {
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+  width: 300px;
+  height: 230px;
+  background-color: white;
+}
+
+.guessingStatisticsButton {
+  display: flex;
+
+  flex-direction: column;
+  justify-content: center;
+}
+
+.stars {
+  display: flex;
+  justify-content: center;
+  padding: 2px;
+}
+
 .input {
   margin-top: 20px;
 }

@@ -3,7 +3,7 @@ import { group } from 'console';
 import React, { useEffect, useState } from 'react';
 
 const token =
-  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTk0NTE2MTgsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiZDRkZGViMzYtYzMyYy00NmZkLThhYTEtZjBhMzFkOWE2YTliIn0.MBwc7CYKj79OAUnQutHaO9Ee8CU7--Ya4o43_Z3WXk0';
+  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTk3MTU3OTUsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiZDRkZGViMzYtYzMyYy00NmZkLThhYTEtZjBhMzFkOWE2YTliIn0.5SIsfJCcwYpByVLOoRqmQtDK64FKRqMVr6zPb37suuo';
 
 function GroupSelector(props: { groups: never[]; cardId: number }) {
   const { Option } = Select;
@@ -67,7 +67,7 @@ function GroupSelector(props: { groups: never[]; cardId: number }) {
       onChange={onChange}
       onSearch={onSearch}
       filterOption={(input, option) =>
-        (option!.children as unknown as string)
+        ((option!.children as unknown) as string)
           .toLowerCase()
           .includes(input.toLowerCase())
       }

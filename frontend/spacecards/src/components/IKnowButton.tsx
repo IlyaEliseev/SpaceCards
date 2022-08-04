@@ -7,6 +7,8 @@ function IKnowButton(props: {
   setCount: React.Dispatch<React.SetStateAction<number>>;
   setStatistics: (cardId: Number, successValue: Number) => void;
   cardId: number;
+  successValueList: string;
+  setSuccessValueList: React.Dispatch<React.SetStateAction<string>>;
 }) {
   const successGuessing = 1;
 
@@ -15,7 +17,10 @@ function IKnowButton(props: {
       size='large'
       onClick={() => {
         props.setCount(props.count + 1);
-        props.setStatistics(props.cardId, successGuessing);
+        props.setSuccessValueList(
+          props.successValueList + String(successGuessing)
+        );
+        // props.setStatistics(props.cardId, successGuessing);
       }}
     >
       I know

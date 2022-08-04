@@ -1,13 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card} from 'antd';
 import 'antd/dist/antd.min.css';
 import type { SizeType } from 'antd/es/config-provider/SizeContext';
-import {
-  EditOutlined,
-  CloseCircleOutlined,
-} from '@ant-design/icons';
-import IKnowButton from './components/IKnowButton';
-import IDontKnowButton from './components/IDontKnowButton';
+import IKnowButton from './IKnowButton';
+import IDontKnowButton from './IDontKnowButton';
 
 function GuessedCard(props: {
   key: number;
@@ -17,6 +13,8 @@ function GuessedCard(props: {
   count:number
   setCount: React.Dispatch<React.SetStateAction<number>>,
   setStatistics: (cardId: Number, successValue: Number) => void
+  successValueList: string;
+  setSuccessValueList: React.Dispatch<React.SetStateAction<string>>;
 }) {
   const [size, setSize] = useState<SizeType>('large');
   const setCount = props.setCount;
@@ -34,12 +32,16 @@ function GuessedCard(props: {
           setCount={setCount} 
           count={props.count} 
           cardId={props.id} 
-          setStatistics={props.setStatistics}/>,
+          setStatistics={props.setStatistics}
+          successValueList={props.successValueList}
+          setSuccessValueList={props.setSuccessValueList}/>,
         <IDontKnowButton 
           setCount={setCount} 
           count={props.count} 
           cardId={props.id} 
-          setStatistics={props.setStatistics}/>
+          setStatistics={props.setStatistics}
+          successValueList={props.successValueList}
+          setSuccessValueList={props.setSuccessValueList}/>
       ]}
     >
     </Card>

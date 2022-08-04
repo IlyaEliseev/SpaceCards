@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import GuessedCard from './GuessedCard';
 import { Layout } from 'antd';
-import { NumericLiteral } from 'typescript';
+import GuessingStatistics from './GuessingStatistics';
 const token =
   'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTk3MTU3OTUsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiZDRkZGViMzYtYzMyYy00NmZkLThhYTEtZjBhMzFkOWE2YTliIn0.5SIsfJCcwYpByVLOoRqmQtDK64FKRqMVr6zPb37suuo';
 const { Content } = Layout;
@@ -9,7 +9,7 @@ const { Content } = Layout;
 function GuessingCardPage() {
   const [randomCards, setRandomCards] = useState([]);
   const countRandomCards = 10;
-
+  const [successValueList, setSuccessValueList] = useState('');
   const [count, setCount] = useState(0);
 
   const setStatistics = async (cardId: Number, successValue: Number) => {
@@ -56,6 +56,8 @@ function GuessingCardPage() {
             setCount={setCount}
             count={count}
             setStatistics={setStatistics}
+            successValueList={successValueList}
+            setSuccessValueList={setSuccessValueList}
           />
         );
       }
@@ -68,7 +70,9 @@ function GuessingCardPage() {
   return count < randomCards.length ? (
     <div className='guessingCardForm'>{getRandomCards()[count]}</div>
   ) : (
-    <div></div>
+    <div className='guessingCardForm'>
+      <GuessingStatistics successValueList={successValueList} />
+    </div>
   );
 }
 
