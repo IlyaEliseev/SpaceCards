@@ -6,7 +6,7 @@ function Logo() {
     <div className='push-left'>
       <div className='logo' />
       <ContainerOutlined
-        style={{ fontSize: '35px', color: '#08c', left: '100' }}
+        style={{ fontSize: '35px', color: '#fff', left: '100' }}
       />
     </div>
   );

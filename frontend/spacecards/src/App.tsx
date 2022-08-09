@@ -7,13 +7,17 @@ import 'antd/dist/antd.min.css';
 import { Breadcrumb, Divider, Layout, Modal } from 'antd';
 import SignInForm from './components/SignInForm';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import GetRandomCardButton from './components/GetRandomCardButton';
 import GuessingCardPage from './components/GuessingCardPage';
-const token =
-  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTk3MTU3OTUsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiZDRkZGViMzYtYzMyYy00NmZkLThhYTEtZjBhMzFkOWE2YTliIn0.5SIsfJCcwYpByVLOoRqmQtDK64FKRqMVr6zPb37suuo';
+import GuessingStatistics from './components/GuessingStatistics';
+import StatisticsPage from './components/StatisticsPage';
 
-const group = { name: 'Brazilian' };
-const card = { frontSide: 'Apple', backSide: 'Яблоко' };
+const token =
+  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NjAyMzAwMjgsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiZDRkZGViMzYtYzMyYy00NmZkLThhYTEtZjBhMzFkOWE2YTliIn0.4qIw2RtyWDiIX7ZPDzZwt-UspEH1VHie4OpX6parZTo';
+interface Cards {
+  id: number;
+  frontSide: string;
+  backSide: string;
+}
 
 function App() {
   const { Header, Content, Footer, Sider } = Layout;
@@ -21,6 +25,22 @@ function App() {
   const [cardsFromGroup, setCardsByGroup] = useState([]);
   const [count, setCount] = useState(0);
   const [groups, setGroups] = useState([]);
+  const [cards, setCards] = useState([]);
+
+  useEffect(() => {
+    const fetchCards = async () => {
+      const data = await fetch('https://localhost:49394/cards', {
+        method: 'get',
+        headers: new Headers({
+          'Content-type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        }),
+      });
+      const cards = await data.json();
+      setCards(cards);
+    };
+    fetchCards().catch(console.error);
+  }, [count]);
 
   useEffect(() => {
     const fetchGroups = async () => {
@@ -79,6 +99,7 @@ function App() {
                     </div>
                     <div>
                       <ContentComponent
+                        cards={cards}
                         cardsFromGroup={cardsFromGroup}
                         groups={groups}
                         groupId={groupId}
@@ -118,6 +139,20 @@ function App() {
               </Breadcrumb>
               <div className='flexContainerGuessingCard'>
                 <GuessingCardPage />
+              </div>
+            </div>
+          }
+        />
+        <Route
+          path='/Statistics'
+          element={
+            <div>
+              <Breadcrumb style={{ margin: '16px 0' }}>
+                <Breadcrumb.Item href='/'>Home</Breadcrumb.Item>
+                <Breadcrumb.Item>Statistics</Breadcrumb.Item>
+              </Breadcrumb>
+              <div className='statistics'>
+                <StatisticsPage cards={cards} />
               </div>
             </div>
           }

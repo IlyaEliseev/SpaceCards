@@ -20,7 +20,7 @@ function IDontKnowButton(props: {
         props.setSuccessValueList(
           props.successValueList + String(successGuessing)
         );
-        // props.setStatistics(props.cardId, successGuessing);
+        props.setStatistics(props.cardId, successGuessing);
       }}
     >
       I dont know

@@ -58,9 +58,9 @@ code {
 
 .flexContainerGuessingCard {
   display: flex;
-  align-items: center;
   justify-content: center;
   height: 70vh;
+  margin-top: 150px;
 }
 
 .signInForm {
@@ -93,7 +93,6 @@ code {
 
 .guessingStatisticsButton {
   display: flex;
-
   flex-direction: column;
   justify-content: center;
 }
@@ -124,4 +123,17 @@ code {
 
 .login-form-button {
   width: 100%;
+}
+
+.statistics {
+  display: flex;
+  justify-content: center;
+  margin-top: 80px;
+}
+
+.statisticsTable {
+  table-layout: fixed;
+  border: 1px solid rgb(223, 191, 191);
+  width: 500px;
+  text-align: center;
 }
