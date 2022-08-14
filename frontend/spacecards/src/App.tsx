@@ -8,11 +8,11 @@ import { Breadcrumb, Divider, Layout, Modal } from 'antd';
 import SignInForm from './components/SignInForm';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import GuessingCardPage from './components/GuessingCardPage';
-import GuessingStatistics from './components/GuessingStatistics';
 import StatisticsPage from './components/StatisticsPage';
+import RegistrationPage from './components/RegistrationPage';
 
 const token =
-  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NjAyMzAwMjgsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiZDRkZGViMzYtYzMyYy00NmZkLThhYTEtZjBhMzFkOWE2YTliIn0.4qIw2RtyWDiIX7ZPDzZwt-UspEH1VHie4OpX6parZTo';
+  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NjA1NzYyNjEsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiZDRkZGViMzYtYzMyYy00NmZkLThhYTEtZjBhMzFkOWE2YTliIn0.ziNTQdaUhte0qxIIdmVZE7WP2rJzqVfbO7tJ6VPrgMU';
 interface Cards {
   id: number;
   frontSide: string;
@@ -153,6 +153,20 @@ function App() {
               </Breadcrumb>
               <div className='statistics'>
                 <StatisticsPage cards={cards} />
+              </div>
+            </div>
+          }
+        />
+        <Route
+          path='/registration'
+          element={
+            <div>
+              <Breadcrumb style={{ margin: '16px 0' }}>
+                <Breadcrumb.Item href='/'>Home</Breadcrumb.Item>
+                <Breadcrumb.Item>Registration</Breadcrumb.Item>
+              </Breadcrumb>
+              <div className='statistics'>
+                <RegistrationPage />
               </div>
             </div>
           }
