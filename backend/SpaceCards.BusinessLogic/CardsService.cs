@@ -64,7 +64,7 @@ namespace SpaceCards.BusinessLogic
                 return (false, modelErrors.ToArray());
             }
 
-            await _cardsRepository.Update(updatedCard with { Id = card.Id });
+            await _cardsRepository.Update(updatedCard with { Id = card.Id, GroupId = card.GroupId });
 
             return (true, Array.Empty<string>());
         }
