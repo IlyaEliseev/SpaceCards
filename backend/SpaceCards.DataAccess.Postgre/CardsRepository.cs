@@ -61,7 +61,7 @@ namespace SpaceCards.DataAccess.Postgre
                 return false;
             }
 
-            _context.Cards.Remove(new Entites.Card { Id = card.Id });
+            _context.Cards.Remove(new Entites.Card { Id = card.Id, GroupId = card.GroupId });
             await _context.SaveChangesAsync();
 
             return true;

@@ -76,7 +76,6 @@ namespace SpaceCards.API.Controllers
         public async Task<IActionResult> Get()
         {
             var userId = UserId.Value;
-
             var groups = await _service.Get(userId);
             var groupsContract = _mapper.Map<Domain.Group[], Contracts.GetGroupResponse[]>(groups);
             return Ok(groupsContract);
