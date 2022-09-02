@@ -2,8 +2,8 @@ import { Select } from 'antd';
 import { group } from 'console';
 import React, { useEffect, useState } from 'react';
 
-const token =
-  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NjA1NzYyNjEsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiZDRkZGViMzYtYzMyYy00NmZkLThhYTEtZjBhMzFkOWE2YTliIn0.ziNTQdaUhte0qxIIdmVZE7WP2rJzqVfbO7tJ6VPrgMU';
+const token = sessionStorage.getItem('refreshtoken');
+// 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NjIzODY0MzUsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiZDRkZGViMzYtYzMyYy00NmZkLThhYTEtZjBhMzFkOWE2YTliIn0.CUbDEJylJxi6-m5qOfCEtqYS6SEI5mP1DOAH1GtNT_k';
 
 function GroupSelector(props: { groups: never[]; cardId: number }) {
   const { Option } = Select;
@@ -67,7 +67,7 @@ function GroupSelector(props: { groups: never[]; cardId: number }) {
       onChange={onChange}
       onSearch={onSearch}
       filterOption={(input, option) =>
-        ((option!.children as unknown) as string)
+        (option!.children as unknown as string)
           .toLowerCase()
           .includes(input.toLowerCase())
       }

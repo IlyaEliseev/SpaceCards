@@ -20,13 +20,10 @@ builder.Services.Configure<JWTSecretOptions>(
 
 builder.Services.AddLogging(b =>
 {
-    //var provider = b.Services.BuildServiceProvider();
-
     var logger = new LoggerConfiguration()
         .ReadFrom.Configuration(builder.Configuration)
-        //.ReadFrom.Services(provider)
         .CreateLogger();
-    b.AddSerilog(logger);
+    b.AddSerilog(logger, true);
 });
 
 var serviceName = "SpaceCards.API";
@@ -89,6 +86,12 @@ builder.Services.AddScoped<IGuessedCardsService, GuessedCardsService>();
 builder.Services.AddScoped<IStatisticsRepository, StatisticsRepository>();
 
 builder.Services.AddScoped<IStatisticsService, StatisticsService>();
+
+builder.Services.AddScoped<IUsersAccountRepository, UsersAccountRepository>();
+
+builder.Services.AddScoped<IUsersAccountService, UsersAccountService>();
+
+builder.Services.AddScoped<SecurityService>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddControllers();

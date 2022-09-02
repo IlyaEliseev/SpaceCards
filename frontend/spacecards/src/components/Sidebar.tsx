@@ -5,10 +5,12 @@ import type { MenuProps } from 'antd';
 import AddGroupButton from './AddGroupButton';
 import DeleteGroupButton from './DeleteGroupButton';
 import Input from 'antd/lib/input/Input';
+import GetRandomCardButton from './GetRandomCardButton';
+import StatisticsButton from './StatisticsButton';
 const { Sider } = Layout;
 
-const token =
-  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NTk3MTU3OTUsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiZDRkZGViMzYtYzMyYy00NmZkLThhYTEtZjBhMzFkOWE2YTliIn0.5SIsfJCcwYpByVLOoRqmQtDK64FKRqMVr6zPb37suuo';
+const token = sessionStorage.getItem('refreshtoken');
+// 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NjIzODY0MzUsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiZDRkZGViMzYtYzMyYy00NmZkLThhYTEtZjBhMzFkOWE2YTliIn0.CUbDEJylJxi6-m5qOfCEtqYS6SEI5mP1DOAH1GtNT_k';
 
 function Sidebar(props: {
   count: number;
@@ -103,7 +105,7 @@ function Sidebar(props: {
             mode='inline'
             defaultSelectedKeys={['1']}
             defaultOpenKeys={['sub']}
-            style={{ height: '100%', borderRight: 0, flex: "auto" }}
+            style={{ height: '100%', borderRight: 0, flex: 'auto' }}
             items={items1}
             onClick={(e) => {
               props.setGroupId(Number(e.key));
@@ -133,6 +135,8 @@ function Sidebar(props: {
             setIsVisibleCreateInput={setIsVisibleCreateInput}
           />
           <DeleteGroupButton id={props.groupId} deleteGroup={deleteGroup} />
+          <StatisticsButton />
+          <GetRandomCardButton />
         </div>
       </Sider>
     </>

@@ -6,22 +6,24 @@ import GroupCard from './GroupCard';
 
 const { Content } = Layout;
 
-const token =
-  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NjA1NzYyNjEsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiZDRkZGViMzYtYzMyYy00NmZkLThhYTEtZjBhMzFkOWE2YTliIn0.ziNTQdaUhte0qxIIdmVZE7WP2rJzqVfbO7tJ6VPrgMU';
+const token = sessionStorage.getItem('refreshtoken');
 
 function ContentComponent(props: {
   groupId: number;
   groups: never[];
   cardsFromGroup: never[];
   cards: never[];
+  count: number;
+  setCount: React.Dispatch<React.SetStateAction<number>>;
 }) {
   // const [cards, setCards] = useState([]);
-  const [count, setCount] = useState(0);
   const [frontSideState, setFrontSide] = useState('');
   const [backSideState, setBackSide] = useState('');
   const card = { frontSide: frontSideState, backSide: backSideState };
   const groupId = props.groupId;
 
+  const count = props.count;
+  const setCount = props.setCount;
   // useEffect(() => {
   //   const fetchCards = async () => {
   //     const data = await fetch('https://localhost:49394/cards', {

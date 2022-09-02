@@ -18,6 +18,8 @@ namespace SpaceCards.DataAccess.Postgre
 
         public DbSet<CardGuessingStatistics> CardsGuessingStatistics { get; set; }
 
+        public DbSet<User> Users { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(SpaceCardsDbContext).Assembly);

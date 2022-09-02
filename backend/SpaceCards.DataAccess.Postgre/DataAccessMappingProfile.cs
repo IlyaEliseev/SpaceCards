@@ -9,6 +9,7 @@ namespace SpaceCards.DataAccess.Postgre
             CreateMap<Entites.Card, Domain.Card>().ReverseMap();
             CreateMap<Entites.Group, Domain.Group>().ReverseMap();
             CreateMap<Entites.CardGuessingStatistics, Domain.CardGuessingStatistics>().ReverseMap();
+            CreateMap<Entites.User, Domain.User>().ReverseMap();
         }
     }
 }

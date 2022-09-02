@@ -3,7 +3,7 @@ import React from 'react';
 
 function GetRandomCardButton() {
   return (
-    <Button size='middle' href='/guessingCards'>
+    <Button type='primary' size='middle' href='/guessingCards'>
       Start guessing card
     </Button>
   );

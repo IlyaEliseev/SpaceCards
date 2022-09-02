@@ -16,6 +16,23 @@ function RegistrationForm() {
   const [autoCompleteResult, setAutoCompleteResult] = useState<string[]>([]);
   const [userEmail, setUserEmail] = useState('');
   const [userPassword, setUserPassword] = useState('');
+  console.log(userEmail);
+  console.log(userPassword);
+
+  const registrationData = { email: userEmail, password: userPassword };
+
+  const registrationUser = async () => {
+    const data = await fetch(
+      `https://localhost:49394/usersaccount/registration`,
+      {
+        method: 'post',
+        headers: new Headers({
+          'Content-type': 'application/json',
+        }),
+        body: JSON.stringify(registrationData),
+      }
+    );
+  };
 
   const { Option } = Select;
 
@@ -60,7 +77,14 @@ function RegistrationForm() {
   }));
 
   const onFinish = (values: any) => {
+    setUserEmail('');
+    setUserPassword('');
     console.log('Received values of form: ', values);
+  };
+
+  const clearinput = () => {
+    setUserEmail('');
+    setUserPassword('');
   };
 
   return (
@@ -91,7 +115,10 @@ function RegistrationForm() {
             },
           ]}
         >
-          <Input onChange={(e) => setUserEmail(e.target.value)} />
+          <Input
+            value={userEmail}
+            onChange={(e) => setUserEmail(e.target.value)}
+          />
         </Form.Item>
 
         <Form.Item
@@ -105,7 +132,12 @@ function RegistrationForm() {
           ]}
           hasFeedback
         >
-          <Input.Password onChange={(e) => setUserPassword(e.target.value)} />
+          <Input.Password
+            value={userPassword}
+            onChange={(e) => {
+              setUserPassword(e.target.value);
+            }}
+          />
         </Form.Item>
 
         <Form.Item
@@ -135,7 +167,12 @@ function RegistrationForm() {
 
         <Form.Item {...tailFormItemLayout}>
           <Button
-            onClick={() => onFinish('wewew')}
+            href='/signin'
+            onClick={() => {
+              // onFinish('wewew');
+              registrationUser();
+              clearinput();
+            }}
             type='primary'
             htmlType='submit'
           >

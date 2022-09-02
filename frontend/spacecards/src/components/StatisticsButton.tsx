@@ -3,7 +3,7 @@ import React from 'react';
 
 function StatisticsButton() {
   return (
-    <Button size='middle' href='/Statistics'>
+    <Button type='primary' size='middle' href='/Statistics'>
       Statistics
     </Button>
   );

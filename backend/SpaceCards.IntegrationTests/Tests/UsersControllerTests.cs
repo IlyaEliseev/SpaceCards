@@ -1,10 +1,9 @@
 ﻿using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
-using Newtonsoft.Json.Linq;
 using System.Net;
-using System.Net.Http.Headers;
-using SpaceCards.API;
+using SpaceCards.API.Contracts;
+using System.Net.Http.Json;
 
 namespace SpaceCards.IntegrationTests.Tests
 {
@@ -16,37 +15,43 @@ namespace SpaceCards.IntegrationTests.Tests
         }
 
         [Fact]
-        public async Task Validate_ShouldReturnOk()
+        public async Task Registration_ShouldReturnOk()
         {
             // arrange
-            var token = await Client.GetAsync("users/token");
-            var tokenJson = await token.Content.ReadAsStringAsync();
-            var tokenString = JToken.Parse(tokenJson).ToString();
+            var email = "sdfkljsdvnsd@mail.ru";
+            var password = "Sdvs5&dvsdasev";
 
-            Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
-                BaseSchema.NAME,
-                tokenString);
+            var user = new UserRegistrationRequest
+            {
+                Email = email,
+                Password = password
+            };
 
             // act
-            var response = await Client.GetAsync($"users/validate?token={tokenString}");
+            var response = await Client.PostAsJsonAsync("usersaccount/registration", user);
 
             // assert
             response.EnsureSuccessStatusCode();
         }
 
         [Fact]
-        public async Task Validate_ShouldReturnUnauthorized()
+        public async Task Registreation_ShouldReturnBadRequest()
         {
             // arrange
-            var token = await Client.GetAsync("users/token");
-            var tokenJson = await token.Content.ReadAsStringAsync();
-            var tokenString = JToken.Parse(tokenJson).ToString();
+            var email = "sdfkljsdvnsd@mail";
+            var password = "dvdvsdasev";
+
+            var user = new UserRegistrationRequest
+            {
+                Email = email,
+                Password = password
+            };
 
             // act
-            var response = await Client.GetAsync($"users/validate?token={tokenString}");
+            var response = await Client.PostAsJsonAsync("usersaccount/registration", user);
 
             // assert
-            Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+            Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
         }
     }
 }

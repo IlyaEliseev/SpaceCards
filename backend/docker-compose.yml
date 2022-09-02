@@ -17,7 +17,16 @@ services:
       - 5433:5432
     container_name: db
     volumes:
-      - db-data:/var/lib/postgresql/data
+      - db-SpaceCards-data:/var/lib/postgresql/data
+
+  Testdb:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: pwd
+    ports:
+      - 5439:5432
+    container_name: Testdb
 
   jaeger:
     image: jaegertracing/all-in-one
@@ -61,6 +70,8 @@ services:
       - 6380:6379  
 
 volumes:
-  db-data:
+  db-SpaceCards-data:
     driver: local
+  
 
+  

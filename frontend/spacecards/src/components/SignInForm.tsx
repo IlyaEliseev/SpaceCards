@@ -1,10 +1,36 @@
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Button, Checkbox, Form, Input } from 'antd';
-import React from 'react';
+import React, { useState } from 'react';
+
+interface Tokens {
+  token: string;
+  refreshToken: string;
+}
 
 function SignInForm() {
+  const [email, setEmail] = useState('');
+  const [password, setpassword] = useState('');
+  console.log(password);
+
+  const signInData = { email: email, password: password };
+
   const onFinish = (values: any) => {
     console.log('Received values of form: ', values);
+    getTokens();
+  };
+
+  const getTokens = async () => {
+    const data = await fetch('https://localhost:49394/usersaccount/login', {
+      method: 'post',
+      headers: new Headers({
+        'Content-type': 'application/json',
+      }),
+      body: JSON.stringify(signInData),
+    });
+    const tokens: Tokens = await data.json();
+    console.log(tokens);
+    console.log(tokens.refreshToken);
+    sessionStorage.setItem('refreshtoken', tokens.refreshToken);
   };
 
   return (
@@ -17,13 +43,15 @@ function SignInForm() {
           onFinish={onFinish}
         >
           <Form.Item
-            name='username'
+            name='email'
             rules={[{ required: true, message: 'Please input your Username!' }]}
           >
             <Input
               className='input'
               prefix={<UserOutlined className='site-form-item-icon' />}
-              placeholder='Username'
+              value={email}
+              placeholder='Email'
+              onChange={(e) => setEmail(e.target.value)}
             />
           </Form.Item>
           <Form.Item
@@ -34,6 +62,8 @@ function SignInForm() {
               prefix={<LockOutlined className='site-form-item-icon' />}
               type='password'
               placeholder='Password'
+              value={password}
+              onChange={(e) => setpassword(e.target.value)}
             />
           </Form.Item>
           <Form.Item>
