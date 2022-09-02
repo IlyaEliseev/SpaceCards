@@ -165,7 +165,7 @@ function App() {
                 <Breadcrumb.Item href='/'>Home</Breadcrumb.Item>
                 <Breadcrumb.Item>Registration</Breadcrumb.Item>
               </Breadcrumb>
-              <div className='statistics'>
+              <div className='flexContainerRegistrationForm'>
                 <RegistrationPage />
               </div>
             </div>

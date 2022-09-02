@@ -1,11 +1,8 @@
 import React, { useState } from 'react';
-import { Card} from 'antd';
+import { Card } from 'antd';
 import 'antd/dist/antd.min.css';
 import type { SizeType } from 'antd/es/config-provider/SizeContext';
-import {
-  EditOutlined,
-  CloseCircleOutlined,
-} from '@ant-design/icons';
+import { EditOutlined, CloseCircleOutlined } from '@ant-design/icons';
 import Input from 'antd/lib/input/Input';
 import GroupSelector from './GroupSelector';
 
@@ -18,12 +15,13 @@ function CardComponent(props: {
   deleteCard: (value: number) => void;
   setFrontSide: React.Dispatch<React.SetStateAction<string>>;
   setBackSide: React.Dispatch<React.SetStateAction<string>>;
-  updateCard: (cardId: number) => void;
+  updateCard: (cardId: number, frontSide: string, backSide: string) => void;
 }) {
   const [size, setSize] = useState<SizeType>('large');
   const [isClick, setClick] = useState(false);
   const [frontSide, setFrontSide] = useState('');
   const [backSide, setBackSide] = useState('');
+  const card = { frontSide: frontSide, backSide: backSide };
 
   const clearInput = () => {
     setFrontSide('');
@@ -71,7 +69,7 @@ function CardComponent(props: {
             setClick(false);
             props.setFrontSide('');
             props.setBackSide('');
-            props.updateCard(props.id);
+            props.updateCard(props.id, card.frontSide, card.backSide);
           }}
         />,
       ]}

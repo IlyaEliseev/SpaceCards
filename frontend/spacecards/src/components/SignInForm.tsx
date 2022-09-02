@@ -52,7 +52,7 @@ function SignInForm() {
               htmlType='submit'
               className='login-form-button'
             >
-              Log in
+              Sign in
             </Button>
             Or <a href='/registration'>register now!</a>
           </Form.Item>

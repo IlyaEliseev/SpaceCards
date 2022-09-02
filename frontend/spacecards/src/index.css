@@ -56,6 +56,13 @@ code {
   height: 70vh;
 }
 
+.flexContainerRegistrationForm {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 70vh;
+}
+
 .flexContainerGuessingCard {
   display: flex;
   justify-content: center;

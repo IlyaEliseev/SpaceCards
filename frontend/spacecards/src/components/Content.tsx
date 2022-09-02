@@ -63,7 +63,11 @@ function ContentComponent(props: {
     }
   };
 
-  const updateCard = async (cardId: number) => {
+  const updateCard = async (
+    cardId: number,
+    frontSide: string,
+    backSide: string
+  ) => {
     if (cardId > 0) {
       const data = await fetch(`https://localhost:49394/cards/${cardId}`, {
         method: 'put',
@@ -71,7 +75,7 @@ function ContentComponent(props: {
           'Content-type': 'application/json',
           Authorization: `Bearer ${token}`,
         }),
-        body: JSON.stringify(card),
+        body: JSON.stringify({ frontSide, backSide }),
       });
       setCount(count + 1);
     }
@@ -81,7 +85,7 @@ function ContentComponent(props: {
     deleteCard: (id: number) => void,
     setFrontSide: React.Dispatch<React.SetStateAction<string>>,
     setBackSide: React.Dispatch<React.SetStateAction<string>>,
-    updateCard: (cardId: number) => void
+    updateCard: (cardId: number, backSide: string, frontSide: string) => void
   ) => {
     const cardList = props.cards.map(
       (card: { id: number; frontSide: string; backSide: string }) => {
