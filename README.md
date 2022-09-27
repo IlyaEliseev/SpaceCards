@@ -50,6 +50,12 @@ Follow these steps to get your development environment set up:
    dotnet run
    ```
 
+10. Next, within the `\frontend\spacecards` directory, restore packages:
+
+```
+npm install
+```
+
 10. Next, within the `\frontend\spacecards` directory, launch the front end by running:
 
 ```
