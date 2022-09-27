@@ -44,7 +44,7 @@ Follow these steps to get your development environment set up:
    dotnet ef database updata -p SpaceCards.DataAccess.Postgre -s SpaceCards.API
    ```
 
-9. Next, within the `\backend\SpaceCards.API` directory, launch the back end by running:
+9. Next, within the `\backend\SpaceCards.API` directory, launch the backend by running:
 
    ```
    dotnet run
@@ -52,17 +52,17 @@ Follow these steps to get your development environment set up:
 
 10. Next, within the `\frontend\spacecards` directory, restore packages:
 
-```
-npm install
-```
+    ```
+    npm install
+    ```
 
-10. Next, within the `\frontend\spacecards` directory, launch the front end by running:
+11. Next, within the `\frontend\spacecards` directory, launch the front end by running:
 
-```
-npm start
-```
+    ```
+    npm start
+    ```
 
-11. Launch [https://localhost:49394/swagger/index.html](https://localhost:49394/swagger/index.html) in your browser to view the API
+12. Launch [https://localhost:49394/swagger/index.html](https://localhost:49394/swagger/index.html) in your browser to view the API
 
 ## Technologies
 
