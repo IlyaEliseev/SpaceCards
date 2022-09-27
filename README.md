@@ -9,7 +9,6 @@ Follow these steps to get your development environment set up:
 1. Install `wsl` and Linux distribution:
 
    ```
-   wsl --install
    wsl --install -d <Distribution Name>
    ```
 
@@ -17,10 +16,10 @@ Follow these steps to get your development environment set up:
 
 3. Clone the repository
 
-4. At the root directory, restore required packages by running:
+4. Start up the application stack:
 
    ```
-   dotnet restore
+   docker compose up -d
    ```
 
 5. At the root directory, restore required packages by running:
