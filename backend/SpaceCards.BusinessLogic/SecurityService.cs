@@ -3,15 +3,15 @@ using SpaceCards.DataAccess.Postgre.Entites;
 
 namespace SpaceCards.BusinessLogic
 {
-    public class SecurityService : PasswordHasher<User>
+    public class SecurityService : PasswordHasher<UserEntity>
     {
-        public string HashPassword1(User user, string password)
+        public string GenerateHashPassword(UserEntity user, string password)
         {
             var passwordHash = HashPassword(user, password);
             return passwordHash;
         }
 
-        public bool VerifyPassword(User user, string password)
+        public bool VerifyPassword(UserEntity user, string password)
         {
             var result = VerifyHashedPassword(user, user.PasswordHash, password).ToString();
             if (result.Equals("Success"))

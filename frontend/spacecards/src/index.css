@@ -27,7 +27,7 @@ code {
   margin: 0 -10px;
 }
 
-.push-left {
+.logo {
   margin-right: auto;
 }
 
@@ -35,7 +35,7 @@ code {
   display: flex;
   flex-wrap: wrap;
   align-content: flex-start;
-  column-gap: 20px;
+  column-gap: 32px;
   row-gap: 20px;
 }
 
@@ -70,7 +70,7 @@ code {
   margin-top: 150px;
 }
 
-.signInForm {
+.signInForm1 {
   padding: 20px;
   width: 350px;
   height: 280px;
@@ -120,7 +120,7 @@ code {
   background-color: white;
 }
 
-.registration-form {
+.registration-form1 {
   width: 400px;
   height: 300px;
   background-color: white;
@@ -142,7 +142,7 @@ code {
 .statistics {
   display: flex;
   justify-content: center;
-  margin-top: 80px;
+  margin-top: 5px;
 }
 
 .statisticsTable {
@@ -150,4 +150,43 @@ code {
   border: 1px solid rgb(223, 191, 191);
   width: 500px;
   text-align: center;
+}
+
+.registration-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 70vh;
+  background: #fff;
+}
+
+.registration-form {
+  width: 300px;
+  height: 250px;
+  background-color: white;
+}
+
+.signInForm {
+  width: 300px;
+  height: 250px;
+  background-color: white;
+}
+
+.header {
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.headerContent {
+  display: flex;
+  justify-content: right;
+  align-items: center;
+}
+
+.header-nickname-text {
+  color: white;
+}
+
+.nickname-container {
+  margin-right: 30px;
 }

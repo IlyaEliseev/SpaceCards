@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using SpaceCards.Domain;
+using SpaceCards.Domain.Interfaces;
 
 namespace SpaceCards.API.Controllers
 {

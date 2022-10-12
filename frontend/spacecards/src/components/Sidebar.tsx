@@ -7,10 +7,8 @@ import DeleteGroupButton from './DeleteGroupButton';
 import Input from 'antd/lib/input/Input';
 import GetRandomCardButton from './GetRandomCardButton';
 import StatisticsButton from './StatisticsButton';
+import { Token } from '../pages/AuthPage/AuthPage';
 const { Sider } = Layout;
-
-const token = sessionStorage.getItem('refreshtoken');
-// 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NjIzODY0MzUsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiZDRkZGViMzYtYzMyYy00NmZkLThhYTEtZjBhMzFkOWE2YTliIn0.CUbDEJylJxi6-m5qOfCEtqYS6SEI5mP1DOAH1GtNT_k';
 
 function Sidebar(props: {
   count: number;
@@ -26,6 +24,13 @@ function Sidebar(props: {
 
   const count = props.count;
   const setCount = props.setCount;
+
+  const authUserInfo: string | null = sessionStorage.getItem('authtokensuser');
+  let token: string = '';
+  if (authUserInfo !== null) {
+    const parseToken: Token = JSON.parse(authUserInfo ?? '');
+    token = parseToken.accessToken;
+  }
 
   const createGroup = async () => {
     if (groupName.length > 0) {

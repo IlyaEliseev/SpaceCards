@@ -95,3 +95,27 @@ Follow these steps to get your development environment set up:
 ## Database schema
 
 ![DbSchema](https://github.com/IlyaEliseev/SpaceCards/blob/main/Docs/SpaceCardsDbSchema.jpg)
+
+## WebUi
+
+### Login and Register
+
+![LoginAndRegisterPage](https://github.com/IlyaEliseev/SpaceCards/blob/main/Docs/SpaceCardsLogin.jpg)
+
+![LoginAndRegisterPage](https://github.com/IlyaEliseev/SpaceCards/blob/main/Docs/SpaceCardsRegister.jpg)
+
+### Main page
+
+![MainPage](https://github.com/IlyaEliseev/SpaceCards/blob/main/Docs/SpaceCardsMainPage.jpg)
+
+![MainPage](https://github.com/IlyaEliseev/SpaceCards/blob/main/Docs/SpaceCardsGroupPage.jpg)
+
+### Guessing page
+
+![GuessingPage](https://github.com/IlyaEliseev/SpaceCards/blob/main/Docs/SpaceCardsGuessingPageGuessing.jpg)
+
+![GuessingPage](https://github.com/IlyaEliseev/SpaceCards/blob/main/Docs/SpaceCardsGuessingPageRating.jpg)
+
+### Statistics page
+
+![StatisticsPage](https://github.com/IlyaEliseev/SpaceCards/blob/main/Docs/SpaceCardsStatisticsPage.jpg)

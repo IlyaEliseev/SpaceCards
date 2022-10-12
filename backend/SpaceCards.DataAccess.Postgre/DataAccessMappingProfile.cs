@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using SpaceCards.DataAccess.Postgre.Entites;
+using SpaceCards.Domain.Model;
 
 namespace SpaceCards.DataAccess.Postgre
 {
@@ -6,10 +8,12 @@ namespace SpaceCards.DataAccess.Postgre
     {
         public DataAccessMappingProfile()
         {
-            CreateMap<Entites.Card, Domain.Card>().ReverseMap();
-            CreateMap<Entites.Group, Domain.Group>().ReverseMap();
-            CreateMap<Entites.CardGuessingStatistics, Domain.CardGuessingStatistics>().ReverseMap();
-            CreateMap<Entites.User, Domain.User>().ReverseMap();
+            CreateMap<CardEntity, Card>().ReverseMap();
+            CreateMap<GroupEntity, Group>().ReverseMap();
+            CreateMap<CardGuessingStatisticsEntity, CardGuessingStatistics>().ReverseMap();
+            CreateMap<UserEntity, User>().ReverseMap();
+            CreateMap<SessionEntity, Session>().ReverseMap();
+
         }
     }
 }

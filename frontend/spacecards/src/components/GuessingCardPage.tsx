@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import GuessedCard from './GuessedCard';
 import { Layout } from 'antd';
 import GuessingStatistics from './GuessingStatistics';
-const token = sessionStorage.getItem('refreshtoken');
-// 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NjIzODY0MzUsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiZDRkZGViMzYtYzMyYy00NmZkLThhYTEtZjBhMzFkOWE2YTliIn0.CUbDEJylJxi6-m5qOfCEtqYS6SEI5mP1DOAH1GtNT_k';
+import { Token } from '../pages/AuthPage/AuthPage';
 const { Content } = Layout;
 
 function GuessingCardPage() {
@@ -11,6 +10,13 @@ function GuessingCardPage() {
   const countRandomCards = 10;
   const [successValueList, setSuccessValueList] = useState('');
   const [count, setCount] = useState(0);
+
+  const authUserInfo: string | null = sessionStorage.getItem('authtokensuser');
+  let token: string = '';
+  if (authUserInfo !== null) {
+    const parseToken: Token = JSON.parse(authUserInfo ?? '');
+    token = parseToken.accessToken;
+  }
 
   const setStatistics = async (cardId: Number, successValue: Number) => {
     const data = await fetch(

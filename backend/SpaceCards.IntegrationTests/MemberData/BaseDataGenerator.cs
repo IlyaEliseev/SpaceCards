@@ -1,4 +1,4 @@
-﻿using SpaceCards.Domain;
+﻿using SpaceCards.Domain.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -2,7 +2,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SpaceCards.API.Contracts;
-using SpaceCards.Domain;
+using SpaceCards.Domain.Interfaces;
+using SpaceCards.Domain.Model;
 
 namespace SpaceCards.API.Controllers
 {
@@ -60,7 +61,7 @@ namespace SpaceCards.API.Controllers
             var userId = UserId.Value;
             var cardGuessingStatistics = await _service.GetGuessingCardStatistics(userId);
 
-            var cardGuessingStatisticsContract = _mapper.Map<Domain.CardGuessingStatistics[],
+            var cardGuessingStatisticsContract = _mapper.Map<CardGuessingStatistics[],
                 Contracts.GetCardGusessingStatisticsResponse[]>(cardGuessingStatistics);
 
             return Ok(cardGuessingStatisticsContract);

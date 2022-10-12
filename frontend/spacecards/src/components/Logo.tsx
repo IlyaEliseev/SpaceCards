@@ -3,11 +3,12 @@ import { ContainerOutlined } from '@ant-design/icons';
 
 function Logo() {
   return (
-    <div className='push-left'>
-      <div className='logo' />
-      <ContainerOutlined
-        style={{ fontSize: '35px', color: '#fff', left: '100' }}
-      />
+    <div className='logo'>
+      <a href='/'>
+        <ContainerOutlined
+          style={{ fontSize: '35px', color: '#fff', left: '100' }}
+        />
+      </a>
     </div>
   );
 }

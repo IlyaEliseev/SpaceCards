@@ -3,6 +3,7 @@ using JWT.Builder;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using SpaceCards.API.Options;
 using System.Security.Claims;
 
 namespace SpaceCards.API.Controllers

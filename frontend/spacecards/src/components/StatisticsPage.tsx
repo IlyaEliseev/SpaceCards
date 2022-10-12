@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
+import { Token } from '../pages/AuthPage/AuthPage';
 import StatisticsTable from './StatisticsTable';
-const token =
-  'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NjIzODY0MzUsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiZDRkZGViMzYtYzMyYy00NmZkLThhYTEtZjBhMzFkOWE2YTliIn0.CUbDEJylJxi6-m5qOfCEtqYS6SEI5mP1DOAH1GtNT_k';
 
 interface Statistics {
   id: number;
@@ -19,6 +18,13 @@ function StatisticsPage(props: { cards: never[] }) {
   const [statistics, setStatistics] = useState<Statistics[]>([]);
   let [id, cardId, success] = statistics;
   const cards = props.cards;
+
+  const authUserInfo: string | null = sessionStorage.getItem('authtokensuser');
+  let token: string = '';
+  if (authUserInfo !== null) {
+    const parseToken: Token = JSON.parse(authUserInfo ?? '');
+    token = parseToken.accessToken;
+  }
 
   useEffect(() => {
     const fetchStatistics = async () => {

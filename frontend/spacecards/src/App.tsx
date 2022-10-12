@@ -5,13 +5,12 @@ import Sidebar from './components/Sidebar';
 import ContentComponent from './components/Content';
 import 'antd/dist/antd.min.css';
 import { Breadcrumb, Divider, Layout, Modal } from 'antd';
-import SignInForm from './components/SignInForm';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import GuessingCardPage from './components/GuessingCardPage';
 import StatisticsPage from './components/StatisticsPage';
 import RegistrationPage from './components/RegistrationPage';
+import AuthPage, { Token } from './pages/AuthPage/AuthPage';
 
-const token = sessionStorage.getItem('refreshtoken');
 interface Cards {
   id: number;
   frontSide: string;
@@ -25,6 +24,13 @@ function App() {
   const [count, setCount] = useState(0);
   const [groups, setGroups] = useState([]);
   const [cards, setCards] = useState([]);
+
+  const authUserInfo: string | null = sessionStorage.getItem('authtokensuser');
+  let token: string = '';
+  if (authUserInfo !== null) {
+    const parseToken: Token = JSON.parse(authUserInfo ?? '');
+    token = parseToken.accessToken;
+  }
 
   useEffect(() => {
     const fetchCards = async () => {
@@ -119,14 +125,7 @@ function App() {
           path='/signin'
           element={
             <div>
-              <HeaderComponent />
-              <Breadcrumb style={{ margin: '16px 0' }}>
-                <Breadcrumb.Item href='/'>Home</Breadcrumb.Item>
-                <Breadcrumb.Item>SignIn</Breadcrumb.Item>
-              </Breadcrumb>
-              <div className='flexContainerSigninForm'>
-                <SignInForm />
-              </div>
+              <AuthPage />
             </div>
           }
         />
@@ -149,6 +148,7 @@ function App() {
           path='/Statistics'
           element={
             <div>
+              <HeaderComponent />
               <Breadcrumb style={{ margin: '16px 0' }}>
                 <Breadcrumb.Item href='/'>Home</Breadcrumb.Item>
                 <Breadcrumb.Item>Statistics</Breadcrumb.Item>

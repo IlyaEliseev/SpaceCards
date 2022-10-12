@@ -3,10 +3,9 @@ import { Layout } from 'antd';
 import CardComponent from './Card';
 import CardCreation from './CardCreation';
 import GroupCard from './GroupCard';
+import { Token } from '../pages/AuthPage/AuthPage';
 
 const { Content } = Layout;
-
-const token = sessionStorage.getItem('refreshtoken');
 
 function ContentComponent(props: {
   groupId: number;
@@ -24,6 +23,13 @@ function ContentComponent(props: {
 
   const count = props.count;
   const setCount = props.setCount;
+
+  const authUserInfo: string | null = sessionStorage.getItem('authtokensuser');
+  let token: string = '';
+  if (authUserInfo !== null) {
+    const parseToken: Token = JSON.parse(authUserInfo ?? '');
+    token = parseToken.accessToken;
+  }
   // useEffect(() => {
   //   const fetchCards = async () => {
   //     const data = await fetch('https://localhost:49394/cards', {

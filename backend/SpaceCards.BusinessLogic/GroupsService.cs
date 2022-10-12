@@ -1,4 +1,5 @@
-﻿using SpaceCards.Domain;
+﻿using SpaceCards.Domain.Interfaces;
+using SpaceCards.Domain.Model;
 
 namespace SpaceCards.BusinessLogic
 {

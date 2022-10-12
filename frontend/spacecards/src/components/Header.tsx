@@ -1,22 +1,39 @@
 import React, { useEffect, useState } from 'react';
 import { Layout } from 'antd';
 import Logo from './Logo';
-import SignInButton from './SignInButton';
-import GetRandomCardButton from './GetRandomCardButton';
-import StatisticsButton from './StatisticsButton';
-const token = sessionStorage.getItem('refreshtoken');
-// ('eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NjIzODY0MzUsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiZDRkZGViMzYtYzMyYy00NmZkLThhYTEtZjBhMzFkOWE2YTliIn0.CUbDEJylJxi6-m5qOfCEtqYS6SEI5mP1DOAH1GtNT_k');
+import LoginButton from './LoginButton';
+import { Token } from '../pages/AuthPage/AuthPage';
+import Nickname from './Nickname';
+import LogoutButton from './LogoutButton';
 const { Header } = Layout;
 
 function HeaderComponent() {
-  return (
-    <Header className='header'>
-      <div className='flexContainerHeader'>
+  const token: string | null = sessionStorage.getItem('authtokensuser');
+  let nickname: string = '';
+  if (token !== null) {
+    const parseToken: Token = JSON.parse(token ?? '');
+    nickname = parseToken.nickname;
+  }
+
+  const renderLogin = () => {
+    return (
+      <Header className='headerContent'>
         <Logo />
-        <SignInButton />
-      </div>
-    </Header>
-  );
+        <LoginButton />
+      </Header>
+    );
+  };
+  const renderLogout = () => {
+    return (
+      <Header className='headerContent'>
+        <Logo />
+        <Nickname nickname={nickname} />
+        <LogoutButton />
+      </Header>
+    );
+  };
+
+  return token === null ? <>{renderLogin()}</> : <>{renderLogout()}</>;
 }
 
 export default HeaderComponent;

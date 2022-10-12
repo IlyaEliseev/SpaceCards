@@ -28,6 +28,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\SpaceCards.API\SpaceCards.API.csproj" />
 	  <ProjectReference Include="..\SpaceCards.BusinessLogic\SpaceCards.BusinessLogic.csproj" />
+	  <ProjectReference Include="..\SpaceCards.IntegrationTests\SpaceCards.IntegrationTests.csproj" />
 	</ItemGroup>
 </Project>

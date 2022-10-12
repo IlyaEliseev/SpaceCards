@@ -1,4 +1,4 @@
-﻿using SpaceCards.Domain;
+﻿using SpaceCards.Domain.Interfaces;
 
 namespace SpaceCards.BusinessLogic
 {

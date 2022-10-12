@@ -4,9 +4,11 @@ using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Serilog;
 using SpaceCards.API;
+using SpaceCards.API.Options;
 using SpaceCards.BusinessLogic;
 using SpaceCards.DataAccess.Postgre;
-using SpaceCards.Domain;
+using SpaceCards.DataAccess.Postgre.Repositories;
+using SpaceCards.Domain.Interfaces;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -92,6 +94,8 @@ builder.Services.AddScoped<IUsersAccountRepository, UsersAccountRepository>();
 builder.Services.AddScoped<IUsersAccountService, UsersAccountService>();
 
 builder.Services.AddScoped<SecurityService>();
+
+builder.Services.AddScoped<ISessionsRepository, SessionsRepository>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddControllers();

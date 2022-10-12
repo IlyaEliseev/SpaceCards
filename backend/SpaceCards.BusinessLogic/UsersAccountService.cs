@@ -1,5 +1,6 @@
 ﻿using CSharpFunctionalExtensions;
-using SpaceCards.Domain;
+using SpaceCards.Domain.Interfaces;
+using SpaceCards.Domain.Model;
 
 namespace SpaceCards.BusinessLogic
 {
@@ -34,7 +35,7 @@ namespace SpaceCards.BusinessLogic
             throw new NotImplementedException();
         }
 
-        public async Task<Result<User>> FindUserByEmail(string email)
+        public async Task<Result<User>> GetByEmail(string email)
         {
             var user = await _usersAccountRepository.FindUserByEmail(email);
             if (user.IsFailure)

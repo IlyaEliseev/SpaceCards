@@ -214,10 +214,10 @@ namespace SpaceCards.IntegrationTests.Tests
             var response2 = await Client.GetAsync($"groups/randomCards?countCards={countCards}");
 
             var cardsResponse1 = await response1.Content
-                .ReadFromJsonAsync<DataAccess.Postgre.Entites.Card[]>();
+                .ReadFromJsonAsync<DataAccess.Postgre.Entites.CardEntity[]>();
 
             var cardsResponse2 = await response2.Content
-                .ReadFromJsonAsync<DataAccess.Postgre.Entites.Card[]>();
+                .ReadFromJsonAsync<DataAccess.Postgre.Entites.CardEntity[]>();
 
             var result = cardsResponse1.SequenceEqual(cardsResponse2);
 

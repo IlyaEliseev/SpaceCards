@@ -2,7 +2,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SpaceCards.API.Contracts;
-using SpaceCards.Domain;
+using SpaceCards.Domain.Interfaces;
+using SpaceCards.Domain.Model;
 
 namespace SpaceCards.API.Controllers
 {
@@ -77,7 +78,7 @@ namespace SpaceCards.API.Controllers
         {
             var userId = UserId.Value;
             var groups = await _service.Get(userId);
-            var groupsContract = _mapper.Map<Domain.Group[], Contracts.GetGroupResponse[]>(groups);
+            var groupsContract = _mapper.Map<Group[], Contracts.GetGroupResponse[]>(groups);
             return Ok(groupsContract);
         }
 
@@ -165,7 +166,7 @@ namespace SpaceCards.API.Controllers
                 return BadRequest(errors);
             }
 
-            var randomCardsContract = _mapper.Map<Domain.Card[], Contracts.GetCardResponse[]>(randomCards);
+            var randomCardsContract = _mapper.Map<Card[], Contracts.GetCardResponse[]>(randomCards);
 
             return Ok(randomCardsContract);
         }

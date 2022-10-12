@@ -27,6 +27,8 @@ services:
     ports:
       - 5439:5432
     container_name: Testdb
+    volumes:
+      - db-SpaceCardsTestDb-data:/var/lib/postgresql/data
 
   jaeger:
     image: jaegertracing/all-in-one
@@ -72,6 +74,7 @@ services:
 volumes:
   db-SpaceCards-data:
     driver: local
-  
+  db-SpaceCardsTestDb-data:
+    driver: local
 
   

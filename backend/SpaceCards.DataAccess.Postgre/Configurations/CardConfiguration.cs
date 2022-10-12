@@ -1,12 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using SpaceCards.DataAccess.Postgre.Entites;
+using SpaceCards.Domain.Model;
 
 namespace SpaceCards.DataAccess.Postgre.Configurations
 {
-    public class CardConfiguration : IEntityTypeConfiguration<Card>
+    public class CardConfiguration : IEntityTypeConfiguration<CardEntity>
     {
-        public void Configure(EntityTypeBuilder<Card> builder)
+        public void Configure(EntityTypeBuilder<CardEntity> builder)
         {
             builder.HasKey(x => x.Id);
 
@@ -14,11 +15,11 @@ namespace SpaceCards.DataAccess.Postgre.Configurations
                 .IsRequired(false);
 
             builder.Property(x => x.FrontSide)
-                .HasMaxLength(Domain.Card.MAX_NAME_FRONTSIDE)
+                .HasMaxLength(Domain.Model.Card.MAX_NAME_FRONTSIDE)
                 .IsRequired(true);
 
             builder.Property(x => x.BackSide)
-                .HasMaxLength(Domain.Card.MAX_NAME_BACKSIDE)
+                .HasMaxLength(Domain.Model.Card.MAX_NAME_BACKSIDE)
                 .IsRequired(true);
 
             builder.Property(x => x.UserId)

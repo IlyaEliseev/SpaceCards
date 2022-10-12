@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SpaceCards.API;
 using SpaceCards.DataAccess.Postgre;
+using SpaceCards.DataAccess.Postgre.Entites;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -27,25 +28,21 @@ namespace SpaceCards.IntegrationTests.Tests
                 {
                     builder.ConfigureAppConfiguration((context, configurationBuilder) =>
                     {
-                        var configutarion = configurationBuilder.AddJsonFile(
-                            "IntegrationTestsSettings.json",
-                            optional: true,
-                            reloadOnChange: true)
+                        var configutarion = configurationBuilder
                         .AddUserSecrets(typeof(BaseControllerTests).Assembly)
                         .Build();
 
-                        TestUserIdConfigurationValue = configutarion
-                            .GetSection("IntegrationTestSecret:TestUserId")
+                        UserId = configutarion
+                            .GetSection("TestUserId")
                             .Value;
 
-                        JwtTokenSecretConfigurationValue = configutarion
-                            .GetSection("IntegrationTestSecret:JwtTokenSecret")
+                        JwtTokenSecret = configutarion
+                            .GetSection("JwtTokenSecret")
                             .Value;
                     });
                 });
 
             Client = app.CreateDefaultClient(new LoggingHandler(outputHelper));
-
             Fixture = new Fixture();
             DbContext = app.Services.CreateScope().ServiceProvider.GetRequiredService<SpaceCardsDbContext>();
         }
@@ -54,24 +51,24 @@ namespace SpaceCards.IntegrationTests.Tests
 
         protected Fixture Fixture { get; }
 
-        protected string TestUserIdConfigurationValue { get; set; }
+        protected string UserId { get; set; }
 
-        protected string JwtTokenSecretConfigurationValue { get; set; }
+        protected string UserEmail => "testEmail@gmail.com";
+
+        protected string UserNickname => "Nickname";
+
+        protected string UserPassword => "Yq3qq!4qq&";
+
+        protected string JwtTokenSecret { get; set; }
 
         protected SpaceCardsDbContext DbContext { get; }
-
-        protected Guid TestUserId { get; set; }
 
         protected async Task SignIn()
         {
             var userId = await GetUserId();
 
-            var token = JwtBuilder.Create()
-                      .WithAlgorithm(new HMACSHA256Algorithm())
-                      .WithSecret(JwtTokenSecretConfigurationValue)
-                      .AddClaim("exp", DateTimeOffset.UtcNow.AddMinutes(3).ToUnixTimeSeconds())
-                      .AddClaim(ClaimTypes.NameIdentifier, userId)
-                      .Encode();
+            var userIdInformation = new UserInformation(UserNickname, userId);
+            var token = CreateAccessToken(userIdInformation);
 
             Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
                 BaseSchema.NAME,
@@ -80,7 +77,7 @@ namespace SpaceCards.IntegrationTests.Tests
 
         protected async Task<Guid> GetUserId()
         {
-            Guid.TryParse(TestUserIdConfigurationValue, out var userId);
+            Guid.TryParse(UserId, out var userId);
             return userId;
         }
 
@@ -88,7 +85,7 @@ namespace SpaceCards.IntegrationTests.Tests
         {
             var userId = await GetUserId();
 
-            var card = Fixture.Build<DataAccess.Postgre.Entites.Card>()
+            var card = Fixture.Build<DataAccess.Postgre.Entites.CardEntity>()
                             .With(x => x.UserId, userId)
                             .Without(x => x.Id)
                             .Without(x => x.Group)
@@ -106,7 +103,7 @@ namespace SpaceCards.IntegrationTests.Tests
         {
             var userId = await GetUserId();
 
-            var group = Fixture.Build<DataAccess.Postgre.Entites.Group>()
+            var group = Fixture.Build<DataAccess.Postgre.Entites.GroupEntity>()
                 .With(x => x.UserId, userId)
                 .Without(x => x.Id)
                 .Without(x => x.Cards)
@@ -125,7 +122,7 @@ namespace SpaceCards.IntegrationTests.Tests
             var rnd = new Random();
 
             var cardGuessingStatistics = Fixture
-                .Build<DataAccess.Postgre.Entites.CardGuessingStatistics>()
+                .Build<DataAccess.Postgre.Entites.CardGuessingStatisticsEntity>()
                 .Without(x => x.Id)
                 .With(x => x.UserId, userId)
                 .With(x => x.Success, rnd.Next(0, 2))
@@ -184,6 +181,57 @@ namespace SpaceCards.IntegrationTests.Tests
                     await DbContext.SaveChangesAsync();
                 }
             }
+        }
+
+        protected async Task<(string AccessToken, string RefreshToken)> MakeSession()
+        {
+            var userId = await GetUserId();
+
+            var userInformation = new UserInformation(UserNickname, userId);
+
+            var accessToken = CreateAccessToken(userInformation);
+            var refreshToken = CreateRefreshToken(userInformation);
+
+            var session = new SessionEntity
+            {
+                AccessToken = accessToken,
+                RefreshToken = refreshToken,
+                UserId = userId
+            };
+
+            await DbContext.Sessions.AddAsync(session);
+            await DbContext.SaveChangesAsync();
+            DbContext.ChangeTracker.Clear();
+
+            return (accessToken, refreshToken);
+        }
+
+        protected string CreateAccessToken(UserInformation information)
+        {
+            var accsessToken = JwtBuilder.Create()
+                      .WithAlgorithm(new HMACSHA256Algorithm())
+                      .WithSecret(JwtTokenSecret)
+                      .ExpirationTime(DateTimeOffset.UtcNow.AddHours(1).ToUnixTimeSeconds())
+                      .AddClaim(ClaimTypes.Name, information.Nickname)
+                      .AddClaim(ClaimTypes.NameIdentifier, information.UserId)
+                      .WithVerifySignature(true)
+                      .Encode();
+
+            return accsessToken;
+        }
+
+        protected string CreateRefreshToken(UserInformation information)
+        {
+            var refreshToken = JwtBuilder.Create()
+                    .WithAlgorithm(new HMACSHA256Algorithm())
+                    .WithSecret(JwtTokenSecret)
+                    .ExpirationTime(DateTimeOffset.UtcNow.AddMonths(1).ToUnixTimeSeconds())
+                    .AddClaim(ClaimTypes.Name, information.Nickname)
+                    .AddClaim(ClaimTypes.NameIdentifier, information.UserId)
+                    .WithVerifySignature(true)
+                    .Encode();
+
+            return refreshToken;
         }
     }
 }

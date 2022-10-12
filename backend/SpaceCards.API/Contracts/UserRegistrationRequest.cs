@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using SpaceCards.Domain.Model;
+using System.ComponentModel.DataAnnotations;
 
 namespace SpaceCards.API.Contracts
 {
@@ -7,6 +8,9 @@ namespace SpaceCards.API.Contracts
     {
         [EmailAddress]
         public string Email { get; set; }
+
+        [MaxLength(User.MaAX_NICKNAME_LENGTH)]
+        public string Nickname { get; set; }
 
         [DataType(DataType.Password)]
         [StringLength(20, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]

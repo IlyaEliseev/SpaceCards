@@ -1,9 +1,7 @@
 import { Select } from 'antd';
 import { group } from 'console';
 import React, { useEffect, useState } from 'react';
-
-const token = sessionStorage.getItem('refreshtoken');
-// 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjE2NjIzODY0MzUsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWVpZGVudGlmaWVyIjoiZDRkZGViMzYtYzMyYy00NmZkLThhYTEtZjBhMzFkOWE2YTliIn0.CUbDEJylJxi6-m5qOfCEtqYS6SEI5mP1DOAH1GtNT_k';
+import { Token } from '../pages/AuthPage/AuthPage';
 
 function GroupSelector(props: { groups: never[]; cardId: number }) {
   const { Option } = Select;
@@ -11,6 +9,13 @@ function GroupSelector(props: { groups: never[]; cardId: number }) {
   const [pickGroup, setPickGroup] = useState(0);
   const cardId = props.cardId;
   const groupId = pickGroup;
+
+  const authUserInfo: string | null = sessionStorage.getItem('authtokensuser');
+  let token: string = '';
+  if (authUserInfo !== null) {
+    const parseToken: Token = JSON.parse(authUserInfo ?? '');
+    token = parseToken.accessToken;
+  }
 
   const onChange = (value: { value: string; label: React.ReactNode }) => {
     setPickGroup(Number(value.value));

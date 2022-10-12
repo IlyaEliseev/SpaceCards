@@ -22,7 +22,7 @@ namespace SpaceCards.DataAccess.Postgre.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("SpaceCards.DataAccess.Postgre.Entites.Card", b =>
+            modelBuilder.Entity("SpaceCards.DataAccess.Postgre.Entites.CardEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -54,7 +54,7 @@ namespace SpaceCards.DataAccess.Postgre.Migrations
                     b.ToTable("Cards");
                 });
 
-            modelBuilder.Entity("SpaceCards.DataAccess.Postgre.Entites.CardGuessingStatistics", b =>
+            modelBuilder.Entity("SpaceCards.DataAccess.Postgre.Entites.CardGuessingStatisticsEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -76,7 +76,7 @@ namespace SpaceCards.DataAccess.Postgre.Migrations
                     b.ToTable("CardsGuessingStatistics");
                 });
 
-            modelBuilder.Entity("SpaceCards.DataAccess.Postgre.Entites.Group", b =>
+            modelBuilder.Entity("SpaceCards.DataAccess.Postgre.Entites.GroupEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -98,7 +98,7 @@ namespace SpaceCards.DataAccess.Postgre.Migrations
                     b.ToTable("Groups");
                 });
 
-            modelBuilder.Entity("SpaceCards.DataAccess.Postgre.Entites.GuessedCard", b =>
+            modelBuilder.Entity("SpaceCards.DataAccess.Postgre.Entites.GuessedCardEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -116,7 +116,28 @@ namespace SpaceCards.DataAccess.Postgre.Migrations
                     b.ToTable("GuessedCards");
                 });
 
-            modelBuilder.Entity("SpaceCards.DataAccess.Postgre.Entites.User", b =>
+            modelBuilder.Entity("SpaceCards.DataAccess.Postgre.Entites.SessionEntity", b =>
+                {
+                    b.Property<Guid>("UserId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("AccessToken")
+                        .IsRequired()
+                        .HasMaxLength(2048)
+                        .HasColumnType("character varying(2048)");
+
+                    b.Property<string>("RefreshToken")
+                        .IsRequired()
+                        .HasMaxLength(2048)
+                        .HasColumnType("character varying(2048)");
+
+                    b.HasKey("UserId");
+
+                    b.ToTable("Sessions");
+                });
+
+            modelBuilder.Entity("SpaceCards.DataAccess.Postgre.Entites.UserEntity", b =>
                 {
                     b.Property<Guid>("UserId")
                         .ValueGeneratedOnAdd()
@@ -124,8 +145,12 @@ namespace SpaceCards.DataAccess.Postgre.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
+                        .HasColumnType("text");
+
+                    b.Property<string>("Nickname")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)");
 
                     b.Property<string>("PasswordHash")
                         .IsRequired()
@@ -139,9 +164,9 @@ namespace SpaceCards.DataAccess.Postgre.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("SpaceCards.DataAccess.Postgre.Entites.Card", b =>
+            modelBuilder.Entity("SpaceCards.DataAccess.Postgre.Entites.CardEntity", b =>
                 {
-                    b.HasOne("SpaceCards.DataAccess.Postgre.Entites.Group", "Group")
+                    b.HasOne("SpaceCards.DataAccess.Postgre.Entites.GroupEntity", "Group")
                         .WithMany("Cards")
                         .HasForeignKey("GroupId")
                         .OnDelete(DeleteBehavior.NoAction);
@@ -149,16 +174,16 @@ namespace SpaceCards.DataAccess.Postgre.Migrations
                     b.Navigation("Group");
                 });
 
-            modelBuilder.Entity("SpaceCards.DataAccess.Postgre.Entites.GuessedCard", b =>
+            modelBuilder.Entity("SpaceCards.DataAccess.Postgre.Entites.GuessedCardEntity", b =>
                 {
-                    b.HasOne("SpaceCards.DataAccess.Postgre.Entites.Card", "Card")
+                    b.HasOne("SpaceCards.DataAccess.Postgre.Entites.CardEntity", "Card")
                         .WithMany()
                         .HasForeignKey("CardId");
 
                     b.Navigation("Card");
                 });
 
-            modelBuilder.Entity("SpaceCards.DataAccess.Postgre.Entites.Group", b =>
+            modelBuilder.Entity("SpaceCards.DataAccess.Postgre.Entites.GroupEntity", b =>
                 {
                     b.Navigation("Cards");
                 });

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using SpaceCards.Domain.Model;
 
 namespace SpaceCards.API
 {
@@ -6,9 +7,9 @@ namespace SpaceCards.API
     {
         public ApiMappingProfile()
         {
-            CreateMap<Domain.Card, Contracts.GetCardResponse>();
-            CreateMap<Domain.Group, Contracts.GetGroupResponse>();
-            CreateMap<Domain.CardGuessingStatistics, Contracts.GetCardGusessingStatisticsResponse>();
+            CreateMap<Card, Contracts.GetCardResponse>();
+            CreateMap<Group, Contracts.GetGroupResponse>();
+            CreateMap<CardGuessingStatistics, Contracts.GetCardGusessingStatisticsResponse>();
         }
     }
 }

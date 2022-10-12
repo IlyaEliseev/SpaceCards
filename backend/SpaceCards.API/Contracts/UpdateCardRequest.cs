@@ -1,4 +1,4 @@
-﻿using SpaceCards.Domain;
+﻿using SpaceCards.Domain.Model;
 using System.ComponentModel.DataAnnotations;
 
 namespace SpaceCards.API.Contracts

@@ -23,7 +23,7 @@ function IDontKnowButton(props: {
         props.setStatistics(props.cardId, successGuessing);
       }}
     >
-      I dont know
+      I don't know
     </Button>
   );
 }
