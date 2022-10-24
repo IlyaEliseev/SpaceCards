@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import GuessedCard from './GuessedCard';
-import { Layout } from 'antd';
 import GuessingStatistics from './GuessingStatistics';
-import { Token } from '../pages/AuthPage/AuthPage';
-const { Content } = Layout;
+import { Token } from '../AuthPage/AuthPage';
+import PageWrapper from '../../components/PageWrapper';
+import { BreadcrumbComponent } from '../../components/Breadcrumb';
 
 function GuessingCardPage() {
   const [randomCards, setRandomCards] = useState([]);
@@ -71,14 +71,20 @@ function GuessingCardPage() {
     return cards;
   };
 
-  const te = getRandomCards();
-
   return count < randomCards.length ? (
-    <div className='guessingCardForm'>{getRandomCards()[count]}</div>
+    <PageWrapper>
+      <BreadcrumbComponent pageName='Guessed cards' />
+      <div className='flexContainerGuessingCard'>
+        <div className='guessingCardForm'>{getRandomCards()[count]}</div>
+      </div>
+    </PageWrapper>
   ) : (
-    <div className='guessingCardForm'>
-      <GuessingStatistics successValueList={successValueList} />
-    </div>
+    <PageWrapper>
+      <BreadcrumbComponent pageName='Guessed cards' />
+      <div className='flexContainerGuessingCard'>
+        <GuessingStatistics successValueList={successValueList} />
+      </div>
+    </PageWrapper>
   );
 }
 

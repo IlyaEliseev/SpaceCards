@@ -1,9 +1,13 @@
 import { Select } from 'antd';
 import { group } from 'console';
 import React, { useEffect, useState } from 'react';
-import { Token } from '../pages/AuthPage/AuthPage';
+import { Token } from '../AuthPage/AuthPage';
+interface GroupSelectorProps {
+  groups: never[];
+  cardId: number;
+}
 
-function GroupSelector(props: { groups: never[]; cardId: number }) {
+function GroupSelector(props: GroupSelectorProps) {
   const { Option } = Select;
 
   const [pickGroup, setPickGroup] = useState(0);

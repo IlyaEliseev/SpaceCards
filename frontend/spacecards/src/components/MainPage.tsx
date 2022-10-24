@@ -1,1 +1,0 @@
-import reacr from 'react';

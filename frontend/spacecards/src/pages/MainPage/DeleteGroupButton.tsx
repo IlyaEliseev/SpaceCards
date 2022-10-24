@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from 'antd';
 import type { SizeType } from 'antd/es/config-provider/SizeContext';
-import { GoogleOutlined } from '@ant-design/icons';
-
-function DeleteGroupButton(props: {
+interface DeleteGroupButtonProps {
   id: number;
   deleteGroup: (value: number) => void;
-}) {
+}
+function DeleteGroupButton(props: DeleteGroupButtonProps) {
   const [size, setSize] = useState<SizeType>('middle');
 
   return (

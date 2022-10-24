@@ -1,14 +1,15 @@
 import { Layout } from 'antd';
 import React from 'react';
 import HeaderComponent from './Header';
+interface PageWrapperProps {
+  children: React.ReactNode;
+}
 
-function PageWrapper(props: { children: React.ReactNode }) {
+function PageWrapper(props: PageWrapperProps) {
   return (
     <>
-      <Layout>
-        <HeaderComponent />
-        {props.children}
-      </Layout>
+      <HeaderComponent />
+      {props.children}
     </>
   );
 }

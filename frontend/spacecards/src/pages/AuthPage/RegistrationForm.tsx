@@ -2,12 +2,13 @@ import { Button, Form, Input, Select } from 'antd';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import React, { useState } from 'react';
 import { RegistrationData } from './AuthPage';
+interface RegistrationFormProps {
+  registraion: (data: RegistrationData) => void;
+}
 
 const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$^+=!*()@%&]).{8,}$/;
 
-function RegistrationForm(props: {
-  registraion: (data: RegistrationData) => void;
-}) {
+function RegistrationForm(props: RegistrationFormProps) {
   const [autoCompleteResult, setAutoCompleteResult] = useState<string[]>([]);
   const [userEmail, setUserEmail] = useState('');
   const [userPassword, setUserPassword] = useState('');

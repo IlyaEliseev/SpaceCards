@@ -1,6 +1,12 @@
+import { Breadcrumb } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { Token } from '../pages/AuthPage/AuthPage';
+import { BreadcrumbComponent } from '../../components/Breadcrumb';
+import PageWrapper from '../../components/PageWrapper';
+import { Token } from '../AuthPage/AuthPage';
 import StatisticsTable from './StatisticsTable';
+interface StatisticsPageProps {
+  cards: never[];
+}
 
 interface Statistics {
   id: number;
@@ -14,7 +20,7 @@ interface UserStatistics {
   groupName: string | null;
 }
 
-function StatisticsPage(props: { cards: never[] }) {
+function StatisticsPage(props: StatisticsPageProps) {
   const [statistics, setStatistics] = useState<Statistics[]>([]);
   let [id, cardId, success] = statistics;
   const cards = props.cards;
@@ -77,7 +83,16 @@ function StatisticsPage(props: { cards: never[] }) {
   );
   console.log(userStatistics);
 
-  return <StatisticsTable userStatistics={userStatistics} />;
+  return (
+    <>
+      <PageWrapper>
+        <BreadcrumbComponent pageName='Statistics' />
+        <div className='statistics'>
+          <StatisticsTable userStatistics={userStatistics} />
+        </div>
+      </PageWrapper>
+    </>
+  );
 }
 
 export default StatisticsPage;

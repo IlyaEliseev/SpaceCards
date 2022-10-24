@@ -1,15 +1,16 @@
 import { SearchOutlined, CloseOutlined } from '@ant-design/icons';
 import { Button, Tooltip } from 'antd';
 import React from 'react';
-
-function IDontKnowButton(props: {
+interface IDontKnowButtonProps {
   count: number;
   setCount: React.Dispatch<React.SetStateAction<number>>;
   setStatistics: (cardId: Number, successValue: Number) => void;
   cardId: Number;
   successValueList: string;
   setSuccessValueList: React.Dispatch<React.SetStateAction<string>>;
-}) {
+}
+
+function IDontKnowButton(props: IDontKnowButtonProps) {
   const successGuessing = 0;
 
   return (

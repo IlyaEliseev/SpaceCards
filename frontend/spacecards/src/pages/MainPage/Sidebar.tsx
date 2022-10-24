@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { EditOutlined } from '@ant-design/icons';
 import { Layout, Menu } from 'antd';
 import type { MenuProps } from 'antd';
-import AddGroupButton from './AddGroupButton';
 import DeleteGroupButton from './DeleteGroupButton';
 import Input from 'antd/lib/input/Input';
 import GetRandomCardButton from './GetRandomCardButton';
 import StatisticsButton from './StatisticsButton';
-import { Token } from '../pages/AuthPage/AuthPage';
+import { Token } from '../AuthPage/AuthPage';
+import AddGroupButton from './AddGroupButton';
 const { Sider } = Layout;
 
 function Sidebar(props: {

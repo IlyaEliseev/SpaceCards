@@ -70,14 +70,6 @@ code {
   margin-top: 150px;
 }
 
-.signInForm1 {
-  padding: 20px;
-  width: 350px;
-  height: 280px;
-  background-color: white;
-  /* box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); */
-}
-
 .guessingCardForm {
   padding: 20px;
   width: 350px;
@@ -157,6 +149,7 @@ code {
   align-items: center;
   justify-content: center;
   height: 70vh;
+  margin-top: 10px;
   background: #fff;
 }
 

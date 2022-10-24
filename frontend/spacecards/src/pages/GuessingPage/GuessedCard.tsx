@@ -1,21 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import { Card} from 'antd';
+import { Card } from 'antd';
 import 'antd/dist/antd.min.css';
 import type { SizeType } from 'antd/es/config-provider/SizeContext';
 import IKnowButton from './IKnowButton';
 import IDontKnowButton from './IDontKnowButton';
-
-function GuessedCard(props: {
+interface GuessedCardProps {
   key: number;
   id: number;
   frontSide: string;
   backSide: string;
-  count:number
-  setCount: React.Dispatch<React.SetStateAction<number>>,
-  setStatistics: (cardId: Number, successValue: Number) => void
+  count: number;
+  setCount: React.Dispatch<React.SetStateAction<number>>;
+  setStatistics: (cardId: Number, successValue: Number) => void;
   successValueList: string;
   setSuccessValueList: React.Dispatch<React.SetStateAction<string>>;
-}) {
+}
+
+function GuessedCard(props: GuessedCardProps) {
   const [size, setSize] = useState<SizeType>('large');
   const setCount = props.setCount;
 
@@ -26,26 +27,27 @@ function GuessedCard(props: {
       size='default'
       bordered={false}
       style={{ width: 250 }}
-      hoverable={true}
+      hoverable={false}
       actions={[
         <IKnowButton
-          setCount={setCount} 
-          count={props.count} 
-          cardId={props.id} 
+          setCount={setCount}
+          count={props.count}
+          cardId={props.id}
           setStatistics={props.setStatistics}
           successValueList={props.successValueList}
-          setSuccessValueList={props.setSuccessValueList}/>,
-        <IDontKnowButton 
-          setCount={setCount} 
-          count={props.count} 
-          cardId={props.id} 
+          setSuccessValueList={props.setSuccessValueList}
+        />,
+        <IDontKnowButton
+          setCount={setCount}
+          count={props.count}
+          cardId={props.id}
           setStatistics={props.setStatistics}
           successValueList={props.successValueList}
-          setSuccessValueList={props.setSuccessValueList}/>
+          setSuccessValueList={props.setSuccessValueList}
+        />,
       ]}
-    >
-    </Card>
-  ) 
+    ></Card>
+  );
 }
 
 export default GuessedCard;

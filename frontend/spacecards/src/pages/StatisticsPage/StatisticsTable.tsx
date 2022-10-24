@@ -1,6 +1,9 @@
 import { Space, Table, Tag } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import React from 'react';
+interface StatisticsTableProps {
+  userStatistics: UserStatistics[];
+}
 
 interface DataType {
   key: string;
@@ -16,7 +19,7 @@ interface UserStatistics {
   groupName: string | null;
 }
 
-function StatisticsTable(props: { userStatistics: UserStatistics[] }) {
+function StatisticsTable(props: StatisticsTableProps) {
   const columns: ColumnsType<DataType> = [
     {
       title: 'Title',

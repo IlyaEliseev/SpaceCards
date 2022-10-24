@@ -1,13 +1,14 @@
 import React from 'react';
 import { Tabs } from 'antd';
-import LoginForm from './LoginForm';
 import RegistrationForm from './RegistrationForm';
 import { LoginData, RegistrationData } from './AuthPage';
-
-function AuthTabs(props: {
+import { LoginForm } from './LoginForm';
+interface AuthTabsProps {
   registraion: (data: RegistrationData) => void;
   login: (data: LoginData) => void;
-}) {
+}
+
+function AuthTabs(props: AuthTabsProps) {
   return (
     <div>
       <Tabs defaultActiveKey='1'>

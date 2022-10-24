@@ -1,6 +1,9 @@
 import React from 'react';
+interface NicknameProps {
+  nickname: string;
+}
 
-function Nickname(props: { nickname: string }) {
+function Nickname(props: NicknameProps) {
   return (
     <div className='nickname-container'>
       <h1 className='header-nickname-text'>

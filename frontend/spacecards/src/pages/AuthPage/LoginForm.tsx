@@ -1,14 +1,17 @@
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Button, Checkbox, Form, Input } from 'antd';
-import React, { useState } from 'react';
+import React, { FC, useState } from 'react';
 import { LoginData } from './AuthPage';
+interface LoginFormProps {
+  login: (data: LoginData) => void;
+}
 
-function LoginForm(props: { login: (data: LoginData) => void }) {
+export const LoginForm: FC<LoginFormProps> = React.memo(({ login }) => {
   const [email, setEmail] = useState('');
   const [password, setpassword] = useState('');
 
   const onFinish = () => {
-    props.login({ password: password, email: email });
+    login({ password: password, email: email });
   };
 
   return (
@@ -58,7 +61,6 @@ function LoginForm(props: { login: (data: LoginData) => void }) {
               type='primary'
               htmlType='submit'
               className='login-form-button'
-              // onClick={() => onFinish()}
             >
               Login
             </Button>
@@ -67,6 +69,4 @@ function LoginForm(props: { login: (data: LoginData) => void }) {
       </div>
     </div>
   );
-}
-
-export default LoginForm;
+});

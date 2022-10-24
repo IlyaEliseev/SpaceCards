@@ -1,24 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { Layout } from 'antd';
 import CardComponent from './Card';
-import CardCreation from './CardCreation';
+import ProdactionCard from './ProdactionCard';
 import GroupCard from './GroupCard';
-import { Token } from '../pages/AuthPage/AuthPage';
+import { Token } from '../AuthPage/AuthPage';
 
-const { Content } = Layout;
-
-function ContentComponent(props: {
+interface ContentComponentProps {
   groupId: number;
   groups: never[];
   cardsFromGroup: never[];
   cards: never[];
   count: number;
   setCount: React.Dispatch<React.SetStateAction<number>>;
-}) {
-  // const [cards, setCards] = useState([]);
-  const [frontSideState, setFrontSide] = useState('');
-  const [backSideState, setBackSide] = useState('');
-  const card = { frontSide: frontSideState, backSide: backSideState };
+}
+
+export interface CardType {
+  cardId: number;
+  frontSide: string;
+  backSide: string;
+}
+const { Content } = Layout;
+
+function ContentComponent(props: ContentComponentProps) {
   const groupId = props.groupId;
 
   const count = props.count;
@@ -30,22 +33,8 @@ function ContentComponent(props: {
     const parseToken: Token = JSON.parse(authUserInfo ?? '');
     token = parseToken.accessToken;
   }
-  // useEffect(() => {
-  //   const fetchCards = async () => {
-  //     const data = await fetch('https://localhost:49394/cards', {
-  //       method: 'get',
-  //       headers: new Headers({
-  //         'Content-type': 'application/json',
-  //         Authorization: `Bearer ${token}`,
-  //       }),
-  //     });
-  //     const cards = await data.json();
-  //     setCards(cards);
-  //   };
-  //   fetchCards().catch(console.error);
-  // }, [count]);
 
-  const createCard = async () => {
+  const createCard = async (card: CardType) => {
     const data = await fetch('https://localhost:49394/cards', {
       method: 'post',
       headers: new Headers({
@@ -57,7 +46,7 @@ function ContentComponent(props: {
     setCount(count + 1);
   };
 
-  const deleteCard = async (cardId: number) => {
+  const deleteCard = async (cardId: Number) => {
     if (cardId > 0) {
       const data = await fetch(`https://localhost:49394/cards/${cardId}`, {
         method: 'delete',
@@ -65,17 +54,13 @@ function ContentComponent(props: {
           'Content-type': 'application/json',
           Authorization: `Bearer ${token}`,
         }),
-        body: JSON.stringify(card),
       });
       setCount(count + 1);
     }
   };
 
-  const updateCard = async (
-    cardId: number,
-    frontSide: string,
-    backSide: string
-  ) => {
+  const updateCard = async (card: CardType) => {
+    const { cardId, frontSide, backSide } = card;
     if (cardId > 0) {
       const data = await fetch(`https://localhost:49394/cards/${cardId}`, {
         method: 'put',
@@ -91,9 +76,7 @@ function ContentComponent(props: {
 
   const getCards = (
     deleteCard: (id: number) => void,
-    setFrontSide: React.Dispatch<React.SetStateAction<string>>,
-    setBackSide: React.Dispatch<React.SetStateAction<string>>,
-    updateCard: (cardId: number, backSide: string, frontSide: string) => void
+    updateCard: (card: CardType) => void
   ) => {
     const cardList = props.cards.map(
       (card: { id: number; frontSide: string; backSide: string }) => {
@@ -104,8 +87,6 @@ function ContentComponent(props: {
             frontSide={card.frontSide}
             backSide={card.backSide}
             deleteCard={deleteCard}
-            setFrontSide={setFrontSide}
-            setBackSide={setBackSide}
             updateCard={updateCard}
             groups={props.groups}
           />
@@ -142,12 +123,8 @@ function ContentComponent(props: {
           }}
         >
           <div className='flexContainerContent'>
-            {getCards(deleteCard, setFrontSide, setBackSide, updateCard)}
-            <CardCreation
-              setBackSide={setBackSide}
-              setFrontSide={setFrontSide}
-              createCard={createCard}
-            />
+            {getCards(deleteCard, updateCard)}
+            <ProdactionCard createCard={createCard} />
           </div>
         </Content>
       </div>

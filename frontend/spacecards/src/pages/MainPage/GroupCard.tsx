@@ -1,12 +1,12 @@
 import { Card } from 'antd';
 import React from 'react';
-
-function GroupCard(props: {
+interface GroupCardProps {
   key: number;
   id: number;
   frontSide: string;
   backSide: string;
-}) {
+}
+function GroupCard(props: GroupCardProps) {
   return (
     <Card
       key={props.id}

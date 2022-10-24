@@ -1,21 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import './App.css';
-import 'antd/dist/antd.min.css';
 import { Layout } from 'antd';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import GuessingCardPage from './pages/GuessingPage/GuessingCardPage';
-import StatisticsPage from './pages/StatisticsPage/StatisticsPage';
-import AuthPage, { Token } from './pages/AuthPage/AuthPage';
-import { MainPage } from './pages/MainPage/MainPage';
+import React, { FC, useEffect, useState } from 'react';
+import ContentComponent from './Content';
+import PageWrapper from '../../components/PageWrapper';
+import Sidebar from './Sidebar';
+import { Token } from '../AuthPage/AuthPage';
 
-interface Cards {
-  id: number;
-  frontSide: string;
-  backSide: string;
-}
-
-function App() {
-  const { Header, Content, Footer, Sider } = Layout;
+export const MainPage: FC = () => {
+  const { Footer } = Layout;
   const [groupId, setGroupId] = useState(0);
   const [cardsFromGroup, setCardsByGroup] = useState([]);
   const [count, setCount] = useState(0);
@@ -80,29 +71,29 @@ function App() {
   }, [groupId]);
 
   return (
-    <Router>
-      <Routes>
-        <Route
-          path='/'
-          element={
-            <div className='App'>
-              <MainPage />
-            </div>
-          }
-        />
-        <Route
-          path='/signin'
-          element={
-            <div>
-              <AuthPage />
-            </div>
-          }
-        />
-        <Route path='/guessingCards' element={<GuessingCardPage />} />
-        <Route path='/Statistics' element={<StatisticsPage cards={cards} />} />
-      </Routes>
-    </Router>
+    <PageWrapper>
+      <Layout className='site-layout-background'>
+        <div>
+          <Sidebar
+            count={count}
+            setCount={setCount}
+            setGroupId={setGroupId}
+            groupId={groupId}
+            groups={groups}
+          />
+        </div>
+        <div>
+          <ContentComponent
+            cards={cards}
+            cardsFromGroup={cardsFromGroup}
+            groups={groups}
+            groupId={groupId}
+            count={count}
+            setCount={setCount}
+          />
+        </div>
+      </Layout>
+      <Footer style={{ textAlign: 'center', minHeight: 590 }}></Footer>
+    </PageWrapper>
   );
-}
-
-export default App;
+};
