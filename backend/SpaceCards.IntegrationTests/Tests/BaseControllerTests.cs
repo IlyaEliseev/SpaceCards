@@ -5,22 +5,30 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Npgsql;
+using Respawn;
 using SpaceCards.API;
 using SpaceCards.DataAccess.Postgre;
 using SpaceCards.DataAccess.Postgre.Entites;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Reflection;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
+using Respawn.Graph;
 
 namespace SpaceCards.IntegrationTests.Tests
 {
-    public abstract class BaseControllerTests : IClassFixture<DatabaseFixture>
+    public abstract class BaseControllerTests : IAsyncLifetime
     {
+        private static readonly string _baseDirecotry = AppContext.BaseDirectory;
+        private static readonly string _path = Directory.GetParent(_baseDirecotry).Parent.Parent.Parent.FullName;
+
         public BaseControllerTests(ITestOutputHelper outputHelper)
         {
             var app = new WebApplicationFactory<Program>()
@@ -29,8 +37,10 @@ namespace SpaceCards.IntegrationTests.Tests
                     builder.ConfigureAppConfiguration((context, configurationBuilder) =>
                     {
                         var configutarion = configurationBuilder
-                        .AddUserSecrets(typeof(BaseControllerTests).Assembly)
-                        .Build();
+                            .SetBasePath(_path)
+                            .AddJsonFile("appsettings.Test.json")
+                            .AddEnvironmentVariables()
+                            .Build();
 
                         UserId = configutarion
                             .GetSection("TestUserId")
@@ -39,6 +49,10 @@ namespace SpaceCards.IntegrationTests.Tests
                         JwtTokenSecret = configutarion
                             .GetSection("JwtTokenSecret")
                             .Value;
+
+                        var test = configutarion.GetSection("Name").Value;
+
+                        ConnectionString = configutarion.GetConnectionString("SpaceCardsDb");
                     });
                 });
 
@@ -62,6 +76,8 @@ namespace SpaceCards.IntegrationTests.Tests
         protected string JwtTokenSecret { get; set; }
 
         protected SpaceCardsDbContext DbContext { get; }
+
+        protected string ConnectionString { get; set; }
 
         protected async Task SignIn()
         {
@@ -233,5 +249,29 @@ namespace SpaceCards.IntegrationTests.Tests
 
             return refreshToken;
         }
+
+        public Task InitializeAsync()
+        {
+            return Task.CompletedTask;
+        }
+
+        public async Task DisposeAsync()
+        {
+            using (var conn = new NpgsqlConnection(ConnectionString))
+            {
+                await conn.OpenAsync();
+                await checkpoint.Reset(conn);
+            }
+        }
+
+        private static Checkpoint checkpoint = new Checkpoint
+        {
+            TablesToIgnore = new[]
+            {
+                new Table("__EFMigrationsHistory")
+            },
+
+            DbAdapter = DbAdapter.Postgres
+        };
     }
 }

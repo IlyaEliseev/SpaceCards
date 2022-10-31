@@ -9,7 +9,7 @@ namespace SpaceCards.API.Contracts
         [EmailAddress]
         public string Email { get; set; }
 
-        [MaxLength(User.MaAX_NICKNAME_LENGTH)]
+        [MaxLength(User.MAX_NICKNAME_LENGTH)]
         public string Nickname { get; set; }
 
         [DataType(DataType.Password)]

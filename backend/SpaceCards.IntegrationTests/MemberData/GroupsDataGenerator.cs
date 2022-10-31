@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace SpaceCards.IntegrationTests.MemberData
 {
@@ -41,7 +42,14 @@ namespace SpaceCards.IntegrationTests.MemberData
             for (int i = 0; i < testCount; i++)
             {
                 var invalidGroupId = -rnd.Next(0, int.MaxValue);
-                var invalidName = BaseDataGenerator.MakeInvalidString();
+
+                var invalidNameLength = BaseDataGenerator.GetInvalidNameLength();
+
+                var invalidNameData = Enumerable.Range(0, 5)
+                    .Select(x => StringFixture.GenerateRandomString(invalidNameLength))
+                    .ToArray();
+
+                var invalidName = BaseDataGenerator.MakeInvalidString(invalidNameData);
 
                 yield return new object[]
                 {
@@ -54,7 +62,13 @@ namespace SpaceCards.IntegrationTests.MemberData
         {
             for (int i = 0; i < testCount; i++)
             {
-                var invalidName = BaseDataGenerator.MakeInvalidString();
+                var invalidNameLength = BaseDataGenerator.GetInvalidNameLength();
+
+                var invalidNameData = Enumerable.Range(0, 5)
+                    .Select(x => StringFixture.GenerateRandomString(invalidNameLength))
+                    .ToArray();
+
+                var invalidName = BaseDataGenerator.MakeInvalidString(invalidNameData);
 
                 yield return new object[]
                 {

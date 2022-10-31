@@ -15,7 +15,7 @@ namespace SpaceCards.DataAccess.Postgre.Configurations
                 .IsRequired(true);
 
             builder.Property(x => x.Nickname)
-                .HasMaxLength(User.MaAX_NICKNAME_LENGTH)
+                .HasMaxLength(User.MAX_NICKNAME_LENGTH)
                 .IsRequired(true);
 
             builder.Property(x => x.PasswordHash)

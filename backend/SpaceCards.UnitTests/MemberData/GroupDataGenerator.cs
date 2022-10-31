@@ -23,7 +23,7 @@ namespace SpaceCards.UnitTests.MemberData
             {
                 var length = rnd.Next(
                     Group.MAX_NAME_LENGTH + 1,
-                    int.MaxValue / 1000);
+                    Group.MAX_NAME_LENGTH + 5);
 
                 var invalidData = Enumerable.Range(0, 5)
                    .Select(x => StringFixture.GenerateRandomString(length))

@@ -4,7 +4,7 @@ namespace SpaceCards.Domain.Model
 {
     public record User
     {
-        public const int MaAX_NICKNAME_LENGTH = 50;
+        public const int MAX_NICKNAME_LENGTH = 50;
 
         private User(Guid userId, string email, string passwordHash, DateTime registrationData, string nickname)
         {
@@ -52,11 +52,11 @@ namespace SpaceCards.Domain.Model
             }
 
             if (!string.IsNullOrWhiteSpace(nickname)
-                && nickname.Length > MaAX_NICKNAME_LENGTH)
+                && nickname.Length > MAX_NICKNAME_LENGTH)
             {
                 failure = Result.Combine(
                     failure,
-                    Result.Failure<User>($"{nameof(nickname)} is not be more than {MaAX_NICKNAME_LENGTH} chars"));
+                    Result.Failure<User>($"{nameof(nickname)} is not be more than {MAX_NICKNAME_LENGTH} chars"));
             }
 
             if (failure.IsFailure)

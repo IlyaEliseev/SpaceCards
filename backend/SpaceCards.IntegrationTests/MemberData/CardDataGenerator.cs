@@ -25,16 +25,21 @@ namespace SpaceCards.IntegrationTests.MemberData
 
             for (int i = 0; i < testCount; i++)
             {
-                var length = BaseDataGenerator.GetRandomLengthString();
+                var frontsideLength = BaseDataGenerator.GetInvalidFrontsideLength();
+                var backsideLength = BaseDataGenerator.GetInvalidBacksideLength();
 
-                var invalidData = Enumerable.Range(0, 5)
-                    .Select(x => StringFixture.GenerateRandomString(length))
+                var invalidFrontsideData = Enumerable.Range(0, 5)
+                    .Select(x => StringFixture.GenerateRandomString(frontsideLength))
+                    .ToArray();
+
+                var invalidBacksideData = Enumerable.Range(0, 5)
+                    .Select(x => StringFixture.GenerateRandomString(backsideLength))
                     .ToArray();
 
                 var invalidCardId = -rnd.Next(0, int.MaxValue);
 
-                var invalidFrontSide = BaseDataGenerator.MakeInvalidString(invalidData);
-                var invalidBackSide = BaseDataGenerator.MakeInvalidString(invalidData);
+                var invalidFrontSide = BaseDataGenerator.MakeInvalidString(invalidFrontsideData);
+                var invalidBackSide = BaseDataGenerator.MakeInvalidString(invalidBacksideData);
 
                 yield return new object[]
                 {
@@ -47,14 +52,19 @@ namespace SpaceCards.IntegrationTests.MemberData
         {
             for (int i = 0; i < testCount; i++)
             {
-                var length = BaseDataGenerator.GetRandomLengthString();
+                var frontsideLength = BaseDataGenerator.GetInvalidFrontsideLength();
+                var backsideLength = BaseDataGenerator.GetInvalidBacksideLength();
 
-                var invalidData = Enumerable.Range(0, 5)
-                    .Select(x => StringFixture.GenerateRandomString(length))
+                var invalidFrontsideData = Enumerable.Range(0, 5)
+                    .Select(x => StringFixture.GenerateRandomString(frontsideLength))
                     .ToArray();
 
-                var invalidFrontSide = BaseDataGenerator.MakeInvalidString(invalidData);
-                var invalidBackSide = BaseDataGenerator.MakeInvalidString(invalidData);
+                var invalidBacksideData = Enumerable.Range(0, 5)
+                    .Select(x => StringFixture.GenerateRandomString(backsideLength))
+                    .ToArray();
+
+                var invalidFrontSide = BaseDataGenerator.MakeInvalidString(invalidFrontsideData);
+                var invalidBackSide = BaseDataGenerator.MakeInvalidString(invalidBacksideData);
 
                 yield return new object[]
                 {

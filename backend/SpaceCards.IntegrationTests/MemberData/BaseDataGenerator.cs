@@ -7,13 +7,35 @@ namespace SpaceCards.IntegrationTests.MemberData
 {
     internal class BaseDataGenerator
     {
-        public static int GetRandomLengthString()
+        public static int GetInvalidFrontsideLength()
+        {
+            var rnd = new Random();
+
+            var length = rnd.Next(
+                    Card.MAX_NAME_FRONTSIDE + 1,
+                    Card.MAX_NAME_FRONTSIDE + 5);
+
+            return length;
+        }
+
+        public static int GetInvalidBacksideLength()
+        {
+            var rnd = new Random();
+
+            var length = rnd.Next(
+                    Card.MAX_NAME_BACKSIDE + 1,
+                    Card.MAX_NAME_BACKSIDE + 5);
+
+            return length;
+        }
+
+        public static int GetInvalidNameLength()
         {
             var rnd = new Random();
 
             var length = rnd.Next(
                     Group.MAX_NAME_LENGTH + 1,
-                    int.MaxValue / 1000);
+                    Group.MAX_NAME_LENGTH + 5);
 
             return length;
         }

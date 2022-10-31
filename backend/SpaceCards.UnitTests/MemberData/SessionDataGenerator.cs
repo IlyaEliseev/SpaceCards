@@ -19,7 +19,7 @@ namespace SpaceCards.UnitTests.MemberData
 
                 var invalidStringLength = rnd.Next(
                     Session.MaxLengthToken + 1,
-                    int.MaxValue / 1000);
+                    Session.MaxLengthToken + 5);
 
                 var invalidData = Enumerable.Range(0, 5)
                     .Select(x => StringFixture.GenerateRandomString(invalidStringLength))

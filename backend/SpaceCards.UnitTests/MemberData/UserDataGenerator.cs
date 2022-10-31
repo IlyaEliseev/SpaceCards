@@ -15,8 +15,8 @@ namespace SpaceCards.UnitTests.MemberData
             for (int i = 0; i < testCount; i++)
             {
                 var invalidNicknameLength = rnd.Next(
-                    User.MaAX_NICKNAME_LENGTH + 1,
-                    int.MaxValue / 1000);
+                    User.MAX_NICKNAME_LENGTH + 1,
+                    User.MAX_NICKNAME_LENGTH + 5);
 
                 var nickname = Enumerable.Range(0, 5)
                     .Select(x => StringFixture.GenerateRandomString(invalidNicknameLength))
