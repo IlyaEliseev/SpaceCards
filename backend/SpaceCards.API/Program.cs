@@ -4,6 +4,7 @@ using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using Serilog;
 using SpaceCards.API;
+using SpaceCards.API.Extensions;
 using SpaceCards.API.Options;
 using SpaceCards.BusinessLogic;
 using SpaceCards.DataAccess.Postgre;
@@ -73,29 +74,9 @@ builder.Services.AddAutoMapper(cfg =>
     cfg.AddProfile<DataAccessMappingProfile>();
 });
 
-builder.Services.AddScoped<ICardsRepository, CardsRepository>();
+builder.Services.AddRepositories();
 
-builder.Services.AddScoped<ICardsService, CardsService>();
-
-builder.Services.AddScoped<IGroupsRepository, GroupsRepository>();
-
-builder.Services.AddScoped<IGroupsService, GroupsService>();
-
-builder.Services.AddScoped<IGuessedCardRepository, GuessedCardRepository>();
-
-builder.Services.AddScoped<IGuessedCardsService, GuessedCardsService>();
-
-builder.Services.AddScoped<IStatisticsRepository, StatisticsRepository>();
-
-builder.Services.AddScoped<IStatisticsService, StatisticsService>();
-
-builder.Services.AddScoped<IUsersAccountRepository, UsersAccountRepository>();
-
-builder.Services.AddScoped<IUsersAccountService, UsersAccountService>();
-
-builder.Services.AddScoped<SecurityService>();
-
-builder.Services.AddScoped<ISessionsRepository, SessionsRepository>();
+builder.Services.AddServices();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddControllers();
