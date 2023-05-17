@@ -7,7 +7,7 @@ using SpaceCards.Domain.Model;
 
 namespace SpaceCards.API.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class GroupsController : BaseApiController
     {
         private readonly ILogger<GroupsController> _logger;

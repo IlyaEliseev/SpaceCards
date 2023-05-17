@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SpaceCards.DataAccess.Postgre;
@@ -11,9 +12,10 @@ using SpaceCards.DataAccess.Postgre;
 namespace SpaceCards.DataAccess.Postgre.Migrations
 {
     [DbContext(typeof(SpaceCardsDbContext))]
-    partial class SpaceCardsContextModelSnapshot : ModelSnapshot
+    [Migration("20230723152830_AddOAuthUserTableAndOAuthUserTokenTable")]
+    partial class AddOAuthUserTableAndOAuthUserTokenTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

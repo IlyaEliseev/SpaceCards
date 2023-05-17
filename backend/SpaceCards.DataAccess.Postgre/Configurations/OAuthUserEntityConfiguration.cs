@@ -5,20 +5,20 @@ using SpaceCards.Domain.Model;
 
 namespace SpaceCards.DataAccess.Postgre.Configurations
 {
-    public class UserConfiguration : IEntityTypeConfiguration<UserEntity>
+    public class OAuthUserEntityConfiguration : IEntityTypeConfiguration<OAuthUserEntity>
     {
-        public void Configure(EntityTypeBuilder<UserEntity> builder)
+        public void Configure(EntityTypeBuilder<OAuthUserEntity> builder)
         {
-            builder.HasKey(x => x.UserId);
+            builder.HasKey(x => x.Id);
+
+            builder.Property(x => x.Id).ValueGeneratedOnAdd();
 
             builder.Property(x => x.Email)
+                .HasMaxLength(OAuthUser.MAX_EMAIL_LENGTH)
                 .IsRequired(true);
 
             builder.Property(x => x.Nickname)
-                .HasMaxLength(User.MAX_NICKNAME_LENGTH)
-                .IsRequired(true);
-
-            builder.Property(x => x.PasswordHash)
+                .HasMaxLength(OAuthUser.MAX_NICKNAME_LENGTH)
                 .IsRequired(true);
 
             builder.Property(x => x.RegistrationData)
@@ -28,6 +28,10 @@ namespace SpaceCards.DataAccess.Postgre.Configurations
                 .IsRequired(false);
 
             builder.HasQueryFilter(x => x.DeleteDate == null);
+
+            builder.HasOne(x => x.Token)
+                .WithOne(x => x.User)
+                .HasForeignKey<OAuthUserTokenEntity>(x => x.OAuthUserId);
         }
     }
 }

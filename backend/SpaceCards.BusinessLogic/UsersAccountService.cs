@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using SpaceCards.DataAccess.Postgre.Entites;
 using SpaceCards.Domain.Interfaces;
 using SpaceCards.Domain.Model;
 

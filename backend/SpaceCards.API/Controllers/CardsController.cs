@@ -91,6 +91,7 @@ namespace SpaceCards.API.Controllers
         [HttpPut("{cardId:int}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Update([FromRoute] int cardId, [FromBody] UpdateCardRequest card)
         {
             var (result, errors) = await _service.Update(cardId, card.FrontSide, card.BackSide);

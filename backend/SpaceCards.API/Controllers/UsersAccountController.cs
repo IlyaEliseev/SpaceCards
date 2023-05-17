@@ -6,6 +6,7 @@ using SpaceCards.Domain.Interfaces;
 using SpaceCards.API.Options;
 using SpaceCards.Domain.Model;
 using Microsoft.AspNetCore.Authorization;
+
 namespace SpaceCards.API.Controllers
 {
     [AllowAnonymous]
@@ -129,12 +130,26 @@ namespace SpaceCards.API.Controllers
                 return BadRequest(result.Error);
             }
 
-            return Ok(new TokensResponse
+            HttpContext.Response.Cookies.Append(
+            "_sp_i",
+            accsessToken,
+            new CookieOptions()
             {
-                AccessToken = accsessToken,
-                RefreshToken = refreshToken,
-                Nickname = user.Value.Nickname
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.None,
             });
+
+            var cookieOptions = new CookieOptions()
+            {
+                Secure = true,
+                SameSite = SameSiteMode.None,
+            };
+
+            HttpContext.Response.Cookies.Append("nickname", user.Value.Nickname, cookieOptions);
+            HttpContext.Response.Cookies.Append("session_id", $"{Guid.NewGuid()}", cookieOptions);
+
+            return Ok();
         }
 
         /// <summary>
@@ -186,6 +201,30 @@ namespace SpaceCards.API.Controllers
                 RefreshToken = refreshToken,
                 Nickname = userInformation.Value.Nickname
             });
+        }
+
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            HttpContext.Response.Cookies.Delete("_sp_i",
+                new CookieOptions()
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.None,
+                });
+
+            var cookieOptions = new CookieOptions()
+            {
+                Secure = true,
+                SameSite = SameSiteMode.None,
+            };
+
+            HttpContext.Response.Cookies.Delete("nickname", cookieOptions);
+            HttpContext.Response.Cookies.Delete("session_id", cookieOptions);
+            HttpContext.Response.Cookies.Delete("avatar", cookieOptions);
+
+            return Ok();
         }
     }
 }

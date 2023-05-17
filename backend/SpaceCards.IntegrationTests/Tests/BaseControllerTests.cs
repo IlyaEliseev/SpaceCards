@@ -21,10 +21,17 @@ using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 using Respawn.Graph;
+using Microsoft.AspNetCore.Http;
+using System.Linq;
+using Microsoft.AspNetCore.Mvc;
+using Moq;
+using System.Net;
+using System.Reflection.Metadata;
+using Microsoft.AspNetCore.Mvc.RazorPages.Infrastructure;
 
 namespace SpaceCards.IntegrationTests.Tests
 {
-    public abstract class BaseControllerTests : IAsyncLifetime
+    public abstract class BaseControllerTests : ControllerBase, IAsyncLifetime
     {
         private static readonly string _baseDirecotry = AppContext.BaseDirectory;
         private static readonly string _path = Directory.GetParent(_baseDirecotry).Parent.Parent.Parent.FullName;
@@ -85,10 +92,13 @@ namespace SpaceCards.IntegrationTests.Tests
 
             var userIdInformation = new UserInformation(UserNickname, userId);
             var token = CreateAccessToken(userIdInformation);
-
-            Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
-                BaseSchema.NAME,
-                token);
+            var uri = new Uri("https://localhost:49394/");
+            var cookieContainer = new CookieContainer();
+            cookieContainer.Add(uri, new Cookie("_sp_i", token));
+            Client.DefaultRequestHeaders.Add("cookie", cookieContainer.GetCookieHeader(uri));
+            //Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
+            //    "Bearer",
+            //    token);
         }
 
         protected async Task<Guid> GetUserId()

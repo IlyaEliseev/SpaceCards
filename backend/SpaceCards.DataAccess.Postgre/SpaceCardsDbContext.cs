@@ -22,6 +22,10 @@ namespace SpaceCards.DataAccess.Postgre
 
         public DbSet<SessionEntity> Sessions { get; set; }
 
+        public DbSet<OAuthUserEntity> OAuthUserUsers { get; set; }
+
+        public DbSet<OAuthUserTokenEntity> OAuthUserTokens { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(SpaceCardsDbContext).Assembly);
