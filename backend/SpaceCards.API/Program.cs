@@ -1,25 +1,16 @@
 using Microsoft.EntityFrameworkCore;
 using OpenTelemetry.Metrics;
-using OpenTelemetry.Resources;
-using OpenTelemetry.Trace;
 using Serilog;
 using SpaceCards.API;
 using SpaceCards.API.Extensions;
-using SpaceCards.API.Options;
-using SpaceCards.BusinessLogic;
 using SpaceCards.DataAccess.Postgre;
-using SpaceCards.DataAccess.Postgre.Repositories;
-using SpaceCards.Domain.Interfaces;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddAuthentication(BaseSchema.NAME)
-    .AddScheme<CustomBearerAuthenticationOption, CustomBearerAuthenticationHandler>(
-    BaseSchema.NAME, options => { });
+builder.AddApiOptions();
 
-builder.Services.Configure<JWTSecretOptions>(
-    builder.Configuration.GetSection(JWTSecretOptions.JWTSecret));
+builder.AddApiAuthentication();
 
 builder.Services.AddLogging(b =>
 {
@@ -29,27 +20,18 @@ builder.Services.AddLogging(b =>
     b.AddSerilog(logger, true);
 });
 
-var serviceName = "SpaceCards.API";
+builder.Services.AddJaegerTracing();
 
-var servieceVersion = "1.0.0";
-
-builder.Services.AddOpenTelemetryTracing(builder =>
+builder.Services.AddCors(o =>
 {
-    builder
-        .AddJaegerExporter(options =>
-        {
-            options.AgentHost = "jaeger";
-        })
-        .AddSource(serviceName)
-        .SetResourceBuilder(
-            ResourceBuilder.CreateDefault()
-            .AddService(serviceName: serviceName, serviceVersion: servieceVersion))
-        .AddHttpClientInstrumentation()
-        .AddAspNetCoreInstrumentation()
-        .AddEntityFrameworkCoreInstrumentation(options =>
-        {
-            options.SetDbStatementForText = true;
-        });
+    o.AddPolicy("AllowSpaceCardsApp", p =>
+    {
+        p.WithOrigins("http://localhost:3000")
+        .WithHeaders().AllowAnyHeader()
+        .WithMethods().AllowAnyMethod()
+        .AllowCredentials()
+        .SetIsOriginAllowedToAllowWildcardSubdomains();
+    });
 });
 
 builder.Services.AddOpenTelemetryMetrics(builder =>
@@ -90,6 +72,8 @@ builder.Services.AddSwaggerGen(options =>
     options.IncludeXmlComments(xmlPath);
 });
 
+//builder.Services.AddCors();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -103,16 +87,21 @@ app.UseHttpsRedirection();
 
 app.UseRouting();
 
+app.UseCors("AllowSpaceCardsApp");
+
+app.UseJwtFromCookie();
+
 app.UseAuthentication();
 
 app.UseAuthorization();
 
-app.UseCors(x =>
-{
-    x.WithHeaders().AllowAnyHeader();
-    x.WithOrigins().AllowAnyOrigin();
-    x.AllowAnyMethod();
-});
+//app.UseCors(x =>
+//{
+//    x.WithHeaders().AllowAnyHeader();
+//    x.WithOrigins().AllowAnyOrigin();
+//    x.AllowAnyMethod();
+//    x.AllowCredentials();
+//});
 
 app.MapControllers();
 

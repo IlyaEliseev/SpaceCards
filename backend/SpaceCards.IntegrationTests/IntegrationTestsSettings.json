@@ -1,9 +1,0 @@
-{
-  "ConnectionStrings": {
-    "SpaceCardsDb": "<Connection string>"
-  },
-  "IntegrationTestSecret": {
-    "TestUserId": "<Test user Id>",
-    "JwtTokenSecret": "<JwtTokenSecret>"
-  }
-}

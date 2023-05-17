@@ -3,6 +3,7 @@ using SpaceCards.API.Contracts;
 using SpaceCards.IntegrationTests.MemberData;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Xunit;
@@ -24,6 +25,8 @@ namespace SpaceCards.IntegrationTests.Tests
             await SignIn();
 
             // act
+            var request = new HttpRequestMessage();
+
             var response = await Client.GetAsync("cards");
 
             // assert

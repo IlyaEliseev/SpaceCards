@@ -12,8 +12,9 @@ namespace SpaceCards.DataAccess.Postgre
             CreateMap<GroupEntity, Group>().ReverseMap();
             CreateMap<CardGuessingStatisticsEntity, CardGuessingStatistics>().ReverseMap();
             CreateMap<UserEntity, User>().ReverseMap();
+            CreateMap<OAuthUserEntity, OAuthUser>().ReverseMap();
             CreateMap<SessionEntity, Session>().ReverseMap();
-
+            CreateMap<OAuthUserToken, OAuthUserTokenEntity>().ReverseMap();
         }
     }
 }
