@@ -24,9 +24,10 @@ export const MainPage: FC = () => {
     const fetchCards = async () => {
       const data = await fetch('https://localhost:49394/cards', {
         method: 'get',
+        mode: 'cors',
+        credentials: 'include',
         headers: new Headers({
           'Content-type': 'application/json',
-          Authorization: `Bearer ${token}`,
         }),
       });
       const cards = await data.json();
@@ -39,9 +40,10 @@ export const MainPage: FC = () => {
     const fetchGroups = async () => {
       const data = await fetch('https://localhost:49394/groups', {
         method: 'get',
+        mode: 'cors',
+        credentials: 'include',
         headers: new Headers({
           'Content-type': 'application/json',
-          Authorization: `Bearer ${token}`,
         }),
       });
       const groups = await data.json();
@@ -57,9 +59,10 @@ export const MainPage: FC = () => {
       const getCardsByGroupId = async (groupId: number) => {
         const data = await fetch(`https://localhost:49394/groups/${groupId}`, {
           method: 'get',
+          mode: 'cors',
+          credentials: 'include',
           headers: new Headers({
             'Content-type': 'application/json',
-            Authorization: `Bearer ${token}`,
           }),
         });
         const group = await data.json();

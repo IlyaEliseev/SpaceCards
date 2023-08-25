@@ -2,7 +2,7 @@ import React from 'react';
 import { Tabs } from 'antd';
 import RegistrationForm from './RegistrationForm';
 import { LoginData, RegistrationData } from './AuthPage';
-import { LoginForm } from './LoginForm';
+import { LoginForm } from './LoginForm/LoginForm';
 interface AuthTabsProps {
   registraion: (data: RegistrationData) => void;
   login: (data: LoginData) => void;

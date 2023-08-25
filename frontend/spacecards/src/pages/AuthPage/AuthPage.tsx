@@ -29,60 +29,62 @@ function AuthPage() {
   let navigate = useNavigate();
 
   const registrUser = async (registraionData: RegistrationData) => {
-    const data = await fetch(
+    const response = await fetch(
       `https://localhost:49394/usersaccount/registration`,
       {
         method: 'post',
+        mode: 'cors',
+        credentials: 'include',
         headers: new Headers({
           'Content-type': 'application/json',
         }),
         body: JSON.stringify(registraionData),
       }
     );
-    console.log(registraionData);
+    if (response.ok) {
+      await login({
+        email: registraionData.email,
+        password: registraionData.password,
+      });
 
-    await login({
-      email: registraionData.email,
-      password: registraionData.password,
-    });
-
-    const token = sessionStorage.getItem('authtokensuser');
-    if (token !== null) {
-      navigate('/');
+      const token = sessionStorage.getItem('authtokensuser');
+      if (token !== null) {
+        navigate('/');
+      }
     }
   };
 
   const login = async (loginData: LoginData) => {
-    const data = await fetch('https://localhost:49394/usersaccount/login', {
+    const response = await fetch('https://localhost:49394/usersaccount/login', {
       method: 'post',
+      mode: 'cors',
+      credentials: 'include',
       headers: new Headers({
+        accept: 'application/json, text/plain, */*',
         'Content-type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
       }),
       body: JSON.stringify(loginData),
     });
-
-    const tokens: Token = await data.json();
-    const jsonToken = JSON.stringify(tokens);
-    sessionStorage.setItem('authtokensuser', jsonToken);
-
-    navigate('/');
+    if (response.ok) {
+      navigate('/');
+    }
   };
 
   const refreshAccessToken = async (refreshTokenData: RefreshTokenData) => {
-    const data = await fetch(
+    const response = await fetch(
       'https://localhost:49394/usersaccount/refreshaccesstoken',
       {
         method: 'post',
+        mode: 'cors',
+        credentials: 'include',
         headers: new Headers({ 'Content-type': 'application/json' }),
         body: JSON.stringify(refreshTokenData),
       }
     );
-    const tokens: Token = await data.json();
+    const tokens: Token = await response.json();
     const jsonToken = JSON.stringify(tokens);
     sessionStorage.setItem('authtokensuser', jsonToken);
-
-    sessionStorage.setItem(typeof tokens.nickname, tokens.nickname);
-    sessionStorage.setItem(typeof tokens.refreshToken, tokens.refreshToken);
   };
 
   return (

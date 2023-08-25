@@ -36,6 +36,8 @@ function StatisticsPage(props: StatisticsPageProps) {
     const fetchStatistics = async () => {
       const data = await fetch('https://localhost:49394/statistics', {
         method: 'get',
+        mode: 'cors',
+        credentials: 'include',
         headers: new Headers({
           'Content-type': 'application/json',
           Authorization: `Bearer ${token}`,

@@ -10,9 +10,9 @@ const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[#$^+=!*()@%&]).{8,}$/;
 
 function RegistrationForm(props: RegistrationFormProps) {
   const [autoCompleteResult, setAutoCompleteResult] = useState<string[]>([]);
-  const [userEmail, setUserEmail] = useState('');
-  const [userPassword, setUserPassword] = useState('');
-  const [userNickname, setUserNickname] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [nickname, setNickname] = useState('');
 
   const { Option } = Select;
 
@@ -35,9 +35,9 @@ function RegistrationForm(props: RegistrationFormProps) {
 
   const onFinish = async () => {
     await props.registraion({
-      email: userEmail,
-      nickname: userNickname,
-      password: userPassword,
+      email: email,
+      nickname: nickname,
+      password: password,
     });
   };
 
@@ -63,16 +63,15 @@ function RegistrationForm(props: RegistrationFormProps) {
           ]}
         >
           <Input
-            value={userNickname}
+            value={nickname}
             prefix={<UserOutlined className='site-form-item-icon' />}
             placeholder='Nickname'
-            onChange={(e) => setUserNickname(e.target.value)}
+            onChange={(e) => setNickname(e.target.value)}
           />
         </Form.Item>
 
         <Form.Item
           name='email'
-          // label='E-mail'
           rules={[
             {
               type: 'email',
@@ -85,10 +84,10 @@ function RegistrationForm(props: RegistrationFormProps) {
           ]}
         >
           <Input
-            value={userEmail}
+            value={email}
             prefix={<UserOutlined className='site-form-item-icon' />}
             placeholder='Email'
-            onChange={(e) => setUserEmail(e.target.value)}
+            onChange={(e) => setEmail(e.target.value)}
           />
         </Form.Item>
 
@@ -104,11 +103,11 @@ function RegistrationForm(props: RegistrationFormProps) {
           hasFeedback
         >
           <Input.Password
-            value={userPassword}
+            value={password}
             prefix={<LockOutlined className='site-form-item-icon' />}
             placeholder='Password'
             onChange={(e) => {
-              setUserPassword(e.target.value);
+              setPassword(e.target.value);
             }}
           />
         </Form.Item>
@@ -141,13 +140,7 @@ function RegistrationForm(props: RegistrationFormProps) {
         </Form.Item>
 
         <Form.Item>
-          <Button
-            // onClick={() => {
-            //   onFinish();
-            // }}
-            type='primary'
-            htmlType='submit'
-          >
+          <Button type='primary' htmlType='submit'>
             Register
           </Button>
         </Form.Item>
