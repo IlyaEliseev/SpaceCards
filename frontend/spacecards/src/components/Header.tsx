@@ -1,19 +1,38 @@
 import React, { useEffect, useState } from 'react';
-import { Layout } from 'antd';
+import { Avatar, Layout } from 'antd';
 import Logo from './Logo';
 import LoginButton from './LoginButton';
-import { Token } from '../pages/AuthPage/AuthPage';
 import Nickname from './Nickname';
 import LogoutButton from './LogoutButton';
 const { Header } = Layout;
 
+const findCookieValue = (cookieName: string): string | null => {
+  const result =
+    document.cookie
+      .split('; ')
+      .find((row) => row.startsWith(`${cookieName}=`))
+      ?.split('=')[1] ?? null;
+  return result;
+};
+
+const isCookieExist = (cookieName: string): boolean => {
+  const result =
+    document.cookie
+      .split('; ')
+      .find((row) => row.startsWith(`${cookieName}=`))
+      ?.split('=')[0] ?? null;
+  return result === null ? false : true;
+};
+
 function HeaderComponent() {
-  const token: string | null = sessionStorage.getItem('authtokensuser');
-  let nickname: string = '';
-  if (token !== null) {
-    const parseToken: Token = JSON.parse(token ?? '');
-    nickname = parseToken.nickname;
-  }
+  const nickname: string | null = findCookieValue('nickname');
+  const avatarUrl: string | null = findCookieValue('avatar');
+  const isAuth: boolean = isCookieExist('session_id');
+  const [isAuthentificated, SetIsAuthentificated] = useState<boolean>(isAuth);
+
+  const handleLogoutClick = (): void => {
+    SetIsAuthentificated(!isAuthentificated);
+  };
 
   const renderLogin = () => {
     return (
@@ -27,13 +46,18 @@ function HeaderComponent() {
     return (
       <Header className='headerContent'>
         <Logo />
-        <Nickname nickname={nickname} />
-        <LogoutButton />
+        <Avatar src={decodeURIComponent(avatarUrl!)} />
+        <Nickname nickname={decodeURI(nickname!)} />
+        <LogoutButton handleLogoutClick={handleLogoutClick} />
       </Header>
     );
   };
 
-  return token === null ? <>{renderLogin()}</> : <>{renderLogout()}</>;
+  return isAuthentificated === false ? (
+    <>{renderLogin()}</>
+  ) : (
+    <>{renderLogout()}</>
+  );
 }
 
 export default HeaderComponent;

@@ -23,6 +23,8 @@ function GuessingCardPage() {
       `https://localhost:49394/Statistics/${cardId}?successValue=${successValue}`,
       {
         method: 'post',
+        mode: 'cors',
+        credentials: 'include',
         headers: new Headers({
           'Content-type': 'application/json',
           Authorization: `Bearer ${token}`,

@@ -2,22 +2,42 @@ import React, { useState } from 'react';
 import { Button } from 'antd';
 import type { SizeType } from 'antd/es/config-provider/SizeContext';
 import { ImportOutlined } from '@ant-design/icons';
+import { useNavigate } from 'react-router-dom';
 
-function LogoutButton() {
+interface LogoutButtonProps {
+  handleLogoutClick: () => void;
+}
+
+function LogoutButton(props: LogoutButtonProps) {
   const [size, setSize] = useState<SizeType>('middle');
-
-  const logout = () => {
-    sessionStorage.removeItem('authtokensuser');
+  let navigate = useNavigate();
+  const logout = async () => {
+    const response = await fetch(
+      'https://localhost:49394/usersaccount/logout',
+      {
+        method: 'post',
+        mode: 'cors',
+        credentials: 'include',
+        headers: new Headers({
+          accept: 'application/json, text/plain, */*',
+          'Content-type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+        }),
+      }
+    );
+    if (response.ok) {
+      window.location.reload();
+    }
   };
 
   return (
     <Button
       icon={<ImportOutlined />}
       size={size}
-      onClick={() => {
-        logout();
+      onClick={async () => {
+        await logout();
+        props.handleLogoutClick();
       }}
-      href='/'
     >
       Logout
     </Button>

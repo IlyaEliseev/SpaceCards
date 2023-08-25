@@ -37,6 +37,8 @@ function GroupSelector(props: GroupSelectorProps) {
           `https://localhost:49394/groups/${groupId}/cards?cardId=${cardId}`,
           {
             method: 'post',
+            mode: 'no-cors',
+            credentials: 'include',
             headers: new Headers({
               'Content-type': 'application/json',
               Authorization: `Bearer ${token}`,

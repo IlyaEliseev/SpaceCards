@@ -1,6 +1,6 @@
 import React from 'react';
 interface NicknameProps {
-  nickname: string;
+  nickname: string | null;
 }
 
 function Nickname(props: NicknameProps) {

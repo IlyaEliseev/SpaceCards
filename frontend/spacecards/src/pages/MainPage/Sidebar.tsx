@@ -36,9 +36,11 @@ function Sidebar(props: {
     if (groupName.length > 0) {
       const data = await fetch('https://localhost:49394/groups', {
         method: 'post',
+        mode: 'cors',
+        credentials: 'include',
         headers: new Headers({
           'Content-type': 'application/json',
-          Authorization: `Bearer ${token}`,
+          // Authorization: `Bearer ${token}`,
         }),
         body: JSON.stringify({ name: groupName }),
       });
@@ -51,6 +53,8 @@ function Sidebar(props: {
     if (groupId > 0) {
       const data = await fetch(`https://localhost:49394/groups/${groupId}`, {
         method: 'delete',
+        mode: 'cors',
+        credentials: 'include',
         headers: new Headers({
           'Content-type': 'application/json',
           Authorization: `Bearer ${token}`,
@@ -65,6 +69,8 @@ function Sidebar(props: {
     if (groupId > 0 && editGroupName.length > 0) {
       const data = await fetch(`https://localhost:49394/groups/${groupId}`, {
         method: 'put',
+        mode: 'cors',
+        credentials: 'include',
         headers: new Headers({
           'Content-type': 'application/json',
           Authorization: `Bearer ${token}`,

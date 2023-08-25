@@ -37,22 +37,26 @@ function ContentComponent(props: ContentComponentProps) {
   const createCard = async (card: CardType) => {
     const data = await fetch('https://localhost:49394/cards', {
       method: 'post',
+      mode: 'cors',
+      credentials: 'include',
       headers: new Headers({
         'Content-type': 'application/json',
-        Authorization: `Bearer ${token}`,
+        // Authorization: `Bearer ${token}`,
       }),
       body: JSON.stringify(card),
     });
     setCount(count + 1);
   };
 
-  const deleteCard = async (cardId: Number) => {
+  const deleteCard = async (cardId: number) => {
     if (cardId > 0) {
       const data = await fetch(`https://localhost:49394/cards/${cardId}`, {
         method: 'delete',
+        mode: 'cors',
+        credentials: 'include',
         headers: new Headers({
           'Content-type': 'application/json',
-          Authorization: `Bearer ${token}`,
+          // Authorization: `Bearer ${token}`,
         }),
       });
       setCount(count + 1);
@@ -64,9 +68,11 @@ function ContentComponent(props: ContentComponentProps) {
     if (cardId > 0) {
       const data = await fetch(`https://localhost:49394/cards/${cardId}`, {
         method: 'put',
+        mode: 'cors',
+        credentials: 'include',
         headers: new Headers({
           'Content-type': 'application/json',
-          Authorization: `Bearer ${token}`,
+          // Authorization: `Bearer ${token}`,
         }),
         body: JSON.stringify({ frontSide, backSide }),
       });
