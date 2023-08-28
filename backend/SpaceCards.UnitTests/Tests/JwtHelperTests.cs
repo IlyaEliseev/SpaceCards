@@ -8,7 +8,7 @@ namespace SpaceCards.UnitTests.Tests
     public class JwtHelperTests
     {
         [Fact]
-        public async Task CreateAccessToken_ShouldReturnAccessToken()
+        public async Task Create_access_token()
         {
             // arrange
             var userId = Guid.NewGuid();
@@ -36,7 +36,7 @@ namespace SpaceCards.UnitTests.Tests
         }
 
         [Fact]
-        public async Task CreateRefreshToken_ShouldReturnRefreshToken()
+        public async Task Create_refresh_token()
         {
             // arrange
             var userId = Guid.NewGuid();
@@ -64,7 +64,7 @@ namespace SpaceCards.UnitTests.Tests
         }
 
         [Fact]
-        public async Task ParseUserInformation_ShouldReturnUserInformaion()
+        public async Task Parse_user_information_from_token()
         {
             // arrange
             var userId = Guid.NewGuid();

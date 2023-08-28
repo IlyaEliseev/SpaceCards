@@ -1,4 +1,6 @@
-﻿namespace SpaceCards.Domain.Model
+﻿using CSharpFunctionalExtensions;
+
+namespace SpaceCards.Domain.Model
 {
     public record Group
     {
@@ -20,26 +22,38 @@
 
         public Guid? UserId { get; init; }
 
-        public static (Group? Result, string[] Errors) Create(string name, Guid? userId)
+        public static Result<Group> Create(string name, Guid? userId)
         {
+            Result failure = Result.Success();
             if (string.IsNullOrWhiteSpace(name))
             {
-                return (null, new[] { $"'{nameof(name)}' cannot be null or whitespace." });
+                failure = Result.Failure<Group>($"{nameof(Group)} {nameof(name)} cannot be null or whitespace.");
             }
 
             if (userId is null)
             {
-                return (null, new[] { $"{userId} cannot be null." });
+                failure = Result.Combine(
+                    failure,
+                    Result.Failure<Group>(
+                        $"{nameof(Group)} {nameof(userId)} cannot be null."));
             }
 
             if (name is not null && name.Length > MAX_NAME_LENGTH)
             {
-                return (null, new[] { $"'{nameof(name)}' more than {MAX_NAME_LENGTH} characters." });
+                failure = Result.Combine(
+                    failure,
+                    Result.Failure<Group>(
+                        $"{nameof(Group)} {nameof(name)} more than {MAX_NAME_LENGTH} characters."));
+            }
+
+            if (failure.IsFailure)
+            {
+                return Result.Failure<Group>(failure.Error);
             }
 
             var group = new Group(0, name, Array.Empty<Card>(), userId);
 
-            return (group, Array.Empty<string>());
+            return group;
         }
     }
 }

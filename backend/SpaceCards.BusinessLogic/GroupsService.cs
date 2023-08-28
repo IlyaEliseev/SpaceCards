@@ -1,4 +1,7 @@
-﻿using SpaceCards.Domain.Interfaces;
+﻿using CSharpFunctionalExtensions;
+using CSharpFunctionalExtensions.ValueTasks;
+using Microsoft.EntityFrameworkCore.Update;
+using SpaceCards.Domain.Interfaces;
 using SpaceCards.Domain.Model;
 
 namespace SpaceCards.BusinessLogic
@@ -16,21 +19,17 @@ namespace SpaceCards.BusinessLogic
             _cardsRepository = cardsRepository;
         }
 
-        public async Task<(int Result, string[] Errors)> Create(string name, Guid? userId)
+        public async Task<Result<int>> Create(string name, Guid? userId)
         {
-            var (group, errors) = Group.Create(name, userId);
-            if (errors.Any())
+            var group = Group.Create(name, userId);
+            if (group.IsFailure)
             {
-                return (default, errors);
+                return Result.Failure<int>(group.Error);
             }
 
-            var groupId = await _groupRepository.Add(group);
-            if (groupId is default(int))
-            {
-                return (default(int), Array.Empty<string>());
-            }
+            var groupId = await _groupRepository.Add(group.Value);
 
-            return (groupId, Array.Empty<string>());
+            return groupId;
         }
 
         public async Task<Group[]> Get(Guid? userId)
@@ -38,87 +37,87 @@ namespace SpaceCards.BusinessLogic
             return await _groupRepository.Get(userId);
         }
 
-        public async Task<(bool Result, string[] Errors)> AddCard(
+        public async Task<Result<bool>> AddCard(
             int cardId,
             int groupId)
         {
             var card = await _cardsRepository.GetById(cardId);
             if (card is null)
             {
-                return (false, new[] { $"'{nameof(card)}' not found." });
+                return Result.Failure<bool>($"'{nameof(card)}' not found.");
             }
 
             var group = await _groupRepository.GetById(groupId);
             if (group is null)
             {
-                return (false, new[] { $"'{nameof(group)}' not found." });
+                return Result.Failure<bool>($"'{nameof(group)}' not found.");
             }
 
             await _groupRepository.AddCard(card.Id, group.Id);
 
-            return (true, Array.Empty<string>());
+            return true;
         }
 
-        public async Task<(bool Result, string[] Errors)> Update(
+        public async Task<Result<bool>> Update(
             int groupId,
             string updatedGroupName)
         {
             var group = await _groupRepository.GetById(groupId);
             if (group is null)
             {
-                return (false, new[] { $"'{nameof(group)}' not found." });
+                return Result.Failure<bool>("Group is null");
             }
 
-            var (updatedGroup, modelErrors) = Group.Create(updatedGroupName, group.UserId);
-            if (modelErrors.Any() || updatedGroup is null)
+            var updatedGroup = Group.Create(updatedGroupName, group.UserId);
+            if (updatedGroup.IsFailure)
             {
-                return (false, modelErrors.ToArray());
+                return Result.Failure<bool>(updatedGroup.Error);
             }
 
-            await _groupRepository.Update(updatedGroup with { Id = group.Id });
+            await _groupRepository.Update(updatedGroup.Value with { Id = group.Id });
 
-            return (true, Array.Empty<string>());
+            return true;
         }
 
-        public async Task<(bool Result, string[] Errors)> Delete(int groupId)
+        public async Task<Result<bool>> Delete(int groupId)
         {
             var group = await _groupRepository.GetById(groupId);
             if (group is null)
             {
-                return (false, new[] { $"'{nameof(group)}' not found." });
+                return Result.Failure<bool>($"'{nameof(group)}' not found.");
             }
 
             if (group.Cards.Count() != 0)
             {
-                return (false, new[] { $"'{nameof(group)}' is not empty." });
+                return Result.Failure<bool>($"'{nameof(group)}' is not empty.");
             }
 
             await _groupRepository.Delete(group.Id);
 
-            return (true, Array.Empty<string>());
+            return true;
         }
 
-        public async Task<(Group? Result, string[] Error)> GetById(int groupId)
+        public async Task<Result<Group>> GetById(int groupId)
         {
             var group = await _groupRepository.GetById(groupId);
             if (group is null)
             {
-                return (null, new[] { $"'{nameof(group)}' not found." });
+                return Result.Failure<Group>($"'{nameof(group)}' not found.");
             }
 
-            return (group, Array.Empty<string>());
+            return group;
         }
 
-        public async Task<(Card[]? Result, string[] Errors)> GetRandomCards(int countCards, Guid? userId)
+        public async Task<Result<Card[]?>> GetRandomCards(int countCards, Guid? userId)
         {
             if (countCards <= default(int))
             {
-                return (null, new[] { $"'{nameof(countCards)}' cannot be 0 or less 0." });
+                return Result.Failure<Card[]?>($"'{nameof(countCards)}' cannot be 0 or less 0.");
             }
 
             var randomCards = await _groupRepository.GetRandomCards(countCards, userId);
 
-            return (randomCards, Array.Empty<string>());
+            return randomCards;
         }
     }
 }

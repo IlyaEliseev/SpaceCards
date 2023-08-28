@@ -1,21 +1,22 @@
-﻿using SpaceCards.Domain.Model;
+﻿using CSharpFunctionalExtensions;
+using SpaceCards.Domain.Model;
 
 namespace SpaceCards.Domain.Interfaces
 {
     public interface IGroupsService
     {
-        Task<(int Result, string[] Errors)> Create(string name, Guid? userId);
+        Task<Result<int>> Create(string name, Guid? userId);
 
-        Task<(bool Result, string[] Errors)> Delete(int groupId);
+        Task<Result<bool>> Delete(int groupId);
 
         Task<Group[]> Get(Guid? userId);
 
-        Task<(bool Result, string[] Errors)> Update(int groupId, string groupUdateName);
+        Task<Result<bool>> Update(int groupId, string groupUdateName);
 
-        Task<(bool Result, string[] Errors)> AddCard(int cardId, int groupId);
+        Task<Result<bool>> AddCard(int cardId, int groupId);
 
-        Task<(Group? Result, string[] Error)> GetById(int groupId);
+        Task<Result<Group>> GetById(int groupId);
 
-        Task<(Card[]? Result, string[] Errors)> GetRandomCards(int countCards, Guid? userId);
+        Task<Result<Card[]?>> GetRandomCards(int countCards, Guid? userId);
     }
 }

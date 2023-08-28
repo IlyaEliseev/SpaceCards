@@ -19,7 +19,7 @@ namespace SpaceCards.UnitTests.Tests
         }
 
         [Fact]
-        public async Task Create_IsValid_ShouldReturnCard()
+        public async Task Card_with_valid_parameters_is_creating()
         {
             // arrange
             var frontSide = _fixture.Create<string>();
@@ -27,11 +27,13 @@ namespace SpaceCards.UnitTests.Tests
             var userId = _fixture.Create<Guid>();
 
             // act
-            var (card, errors) = Card.Create(frontSide, backSide, userId);
+            var result = Card.Create(frontSide, backSide, userId);
 
             // assert
-            Assert.NotNull(card);
-            Assert.Empty(errors);
+            Assert.NotNull(result.Value);
+            Assert.Equal(frontSide, result.Value.FrontSide);
+            Assert.Equal(backSide, result.Value.BackSide);
+            Assert.False(result.IsFailure);
         }
 
         [Theory]
@@ -39,18 +41,18 @@ namespace SpaceCards.UnitTests.Tests
             nameof(CardDataGenerator.GenerateSetInvalidFrontside),
             parameters: 10,
             MemberType = typeof(CardDataGenerator))]
-        public async Task Create_FrontSideInvalid_ShouldReturnNullAndError(string frontSide)
+        public async Task Card_with_invalid_frontside_is_not_creating(string frontSide)
         {
             // arrange
             var backSide = _fixture.Create<string>();
             var userId = _fixture.Create<Guid>();
 
             // act
-            var (card, errors) = Card.Create(frontSide, backSide, userId);
+            var result = Card.Create(frontSide, backSide, userId);
 
             // assert
-            Assert.Null(card);
-            Assert.NotEmpty(errors);
+            Assert.True(result.IsFailure);
+            Assert.NotEmpty(result.Error);
         }
 
         [Theory]
@@ -58,18 +60,18 @@ namespace SpaceCards.UnitTests.Tests
             nameof(CardDataGenerator.GenerateSetInvalidBackside),
             parameters: 10,
             MemberType = typeof(CardDataGenerator))]
-        public async Task Create_BackSideInvalid_ShouldReturnNullAndError(string backSide)
+        public async Task Card_with_invalid_backside_is_not_creating(string backSide)
         {
             // arrange
             var frontSide = _fixture.Create<string>();
             var userId = _fixture.Create<Guid>();
 
             // act
-            var (card, errors) = Card.Create(frontSide, backSide, userId);
+            var result = Card.Create(frontSide, backSide, userId);
 
             // assert
-            Assert.Null(card);
-            Assert.NotEmpty(errors);
+            Assert.True(result.IsFailure);
+            Assert.NotEmpty(result.Error);
         }
     }
 }

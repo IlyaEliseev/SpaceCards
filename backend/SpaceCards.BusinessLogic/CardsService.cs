@@ -1,4 +1,5 @@
-﻿using SpaceCards.Domain.Interfaces;
+﻿using CSharpFunctionalExtensions;
+using SpaceCards.Domain.Interfaces;
 using SpaceCards.Domain.Model;
 
 namespace SpaceCards.BusinessLogic
@@ -12,18 +13,18 @@ namespace SpaceCards.BusinessLogic
             _cardsRepository = cardsRepository;
         }
 
-        public async Task<(int Result, string[] Errors)> Create(string frontSide, string backSide, Guid? userId)
+        public async Task<Result<int>> Create(string frontSide, string backSide, Guid? userId)
         {
-            var (card, errors) = Card.Create(frontSide, backSide, userId);
+            var card = Card.Create(frontSide, backSide, userId);
 
-            if (errors.Any())
+            if (card.IsFailure)
             {
-                return (default(int), errors.ToArray());
+                return Result.Failure<int>(card.Error);
             }
 
-            var cardId = await _cardsRepository.Add(card);
+            var cardId = await _cardsRepository.Add(card.Value);
 
-            return (cardId, Array.Empty<string>());
+            return cardId;
         }
 
         public async Task<Card[]> Get(Guid? userId)
@@ -31,20 +32,20 @@ namespace SpaceCards.BusinessLogic
             return await _cardsRepository.Get(userId);
         }
 
-        public async Task<(bool Result, string[] Errors)> Delete(int cardId)
+        public async Task<Result<bool>> Delete(int cardId)
         {
             var card = await _cardsRepository.GetById(cardId);
             if (card is null)
             {
-                return (false, new[] { $"'{nameof(card)}' not found." });
+                return Result.Failure<bool>($"'{nameof(card)}' not found.");
             }
 
             await _cardsRepository.Delete(card.Id);
 
-            return (true, Array.Empty<string>());
+            return true;
         }
 
-        public async Task<(bool Result, string[] Errors)> Update(
+        public async Task<Result<bool>> Update(
             int cardId,
             string updatedCardFrontSide,
             string updatedCardBackSide)
@@ -52,22 +53,22 @@ namespace SpaceCards.BusinessLogic
             var card = await _cardsRepository.GetById(cardId);
             if (card is null)
             {
-                return (false, new[] { $"'{nameof(card)}' card not found." });
+                return Result.Failure<bool>($"'{nameof(card)}' card not found.");
             }
 
-            var (updatedCard, modelErrors) = Card.Create(
+            var result = Card.Create(
                 updatedCardFrontSide,
                 updatedCardBackSide,
                 card.UserId);
 
-            if (modelErrors.Any() || updatedCard is null)
+            if (result.IsFailure)
             {
-                return (false, modelErrors.ToArray());
+                return Result.Failure<bool>(result.Error);
             }
 
-            await _cardsRepository.Update(updatedCard with { Id = card.Id, GroupId = card.GroupId });
+            await _cardsRepository.Update(result.Value with { Id = card.Id, GroupId = card.GroupId });
 
-            return (true, Array.Empty<string>());
+            return true;
         }
     }
 }

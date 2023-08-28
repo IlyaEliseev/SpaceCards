@@ -38,15 +38,15 @@ namespace SpaceCards.API.Controllers
             [FromQuery] int successValue)
         {
             var userId = UserId.Value;
-            var (result, errors) = await _service.CollectCardStatistics(cardId, successValue, userId);
+            var result = await _service.CollectCardStatistics(cardId, successValue, userId);
 
-            if (errors.Any() && result == false)
+            if (result.IsFailure)
             {
-                _logger.LogError("{errors}", errors);
-                return BadRequest(errors);
+                _logger.LogError("{errors}", result.Error);
+                return BadRequest(result.Error);
             }
 
-            return Ok(result);
+            return Ok(result.Value);
         }
 
         /// <summary>
@@ -60,11 +60,8 @@ namespace SpaceCards.API.Controllers
         {
             var userId = UserId.Value;
             var cardGuessingStatistics = await _service.GetGuessingCardStatistics(userId);
-
-            var cardGuessingStatisticsContract = _mapper.Map<CardGuessingStatistics[],
-                Contracts.GetCardGusessingStatisticsResponse[]>(cardGuessingStatistics);
-
-            return Ok(cardGuessingStatisticsContract);
+            return Ok(_mapper.Map<CardGuessingStatistics[],
+                Contracts.GetCardGusessingStatisticsResponse[]>(cardGuessingStatistics));
         }
     }
 }

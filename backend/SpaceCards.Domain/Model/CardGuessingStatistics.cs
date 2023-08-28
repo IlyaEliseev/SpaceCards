@@ -1,4 +1,6 @@
-﻿namespace SpaceCards.Domain.Model
+﻿using CSharpFunctionalExtensions;
+
+namespace SpaceCards.Domain.Model
 {
     public record CardGuessingStatistics
     {
@@ -18,21 +20,29 @@
 
         public Guid UserId { get; }
 
-        public static (CardGuessingStatistics? Result, string[] Errors) Create(int cardId, int success, Guid userId)
+        public static Result<CardGuessingStatistics?> Create(int cardId, int success, Guid userId)
         {
+            Result failure = Result.Success();
             if (cardId <= default(int))
             {
-                return (null, new[] { $"{nameof(cardId)} cannot be 0 or less 0" });
+                failure = Result.Failure<CardGuessingStatistics?>($"{nameof(cardId)} cannot be 0 or less 0");
             }
 
             if (success > 1 || success < 0)
             {
-                return (null, new[] { $"{nameof(success)} should be 0 or 1" });
+                failure = Result.Combine(
+                    failure,
+                    Result.Failure<CardGuessingStatistics?>(
+                        $"{nameof(success)} should be 0 or 1"));
+            }
+
+            if (failure.IsFailure)
+            {
+                return Result.Failure<CardGuessingStatistics?>(failure.Error);
             }
 
             var cardStatistics = new CardGuessingStatistics(0, cardId, success, userId);
-
-            return (cardStatistics, Array.Empty<string>());
+            return cardStatistics;
         }
     }
 }

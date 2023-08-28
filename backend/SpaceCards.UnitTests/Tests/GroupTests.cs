@@ -26,11 +26,13 @@ namespace SpaceCards.UnitTests.Tests
             var userId = _fixture.Create<Guid>();
 
             // act
-            var (group, errors) = Group.Create(name, userId);
+            var result = Group.Create(name, userId);
 
             // assert
-            Assert.NotNull(group);
-            Assert.Empty(errors);
+            Assert.NotNull(result.Value);
+            Assert.Equal(name, result.Value.Name);
+            Assert.Equal(userId, result.Value.UserId);
+            Assert.False(result.IsFailure);
         }
 
         [Theory]
@@ -44,11 +46,11 @@ namespace SpaceCards.UnitTests.Tests
             var userId = _fixture.Create<Guid>();
 
             // act
-            var (group, errors) = Group.Create(name, userId);
+            var result = Group.Create(name, userId);
 
             // assert
-            Assert.Null(group);
-            Assert.NotEmpty(errors);
+            Assert.True(result.IsFailure);
+            Assert.NotEmpty(result.Error);
         }
     }
 }

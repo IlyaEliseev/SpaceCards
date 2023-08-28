@@ -1,4 +1,5 @@
-﻿using SpaceCards.Domain.Interfaces;
+﻿using CSharpFunctionalExtensions;
+using SpaceCards.Domain.Interfaces;
 
 namespace SpaceCards.BusinessLogic
 {
@@ -15,17 +16,17 @@ namespace SpaceCards.BusinessLogic
             _groupRepository = groupRepository;
         }
 
-        public async Task<(bool Result, string[] Errors)> SaveGuessedCard(int groupId, int cardId)
+        public async Task<Result<bool>> SaveGuessedCard(int groupId, int cardId)
         {
             var card = await _groupRepository.GetCardFromGroupById(groupId, cardId);
             if (card is null)
             {
-                return (false, new[] { $"'{nameof(card)}' not found." });
+                return Result.Failure<bool>($"'{nameof(card)}' not found.");
             }
 
             await _guessedCardRepository.AddGuessedCard(card);
 
-            return (true, Array.Empty<string>());
+            return true;
         }
     }
 }

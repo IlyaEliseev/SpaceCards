@@ -1,7 +1,9 @@
-﻿namespace SpaceCards.Domain.Interfaces
+﻿using CSharpFunctionalExtensions;
+
+namespace SpaceCards.Domain.Interfaces
 {
     public interface IGuessedCardsService
     {
-        Task<(bool Result, string[] Errors)> SaveGuessedCard(int groupId, int cardId);
+        Task<Result<bool>> SaveGuessedCard(int groupId, int cardId);
     }
 }

@@ -1,10 +1,11 @@
-﻿using SpaceCards.Domain.Model;
+﻿using CSharpFunctionalExtensions;
+using SpaceCards.Domain.Model;
 
 namespace SpaceCards.Domain.Interfaces
 {
     public interface IStatisticsService
     {
-        Task<(bool Result, string[] Errors)> CollectCardStatistics(
+        Task<Result<bool>> CollectCardStatistics(
             int cardId,
             int successValue,
             Guid userId);
