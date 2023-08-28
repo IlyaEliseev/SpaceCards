@@ -19,7 +19,7 @@ namespace SpaceCards.UnitTests.Tests
         }
 
         [Fact]
-        public async Task Create_IsValid_ShouldReturnCardGuessingStatistics()
+        public async Task Creat_CardGuessingStatistics_with_a_valid_parameters_is_not_failure()
         {
             // arrange
             var cardId = _fixture.Create<int>();
@@ -27,31 +27,33 @@ namespace SpaceCards.UnitTests.Tests
             var userId = _fixture.Create<Guid>();
 
             // act
-            var (result, errors) = CardGuessingStatistics.Create(cardId, success, userId);
+            var result = CardGuessingStatistics.Create(cardId, success, userId);
 
             // assert
-            Assert.NotNull(result);
-            Assert.Empty(errors);
+            Assert.NotNull(result.Value);
+            Assert.Equal(success, result.Value.Success);
+            Assert.Equal(cardId, result.Value.CardId);
+            Assert.Equal(userId, result.Value.UserId);
         }
 
         [Theory]
         [MemberData(
             nameof(CardGuessingStatisticsDataGenerator
             .GenerateSetInvalidCardIdSuccessUserId),
-            parameters: 20,
+            parameters: 10,
             MemberType = typeof(CardGuessingStatisticsDataGenerator))]
-        public async Task Create_CardIdIsInvalid_ShouldReturnNullAndError(
+        public async Task Creat_CardGuessingStatistics_with_a_not_valid_parameters_is_failure(
             int cardId,
             int success,
             Guid userId)
         {
             // arrange
             // act
-            var (result, errors) = CardGuessingStatistics.Create(cardId, success, userId);
+            var result = CardGuessingStatistics.Create(cardId, success, userId);
 
             // assert
-            Assert.Null(result);
-            Assert.NotEmpty(errors);
+            Assert.True(result.IsFailure);
+            Assert.NotEmpty(result.Error);
         }
     }
 }

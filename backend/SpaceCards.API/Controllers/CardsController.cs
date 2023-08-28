@@ -33,15 +33,15 @@ namespace SpaceCards.API.Controllers
         {
             var userId = UserId.Value;
 
-            var (cardId, errors) = await _service.Create(request.FrontSide, request.BackSide, userId);
+            var result = await _service.Create(request.FrontSide, request.BackSide, userId);
 
-            if (errors.Any() || cardId == default)
+            if (result.IsFailure)
             {
-                _logger.LogError("{errors}", errors);
-                return BadRequest(errors);
+                _logger.LogError("{errors}", result.Error);
+                return BadRequest(result.Error);
             }
 
-            return Ok(cardId);
+            return Ok(result.Value);
         }
 
         /// <summary>
@@ -54,11 +54,8 @@ namespace SpaceCards.API.Controllers
         public async Task<IActionResult> Get()
         {
             var userId = UserId.Value;
-
             var cards = await _service.Get(userId);
-            var cardsContract = _mapper.Map<Card[], Contracts.GetCardResponse[]>(cards);
-
-            return Ok(cardsContract);
+            return Ok(_mapper.Map<Card[], Contracts.GetCardResponse[]>(cards));
         }
 
         /// <summary>
@@ -71,15 +68,15 @@ namespace SpaceCards.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Delete([FromRoute] int cardId)
         {
-            var (result, errors) = await _service.Delete(cardId);
+            var result = await _service.Delete(cardId);
 
-            if (errors.Any() || !result)
+            if (result.IsFailure)
             {
-                _logger.LogError("{errors}", errors);
-                return BadRequest(errors);
+                _logger.LogError("{errors}", result.Error);
+                return BadRequest(result.Error);
             }
 
-            return Ok(result);
+            return Ok(result.Value);
         }
 
         /// <summary>
@@ -91,18 +88,17 @@ namespace SpaceCards.API.Controllers
         [HttpPut("{cardId:int}")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(bool))]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        //[ValidateAntiForgeryToken]
         public async Task<IActionResult> Update([FromRoute] int cardId, [FromBody] UpdateCardRequest card)
         {
-            var (result, errors) = await _service.Update(cardId, card.FrontSide, card.BackSide);
+            var result = await _service.Update(cardId, card.FrontSide, card.BackSide);
 
-            if (errors.Any() || !result)
+            if (result.IsFailure)
             {
-                _logger.LogError("{errors}", errors);
-                return BadRequest(errors);
+                _logger.LogError("{errors}", result.Error);
+                return BadRequest(result.Error);
             }
 
-            return Ok(result);
+            return Ok(result.Value);
         }
     }
 }

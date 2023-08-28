@@ -17,7 +17,7 @@ namespace SpaceCards.UnitTests.Tests
         }
 
         [Fact]
-        public async Task CreateSession_ShouldReturnNewSession()
+        public async Task Create_session_with_a_valid_parameters_is_not_failure()
         {
             // arrange
             var userId = Guid.NewGuid();
@@ -40,7 +40,7 @@ namespace SpaceCards.UnitTests.Tests
             nameof(SessionDataGenerator.GenerateSetInvalidUserIdAccessTokenRefreshToken),
             parameters: 10,
             MemberType = typeof(SessionDataGenerator))]
-        public async Task CreateSession_CourseIdAccessTokenRefreshTokenIsInvaid_ShouldReturnErrors(
+        public async Task Create_session_with_a_not_valid_parameters_is_failure(
             Guid userId,
             string accessToken,
             string refreshToken)

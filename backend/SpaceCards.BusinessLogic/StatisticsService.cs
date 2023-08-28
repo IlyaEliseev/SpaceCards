@@ -1,4 +1,5 @@
-﻿using SpaceCards.Domain.Interfaces;
+﻿using CSharpFunctionalExtensions;
+using SpaceCards.Domain.Interfaces;
 using SpaceCards.Domain.Model;
 
 namespace SpaceCards.BusinessLogic
@@ -16,7 +17,7 @@ namespace SpaceCards.BusinessLogic
             _cardsGuessingStatisticsRepository = cardsGuessingStatisticsRepository;
         }
 
-        public async Task<(bool Result, string[] Errors)> CollectCardStatistics(
+        public async Task<Result<bool>> CollectCardStatistics(
             int cardId,
             int successValue,
             Guid userId)
@@ -24,22 +25,21 @@ namespace SpaceCards.BusinessLogic
             var card = await _cardsRepository.GetById(cardId);
             if (card is null)
             {
-                return (false, new[] { $"'{nameof(card)}' not found." });
+                return Result.Failure<bool>($"'{nameof(card)}' not found.");
             }
 
-            var (cardStatistics, errors) = CardGuessingStatistics.Create(
+            var cardStatistics = CardGuessingStatistics.Create(
                 card.Id,
                 successValue,
                 userId);
 
-            if (errors.Any())
+            if (cardStatistics.IsFailure)
             {
-                return (false, errors.ToArray());
+                return Result.Failure<bool>(cardStatistics.Error);
             }
 
-            await _cardsGuessingStatisticsRepository.AddCard(cardStatistics);
-
-            return (true, Array.Empty<string>());
+            await _cardsGuessingStatisticsRepository.AddCard(cardStatistics.Value);
+            return true;
         }
 
         public async Task<CardGuessingStatistics[]> GetGuessingCardStatistics(Guid userId)

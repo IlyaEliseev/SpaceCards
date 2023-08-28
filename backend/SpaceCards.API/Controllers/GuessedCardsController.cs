@@ -33,15 +33,15 @@ namespace SpaceCards.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> SaveGuessedCard([FromBody] int groupId, [FromQuery] int cardId)
         {
-            var (result, errors) = await _service.SaveGuessedCard(groupId, cardId);
+            var result = await _service.SaveGuessedCard(groupId, cardId);
 
-            if (errors.Any() || result is false)
+            if (result.IsFailure)
             {
-                _logger.LogError("{errors}", errors);
-                return BadRequest(errors);
+                _logger.LogError("{errors}", result.Error);
+                return BadRequest(result.Error);
             }
 
-            return Ok(result);
+            return Ok(result.Value);
         }
     }
 }

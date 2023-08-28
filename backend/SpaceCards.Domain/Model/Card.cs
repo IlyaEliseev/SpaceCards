@@ -1,4 +1,6 @@
-﻿namespace SpaceCards.Domain.Model
+﻿using CSharpFunctionalExtensions;
+
+namespace SpaceCards.Domain.Model
 {
     public record Card
     {
@@ -25,49 +27,54 @@
 
         public Guid? UserId { get; }
 
-        public static (Card? Result, string[] Errors) Create(string frontSide, string backSide, Guid? userId)
+        public static Result<Card> Create(string frontSide, string backSide, Guid? userId)
         {
-            var errors = new List<string>();
-            var errorMessage = string.Empty;
-
+            Result failure = Result.Success();
             if (string.IsNullOrWhiteSpace(frontSide))
             {
-                errorMessage = $"'{nameof(frontSide)}' cannot be null or whitespace.";
-                errors.Add(errorMessage);
+                failure = Result.Failure<Card>($"{nameof(Card)} {nameof(frontSide)} cannot be null or whitespace.");
             }
 
             if (string.IsNullOrWhiteSpace(backSide))
             {
-                errorMessage = $"'{nameof(backSide)}' cannot be null or whitespace.";
-                errors.Add(errorMessage);
+                failure = Result.Combine(
+                    failure,
+                    Result.Failure<Card>(
+                        $"{nameof(Card)} {nameof(backSide)} cannot be null or whitespace."));
             }
 
             if (userId is null)
             {
-                errorMessage = $"{userId} cannot be null.";
-                errors.Add(errorMessage);
+                failure = Result.Combine(
+                    failure,
+                    Result.Failure<Card>(
+                        $"{nameof(Card)} {nameof(userId)} cannot be null."));
             }
 
             if (frontSide is not null && frontSide.Length > MAX_NAME_FRONTSIDE)
             {
-                errorMessage = $"'{nameof(frontSide)}' more than {MAX_NAME_FRONTSIDE} characters.";
-                errors.Add(errorMessage);
+                failure = Result.Combine(
+                    failure,
+                    Result.Failure<Card>(
+                        $"{nameof(Card)} {nameof(frontSide)} more than {MAX_NAME_FRONTSIDE} characters."));
             }
 
             if (backSide is not null && backSide.Length > MAX_NAME_BACKSIDE)
             {
-                errorMessage = $"'{nameof(backSide)}' more than {MAX_NAME_BACKSIDE} characters.";
-                errors.Add(errorMessage);
+                failure = Result.Combine(
+                    failure,
+                    Result.Failure<Card>(
+                        $"{nameof(Card)} {nameof(backSide)} more than {MAX_NAME_BACKSIDE} characters."));
             }
 
-            if (errors.Any())
+            if (failure.IsFailure)
             {
-                return (null, errors.ToArray());
+                return Result.Failure<Card>(failure.Error);
             }
 
             var card = new Card(0, frontSide, backSide, null, userId);
 
-            return (card, Array.Empty<string>());
+            return card;
         }
     }
 }

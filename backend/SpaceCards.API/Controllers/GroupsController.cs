@@ -7,7 +7,7 @@ using SpaceCards.Domain.Model;
 
 namespace SpaceCards.API.Controllers
 {
-    //[Authorize]
+    [Authorize]
     public class GroupsController : BaseApiController
     {
         private readonly ILogger<GroupsController> _logger;
@@ -33,16 +33,14 @@ namespace SpaceCards.API.Controllers
         public async Task<IActionResult> Create([FromBody] CreateGroupRequest request)
         {
             var userId = UserId.Value;
-
-            var (groupId, errors) = await _service.Create(request.Name, userId);
-
-            if (errors.Any() || groupId == default)
+            var result = await _service.Create(request.Name, userId);
+            if (result.IsFailure)
             {
-                _logger.LogError("{errors}", errors);
-                return BadRequest(errors);
+                _logger.LogError("{errors}", result.Error);
+                return BadRequest(result.Error);
             }
 
-            return Ok(groupId);
+            return Ok(result.Value);
         }
 
         /// <summary>
@@ -56,15 +54,14 @@ namespace SpaceCards.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> AddCard([FromQuery] int cardId, [FromRoute] int groupId)
         {
-            var (result, errors) = await _service.AddCard(cardId, groupId);
-
-            if (errors.Any() || !result)
+            var result = await _service.AddCard(cardId, groupId);
+            if (result.IsFailure)
             {
-                _logger.LogError("{errors}", errors);
-                return BadRequest(errors);
+                _logger.LogError("{errors}", result.Error);
+                return BadRequest(result.Error);
             }
 
-            return Ok(result);
+            return Ok(result.Value);
         }
 
         /// <summary>
@@ -93,15 +90,14 @@ namespace SpaceCards.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Update([FromRoute] int groupId, [FromBody] UpdateGroupRequest request)
         {
-            var (result, errors) = await _service.Update(groupId, request.Name);
-
-            if (errors.Any() || !result)
+            var result = await _service.Update(groupId, request.Name);
+            if (result.IsFailure)
             {
-                _logger.LogError("{errors}", errors);
-                return BadRequest(errors);
+                _logger.LogError("{errors}", result.Error);
+                return BadRequest(result.Error);
             }
 
-            return Ok(result);
+            return Ok(result.Value);
         }
 
         /// <summary>
@@ -114,15 +110,14 @@ namespace SpaceCards.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Delete([FromRoute] int groupId)
         {
-            var (result, errors) = await _service.Delete(groupId);
-
-            if (errors.Any() || !result)
+            var result = await _service.Delete(groupId);
+            if (result.IsFailure)
             {
-                _logger.LogError("{errors}", errors);
-                return BadRequest(errors);
+                _logger.LogError("{errors}", result.Error);
+                return BadRequest(result.Error);
             }
 
-            return Ok(result);
+            return Ok(result.Value);
         }
 
         /// <summary>
@@ -135,15 +130,14 @@ namespace SpaceCards.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetGroupById([FromRoute] int groupId)
         {
-            var (group, errors) = await _service.GetById(groupId);
-
-            if (errors.Any() || group is null)
+            var result = await _service.GetById(groupId);
+            if (result.IsFailure)
             {
-                _logger.LogError("{errors}", errors);
-                return BadRequest(errors);
+                _logger.LogError("{errors}", result.Error);
+                return BadRequest(result.Error);
             }
 
-            return Ok(group);
+            return Ok(result.Value);
         }
 
         /// <summary>
@@ -157,18 +151,14 @@ namespace SpaceCards.API.Controllers
         public async Task<IActionResult> GetRandomCards([FromQuery] int countCards)
         {
             var userId = UserId.Value;
-
-            var (randomCards, errors) = await _service.GetRandomCards(countCards, userId);
-
-            if (errors.Any() || randomCards is null)
+            var result = await _service.GetRandomCards(countCards, userId);
+            if (result.IsFailure)
             {
-                _logger.LogError("{errors}", errors);
-                return BadRequest(errors);
+                _logger.LogError("{errors}", result.Error);
+                return BadRequest(result.Error);
             }
 
-            var randomCardsContract = _mapper.Map<Card[], Contracts.GetCardResponse[]>(randomCards);
-
-            return Ok(randomCardsContract);
+            return Ok(_mapper.Map<Card[], Contracts.GetCardResponse[]>(result.Value));
         }
     }
 }
