@@ -15,7 +15,7 @@ namespace SpaceCards.IntegrationTests.Tests
         }
 
         [Fact]
-        public async Task SaveGuessedCard_ShouldReturnOk()
+        public async Task Collect_Guessed_card_is_response_Ok()
         {
             // arrange
             await SignIn();
@@ -33,7 +33,7 @@ namespace SpaceCards.IntegrationTests.Tests
             nameof(GuessedCardsDataGenerator.GenerateSetInvalidCardIdGroupId),
             parameters: 5,
             MemberType = typeof(GuessedCardsDataGenerator))]
-        public async Task SaveGuessedCard_CardIdAndGroupIdInvalid_ShouldReturnBadRequest(
+        public async Task Collect_Guessed_card_with_invalid_card_id_and_group_id_is_response_BadRequest(
             int invalidCardId,
             int invalidGroupId)
         {
@@ -53,7 +53,8 @@ namespace SpaceCards.IntegrationTests.Tests
             nameof(GuessedCardsDataGenerator.GenerateSetInvalidCardIdOrGroupId),
             parameters: 5,
             MemberType = typeof(GuessedCardsDataGenerator))]
-        public async Task SaveGuessedCard_CardIdInvalid_ShouldReturnBadRequest(int invalidCardId)
+        public async Task Collect_Guessed_card_with_invalid_card_id_and_valid_group_id_is_response_BadRequest
+            (int invalidCardId)
         {
             // arrange
             await SignIn();
@@ -71,7 +72,8 @@ namespace SpaceCards.IntegrationTests.Tests
             nameof(GuessedCardsDataGenerator.GenerateSetInvalidCardIdOrGroupId),
             parameters: 5,
             MemberType = typeof(GuessedCardsDataGenerator))]
-        public async Task SaveGuessedCard_GroupIdInvalid_ShouldReturnBadRequest(int invalidGroupId)
+        public async Task Collect_Guessed_card_with_valid_card_id_and_invalid_group_id_is_response_BadRequest(
+            int invalidGroupId)
         {
             // arrange
             await SignIn();

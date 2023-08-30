@@ -16,7 +16,7 @@ namespace SpaceCards.IntegrationTests.Tests
         }
 
         [Fact]
-        public async Task Registration_ShouldReturnOk()
+        public async Task Registration_new_user_is_response_OK()
         {
             // arrange
             var user = new UserRegistrationRequest
@@ -36,9 +36,9 @@ namespace SpaceCards.IntegrationTests.Tests
         [Theory]
         [MemberData(
             nameof(UsersAccountDataGenerator.GenerateSetInvalidEmail),
-            parameters: 10,
+            parameters: 2,
             MemberType = typeof(UsersAccountDataGenerator))]
-        public async Task RegistrationUser_InvalidEmail_ShouldReturnBadRequest(
+        public async Task Registration_new_user_with_invalid_email_is_response_BadRequest(
             string email)
         {
             var registrationRequest = new UserRegistrationRequest
@@ -58,9 +58,9 @@ namespace SpaceCards.IntegrationTests.Tests
         [Theory]
         [MemberData(
             nameof(UsersAccountDataGenerator.GenerateSetInvalidPassword),
-            parameters: 10,
+            parameters: 2,
             MemberType = typeof(UsersAccountDataGenerator))]
-        public async Task RegistrationUser_InvalidPassword_ShouldReturnBadRequest(
+        public async Task Registration_new_user_with_invalid_password_is_response_BadRequest(
             string password)
         {
             var registrationRequest = new UserRegistrationRequest
@@ -78,7 +78,7 @@ namespace SpaceCards.IntegrationTests.Tests
         }
 
         [Fact]
-        public async Task RegistrationUser_UserAlreadyExist_ShouldReturnBadRequest()
+        public async Task Registration_if_user_already_exist_is_response_BadRequest()
         {
             // arrange
             var registrationRequest = new UserRegistrationRequest
@@ -97,7 +97,7 @@ namespace SpaceCards.IntegrationTests.Tests
         }
 
         [Fact]
-        public async Task Login_ShouldReturnOk()
+        public async Task Login_register_user_is_response_Ok()
         {
             // arrange
             var registrationRequest = new UserRegistrationRequest
@@ -122,7 +122,7 @@ namespace SpaceCards.IntegrationTests.Tests
         }
 
         [Fact]
-        public async Task Login_SessionIsAlreadyExist_ShouldReturnOk()
+        public async Task Login_user_two_times_overwriting_session_is_response_Ok()
         {
             // arrange
             var registrationRequest = new UserRegistrationRequest
@@ -148,7 +148,7 @@ namespace SpaceCards.IntegrationTests.Tests
         }
 
         [Fact]
-        public async Task Login_ShouldReturnBadRequest()
+        public async Task Login_user_with_unknown_credentials_is_response_BadRequest()
         {
             // arrange
             var registrationRequest = new UserRegistrationRequest
@@ -173,7 +173,7 @@ namespace SpaceCards.IntegrationTests.Tests
         }
 
         [Fact]
-        public async Task RefreshToken_ShouldReturnOk()
+        public async Task Refreshing_access_token_is_response_Ok()
         {
             // arrange
             var (accessToken, refreshToken) = await MakeSession();

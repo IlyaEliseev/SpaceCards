@@ -19,7 +19,7 @@ namespace SpaceCards.IntegrationTests.Tests
         }
 
         [Fact]
-        public async Task Get_ShouldReturnOk()
+        public async Task Get_groups_is_response_Ok()
         {
             // arrange
             await SignIn();
@@ -32,7 +32,7 @@ namespace SpaceCards.IntegrationTests.Tests
         }
 
         [Fact]
-        public async Task GetById_ShouldReturnOk()
+        public async Task Get_group_by_valid_id_is_response_Ok()
         {
             // arrange
             await SignIn();
@@ -50,7 +50,7 @@ namespace SpaceCards.IntegrationTests.Tests
             nameof(GroupsDataGenerator.GenerateSetInvalidGroupId),
             parameters: 5,
             MemberType = typeof(GroupsDataGenerator))]
-        public async Task GetById_ShouldReturnBadRequest(int groupId)
+        public async Task Get_group_by_invalid_id_is_response_BadRequest(int groupId)
         {
             // arrange
             await SignIn();
@@ -63,7 +63,7 @@ namespace SpaceCards.IntegrationTests.Tests
         }
 
         [Fact]
-        public async Task Create_ShouldReturnOk()
+        public async Task Create_group_with_a_valid_parameters_is_response_Ok()
         {
             // arrange
             await SignIn();
@@ -81,7 +81,7 @@ namespace SpaceCards.IntegrationTests.Tests
             nameof(GroupsDataGenerator.GenerateSetInvalidName),
             parameters: 5,
             MemberType = typeof(GroupsDataGenerator))]
-        public async Task Create_ShouldReturnBadRequest(string name)
+        public async Task Create_group_with_a_invalid_parameters_is_response_BadRequest(string name)
         {
             // arrange
             await SignIn();
@@ -100,7 +100,7 @@ namespace SpaceCards.IntegrationTests.Tests
         }
 
         [Fact]
-        public async Task Update_ShouldReturnOk()
+        public async Task Update_group_by_valid_id_with_valid_parameters_is_response_Ok()
         {
             // arrange
             await SignIn();
@@ -120,7 +120,9 @@ namespace SpaceCards.IntegrationTests.Tests
             nameof(GroupsDataGenerator.GenerateSetInvalidGroupIdName),
             parameters: 5,
             MemberType = typeof(GroupsDataGenerator))]
-        public async Task Update_ShouldReturnBadRequest(int groupId, string name)
+        public async Task Update_group_by_invalid_id_with_invalid_parameters_is_response_BadRequest(
+            int groupId,
+            string name)
         {
             // arrange
             await SignIn();
@@ -138,7 +140,7 @@ namespace SpaceCards.IntegrationTests.Tests
         }
 
         [Fact]
-        public async Task Delete_ShouldReturnOk()
+        public async Task Delete_group_by_valid_id_is_response_Ok()
         {
             // arrange
             await SignIn();
@@ -156,7 +158,7 @@ namespace SpaceCards.IntegrationTests.Tests
             nameof(GroupsDataGenerator.GenerateSetInvalidGroupId),
             parameters: 5,
             MemberType = typeof(GroupsDataGenerator))]
-        public async Task Delete_ShouldReturnBadRequest(int groupId)
+        public async Task Delete_group_by_invalid_id_is_response_BadRequest(int groupId)
         {
             // arrange
             await SignIn();
@@ -169,7 +171,7 @@ namespace SpaceCards.IntegrationTests.Tests
         }
 
         [Fact]
-        public async Task AddCard_ShouldReturnOk()
+        public async Task Add_card_in_group_with_valid_card_id_and_group_id_is_response_Ok()
         {
             // arrange
             await SignIn();
@@ -188,7 +190,9 @@ namespace SpaceCards.IntegrationTests.Tests
             nameof(GroupsDataGenerator.GenerateSetInvalidCardIdGroupId),
             parameters: 5,
             MemberType = typeof(GroupsDataGenerator))]
-        public async Task AddCard_ShouldReturnBadRequest(int cardId, int groupId)
+        public async Task Add_card_in_group_with_invalid_card_id_and_group_id_is_response_BadRequest(
+            int cardId,
+            int groupId)
         {
             // arrange
             await SignIn();
@@ -201,7 +205,7 @@ namespace SpaceCards.IntegrationTests.Tests
         }
 
         [Fact]
-        public async Task GetRandomCards_ShouldReturnOk()
+        public async Task Get_random_cards_from_all_groups_with_valid_count_cards_is_response_Ok()
         {
             // arrange
             await SignIn();
@@ -234,7 +238,8 @@ namespace SpaceCards.IntegrationTests.Tests
             nameof(GroupsDataGenerator.GenerateSetInvaliCountCards),
             parameters: 5,
             MemberType = typeof(GroupsDataGenerator))]
-        public async Task GetRandomCards_ShouldReturnBadRequest(int countCards)
+        public async Task Get_random_cards_from_all_groups_with_invalid_count_cards_is_response_BadRequest(
+            int countCards)
         {
             // arrange
             await SignIn();
