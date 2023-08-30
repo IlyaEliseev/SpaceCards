@@ -3,7 +3,6 @@ using SpaceCards.API.Contracts;
 using SpaceCards.IntegrationTests.MemberData;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Xunit;
@@ -19,14 +18,12 @@ namespace SpaceCards.IntegrationTests.Tests
         }
 
         [Fact]
-        public async Task Get_ShouldReturnOk()
+        public async Task Get_all_cards_from_all_groups_is_response_Ok()
         {
             // arrange
             await SignIn();
 
             // act
-            var request = new HttpRequestMessage();
-
             var response = await Client.GetAsync("cards");
 
             // assert
@@ -34,7 +31,7 @@ namespace SpaceCards.IntegrationTests.Tests
         }
 
         [Fact]
-        public async Task Create_ShouldReturnOk()
+        public async Task Create_card_with_a_valid_parameters_is_response_Ok()
         {
             // arrange
             await SignIn();
@@ -52,7 +49,7 @@ namespace SpaceCards.IntegrationTests.Tests
             nameof(CardDataGenerator.GenerateSetInvalidFrontSideBackSide),
             parameters: 5,
             MemberType = typeof(CardDataGenerator))]
-        public async Task Create_ShouldReturnBadRequest(string frontSide, string backSide)
+        public async Task Create_card_with_a_invalid_parameters_is_response_BadRequest(string frontSide, string backSide)
         {
             // arrange
             await SignIn();
@@ -71,7 +68,7 @@ namespace SpaceCards.IntegrationTests.Tests
         }
 
         [Fact]
-        public async Task Update_ShouldReturnOk()
+        public async Task Update_card_by_id_with_valid_parameters_is_response_Ok()
         {
             // arrange
             await SignIn();
@@ -91,7 +88,7 @@ namespace SpaceCards.IntegrationTests.Tests
             nameof(CardDataGenerator.GenerateSetInvalidCardIdFrontSideBackSide),
             parameters: 5,
             MemberType = typeof(CardDataGenerator))]
-        public async Task Update_ShouldReturnBadRequest(int cardId, string frontSide, string backSide)
+        public async Task Update_card_by_id_with_invalid_parameters_is_response_BadRequest(int cardId, string frontSide, string backSide)
         {
             // arrange
             await SignIn();
@@ -110,7 +107,7 @@ namespace SpaceCards.IntegrationTests.Tests
         }
 
         [Fact]
-        public async Task Delete_ShouldReturnOk()
+        public async Task Delete_card_by_id_is_response_Ok()
         {
             // arrange
             await SignIn();
@@ -128,9 +125,9 @@ namespace SpaceCards.IntegrationTests.Tests
             nameof(CardDataGenerator.GenerateSetInvalidCardId),
             parameters: 5,
             MemberType = typeof(CardDataGenerator))]
-        public async Task Delete_ShouldReturnBadRequest(int invalidCardId)
+        public async Task Delete_card_by_invalid_id_is_response_BadRequest(int invalidCardId)
         {
-            // arrange 
+            // arrange
             await SignIn();
             var cardId = await MakeCard();
 

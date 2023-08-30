@@ -15,7 +15,7 @@ namespace SpaceCards.IntegrationTests.Tests
         }
 
         [Fact]
-        public async Task CollectCardStatistics_ShouldReturnOk()
+        public async Task Collect_success_guessing_card_one_or_zero_with_valid_card_id_and_success_is_response_Ok()
         {
             // arrange
             await SignIn();
@@ -35,7 +35,9 @@ namespace SpaceCards.IntegrationTests.Tests
             nameof(CardGuessingStatisticsDataGenerator.GenerateSetinvalidCardIdSuccess),
             parameters: 10,
             MemberType = typeof(CardGuessingStatisticsDataGenerator))]
-        public async Task CollectCardStatistic_ShouldReturnBadRequest(int cardId, int success)
+        public async Task Collect_success_guessing_card_one_or_zero_with_invalid_card_id_and_success_is_response_BadRequest(
+            int cardId,
+            int success)
         {
             // arrange
             await SignIn();
@@ -50,7 +52,7 @@ namespace SpaceCards.IntegrationTests.Tests
         }
 
         [Fact]
-        public async Task GetGetCardGuessingStatistics_ShouldReturnOk()
+        public async Task Get_all_row_cards_with_success_one_or_zero_is_response_Ok()
         {
             // arrange
             await SignIn();

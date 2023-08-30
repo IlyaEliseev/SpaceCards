@@ -14,24 +14,17 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Reflection;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 using Respawn.Graph;
-using Microsoft.AspNetCore.Http;
-using System.Linq;
-using Microsoft.AspNetCore.Mvc;
-using Moq;
 using System.Net;
-using System.Reflection.Metadata;
-using Microsoft.AspNetCore.Mvc.RazorPages.Infrastructure;
 
 namespace SpaceCards.IntegrationTests.Tests
 {
-    public abstract class BaseControllerTests : ControllerBase, IAsyncLifetime
+    [Collection("Database collection")]
+    public abstract class BaseControllerTests : IAsyncLifetime
     {
         private static readonly string _baseDirecotry = AppContext.BaseDirectory;
         private static readonly string _path = Directory.GetParent(_baseDirecotry).Parent.Parent.Parent.FullName;
@@ -50,16 +43,27 @@ namespace SpaceCards.IntegrationTests.Tests
                             .Build();
 
                         UserId = configutarion
-                            .GetSection("TestUserId")
-                            .Value;
+                            .GetValue<Guid>("TestUserId");
+
+                        if (UserId == null || UserId == Guid.Empty)
+                        {
+                            throw new ArgumentException($"{nameof(UserId)} is required. Please setup appsettings.Test.json");
+                        }
 
                         JwtTokenSecret = configutarion
-                            .GetSection("JwtTokenSecret")
+                            .GetSection("JWTSecret:Secret")
                             .Value;
 
-                        var test = configutarion.GetSection("Name").Value;
+                        if (JwtTokenSecret is null)
+                        {
+                            throw new ArgumentException($"{nameof(JwtTokenSecret)} is required. Please setup appsettings.Test.json");
+                        }
 
                         ConnectionString = configutarion.GetConnectionString("SpaceCardsDb");
+                        if (JwtTokenSecret is null)
+                        {
+                            throw new ArgumentException($"{nameof(ConnectionString)} is required. Please setup appsettings.Test.json");
+                        }
                     });
                 });
 
@@ -72,7 +76,7 @@ namespace SpaceCards.IntegrationTests.Tests
 
         protected Fixture Fixture { get; }
 
-        protected string UserId { get; set; }
+        protected Guid UserId { get; set; }
 
         protected string UserEmail => "testEmail@gmail.com";
 
@@ -88,31 +92,18 @@ namespace SpaceCards.IntegrationTests.Tests
 
         protected async Task SignIn()
         {
-            var userId = await GetUserId();
-
-            var userIdInformation = new UserInformation(UserNickname, userId);
+            var userIdInformation = new UserInformation(UserNickname, UserId);
             var token = CreateAccessToken(userIdInformation);
             var uri = new Uri("https://localhost:49394/");
             var cookieContainer = new CookieContainer();
             cookieContainer.Add(uri, new Cookie("_sp_i", token));
             Client.DefaultRequestHeaders.Add("cookie", cookieContainer.GetCookieHeader(uri));
-            //Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
-            //    "Bearer",
-            //    token);
-        }
-
-        protected async Task<Guid> GetUserId()
-        {
-            Guid.TryParse(UserId, out var userId);
-            return userId;
         }
 
         protected async Task<int> MakeCard()
         {
-            var userId = await GetUserId();
-
             var card = Fixture.Build<DataAccess.Postgre.Entites.CardEntity>()
-                            .With(x => x.UserId, userId)
+                            .With(x => x.UserId, UserId)
                             .Without(x => x.Id)
                             .Without(x => x.Group)
                             .Without(x => x.GroupId)
@@ -127,10 +118,8 @@ namespace SpaceCards.IntegrationTests.Tests
 
         protected async Task<int> MakeGroup()
         {
-            var userId = await GetUserId();
-
             var group = Fixture.Build<DataAccess.Postgre.Entites.GroupEntity>()
-                .With(x => x.UserId, userId)
+                .With(x => x.UserId, UserId)
                 .Without(x => x.Id)
                 .Without(x => x.Cards)
                 .Create();
@@ -144,13 +133,12 @@ namespace SpaceCards.IntegrationTests.Tests
 
         protected async Task<int> MakeCardGuessingStatistics()
         {
-            var userId = await GetUserId();
             var rnd = new Random();
 
             var cardGuessingStatistics = Fixture
                 .Build<DataAccess.Postgre.Entites.CardGuessingStatisticsEntity>()
                 .Without(x => x.Id)
-                .With(x => x.UserId, userId)
+                .With(x => x.UserId, UserId)
                 .With(x => x.Success, rnd.Next(0, 2))
                 .Create();
 
@@ -211,9 +199,7 @@ namespace SpaceCards.IntegrationTests.Tests
 
         protected async Task<(string AccessToken, string RefreshToken)> MakeSession()
         {
-            var userId = await GetUserId();
-
-            var userInformation = new UserInformation(UserNickname, userId);
+            var userInformation = new UserInformation(UserNickname, UserId);
 
             var accessToken = CreateAccessToken(userInformation);
             var refreshToken = CreateRefreshToken(userInformation);
@@ -222,7 +208,7 @@ namespace SpaceCards.IntegrationTests.Tests
             {
                 AccessToken = accessToken,
                 RefreshToken = refreshToken,
-                UserId = userId
+                UserId = UserId
             };
 
             await DbContext.Sessions.AddAsync(session);
