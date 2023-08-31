@@ -59,7 +59,7 @@ jobs:
         run: dotnet user-secrets set "ConnectionStrings:SpaceCardsDb" "User ID=postgres;Password=pwd;Host=localhost;Port=5432;Database=SpaceCardsDb;Pooling=true;" -p backend/SpaceCards.IntegrationTests
       
       - name: tool restore
-        run: dotnet tool restore
+        run: dotnet tool restore --tool-manifest backend/.config/dotnet-tools.json
 
       - name: update database
         run: dotnet ef database update -p backend/SpaceCards.DataAccess.Postgre -s backend/SpaceCards.API 
