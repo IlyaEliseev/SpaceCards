@@ -39,6 +39,7 @@ namespace SpaceCards.IntegrationTests.Tests
                         var configutarion = configurationBuilder
                             .SetBasePath(_path)
                             .AddJsonFile("appsettings.Test.json")
+                            .AddUserSecrets(typeof(BaseControllerTests).Assembly)
                             .AddEnvironmentVariables()
                             .Build();
 
