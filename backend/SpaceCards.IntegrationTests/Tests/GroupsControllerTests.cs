@@ -48,7 +48,6 @@ namespace SpaceCards.IntegrationTests.Tests
         [Theory]
         [MemberData(
             nameof(GroupsDataGenerator.GenerateSetInvalidGroupId),
-            parameters: 5,
             MemberType = typeof(GroupsDataGenerator))]
         public async Task Get_group_by_invalid_id_is_response_BadRequest(int groupId)
         {
@@ -79,7 +78,6 @@ namespace SpaceCards.IntegrationTests.Tests
         [Theory]
         [MemberData(
             nameof(GroupsDataGenerator.GenerateSetInvalidName),
-            parameters: 5,
             MemberType = typeof(GroupsDataGenerator))]
         public async Task Create_group_with_a_invalid_parameters_is_response_BadRequest(string name)
         {
@@ -118,7 +116,6 @@ namespace SpaceCards.IntegrationTests.Tests
         [Theory]
         [MemberData(
             nameof(GroupsDataGenerator.GenerateSetInvalidGroupIdName),
-            parameters: 5,
             MemberType = typeof(GroupsDataGenerator))]
         public async Task Update_group_by_invalid_id_with_invalid_parameters_is_response_BadRequest(
             int groupId,
@@ -156,7 +153,6 @@ namespace SpaceCards.IntegrationTests.Tests
         [Theory]
         [MemberData(
             nameof(GroupsDataGenerator.GenerateSetInvalidGroupId),
-            parameters: 5,
             MemberType = typeof(GroupsDataGenerator))]
         public async Task Delete_group_by_invalid_id_is_response_BadRequest(int groupId)
         {
@@ -188,7 +184,6 @@ namespace SpaceCards.IntegrationTests.Tests
         [Theory]
         [MemberData(
             nameof(GroupsDataGenerator.GenerateSetInvalidCardIdGroupId),
-            parameters: 5,
             MemberType = typeof(GroupsDataGenerator))]
         public async Task Add_card_in_group_with_invalid_card_id_and_group_id_is_response_BadRequest(
             int cardId,
@@ -235,8 +230,7 @@ namespace SpaceCards.IntegrationTests.Tests
 
         [Theory]
         [MemberData(
-            nameof(GroupsDataGenerator.GenerateSetInvaliCountCards),
-            parameters: 5,
+            nameof(GroupsDataGenerator.GenerateSetInvalidCountCards),
             MemberType = typeof(GroupsDataGenerator))]
         public async Task Get_random_cards_from_all_groups_with_invalid_count_cards_is_response_BadRequest(
             int countCards)

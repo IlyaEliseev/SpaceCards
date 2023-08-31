@@ -47,7 +47,6 @@ namespace SpaceCards.IntegrationTests.Tests
         [Theory]
         [MemberData(
             nameof(CardDataGenerator.GenerateSetInvalidFrontSideBackSide),
-            parameters: 5,
             MemberType = typeof(CardDataGenerator))]
         public async Task Create_card_with_a_invalid_parameters_is_response_BadRequest(string frontSide, string backSide)
         {
@@ -86,7 +85,6 @@ namespace SpaceCards.IntegrationTests.Tests
         [Theory]
         [MemberData(
             nameof(CardDataGenerator.GenerateSetInvalidCardIdFrontSideBackSide),
-            parameters: 5,
             MemberType = typeof(CardDataGenerator))]
         public async Task Update_card_by_id_with_invalid_parameters_is_response_BadRequest(int cardId, string frontSide, string backSide)
         {
@@ -123,7 +121,6 @@ namespace SpaceCards.IntegrationTests.Tests
         [Theory]
         [MemberData(
             nameof(CardDataGenerator.GenerateSetInvalidCardId),
-            parameters: 5,
             MemberType = typeof(CardDataGenerator))]
         public async Task Delete_card_by_invalid_id_is_response_BadRequest(int invalidCardId)
         {

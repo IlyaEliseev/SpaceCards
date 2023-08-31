@@ -5,20 +5,14 @@ namespace SpaceCards.IntegrationTests.MemberData
 {
     internal class CardGuessingStatisticsDataGenerator : BaseDataGenerator
     {
-        public static IEnumerable<object[]> GenerateSetinvalidCardIdSuccess(int testCount)
+        public static IEnumerable<object[]> GenerateSetinvalidCardIdSuccess()
         {
-            var rnd = new Random();
-
-            for (int i = 0; i < testCount; i++)
-            {
-                var invalidCardId = -rnd.Next(0, int.MaxValue);
-                var invalidSuccess = MakeInvalidSuccess();
-
-                yield return new object[]
-                {
-                    invalidCardId, invalidSuccess
-                };
-            }
+            yield return new object[] { 0, 2 };
+            yield return new object[] { -10, 2 };
+            yield return new object[] { int.MinValue, 2 };
+            yield return new object[] { 0, -2 };
+            yield return new object[] { -10, -2 };
+            yield return new object[] { int.MinValue, -2 };
         }
     }
 }

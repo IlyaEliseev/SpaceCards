@@ -33,7 +33,6 @@ namespace SpaceCards.IntegrationTests.Tests
         [Theory]
         [MemberData(
             nameof(CardGuessingStatisticsDataGenerator.GenerateSetinvalidCardIdSuccess),
-            parameters: 10,
             MemberType = typeof(CardGuessingStatisticsDataGenerator))]
         public async Task Collect_success_guessing_card_one_or_zero_with_invalid_card_id_and_success_is_response_BadRequest(
             int cardId,

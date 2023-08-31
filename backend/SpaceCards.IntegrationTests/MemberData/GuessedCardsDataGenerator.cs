@@ -1,39 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace SpaceCards.IntegrationTests.MemberData
 {
     internal class GuessedCardsDataGenerator
     {
-        public static IEnumerable<object[]> GenerateSetInvalidCardIdGroupId(int testCount)
+        public static IEnumerable<object[]> GenerateSetInvalidCardIdGroupId()
         {
-            var rnd = new Random();
-
-            for (int i = 0; i < testCount; i++)
-            {
-                var invalidCardId = -rnd.Next(0, int.MaxValue);
-                var invalidGroupId = -rnd.Next(0, int.MaxValue);
-
-                yield return new object[]
-                {
-                    invalidCardId, invalidGroupId
-                };
-            }
+            yield return new object[] { 0, 0 };
+            yield return new object[] { 0, -10 };
+            yield return new object[] { 0, int.MinValue };
+            yield return new object[] { -10, 0 };
+            yield return new object[] { -10, -10 };
+            yield return new object[] { -10, int.MinValue };
+            yield return new object[] { int.MinValue, 0 };
+            yield return new object[] { int.MinValue, -10 };
+            yield return new object[] { int.MinValue, int.MinValue };
         }
 
-        public static IEnumerable<object[]> GenerateSetInvalidCardIdOrGroupId(int testCount)
+        public static IEnumerable<object[]> GenerateSetInvalidId()
         {
-            var rnd = new Random();
-
-            for (int i = 0; i < testCount; i++)
-            {
-                var invlalidId = -rnd.Next(0, int.MaxValue);
-
-                yield return new object[]
-                {
-                    invlalidId
-                };
-            }
+            yield return new object[] { 0 };
+            yield return new object[] { -10 };
+            yield return new object[] { int.MinValue };
         }
     }
 }

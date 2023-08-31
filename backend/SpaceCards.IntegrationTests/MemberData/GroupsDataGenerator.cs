@@ -1,95 +1,61 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 
 namespace SpaceCards.IntegrationTests.MemberData
 {
     internal class GroupsDataGenerator
     {
-        public static IEnumerable<object[]> GenerateSetInvalidGroupId(int testCount)
+        public static IEnumerable<object[]> GenerateSetInvalidGroupId()
         {
-            var rnd = new Random();
-
-            for (int i = 0; i < testCount; i++)
-            {
-                yield return new object[]
-                {
-                    -rnd.Next(0, int.MaxValue)
-                };
-            }
+            yield return new object[] { 0 };
+            yield return new object[] { -10 };
+            yield return new object[] { int.MinValue };
         }
 
-        public static IEnumerable<object[]> GenerateSetInvalidCardIdGroupId(int testCount)
+        public static IEnumerable<object[]> GenerateSetInvalidCardIdGroupId()
         {
-            var rnd = new Random();
-
-            for (int i = 0; i < testCount; i++)
-            {
-                var invalidCardId = -rnd.Next(0, int.MaxValue);
-                var invalidGroupId = -rnd.Next(0, int.MaxValue);
-
-                yield return new object[]
-                {
-                    invalidCardId, invalidGroupId
-                };
-            }
+            yield return new object[] { 0, 0 };
+            yield return new object[] { -10, -10 };
+            yield return new object[] { int.MinValue, int.MinValue };
+            yield return new object[] { 0, -10 };
+            yield return new object[] { 0, int.MinValue };
+            yield return new object[] { -10, 0 };
+            yield return new object[] { int.MinValue, 0 };
         }
 
-        public static IEnumerable<object[]> GenerateSetInvalidGroupIdName(int testCount)
+        public static IEnumerable<object[]> GenerateSetInvalidGroupIdName()
         {
-            var rnd = new Random();
-
-            for (int i = 0; i < testCount; i++)
-            {
-                var invalidGroupId = -rnd.Next(0, int.MaxValue);
-
-                var invalidNameLength = BaseDataGenerator.GetInvalidNameLength();
-
-                var invalidNameData = Enumerable.Range(0, 5)
-                    .Select(x => StringFixture.GenerateRandomString(invalidNameLength))
-                    .ToArray();
-
-                var invalidName = BaseDataGenerator.MakeInvalidString(invalidNameData);
-
-                yield return new object[]
-                {
-                    invalidGroupId, invalidName
-                };
-            }
+            var invalidNameLength = BaseDataGenerator.GetInvalidNameLength();
+            var nameWithInvalidLength = StringFixture.GenerateRandomString(invalidNameLength);
+            yield return new object[] { 0, null };
+            yield return new object[] { 0, " " };
+            yield return new object[] { 0, "       " };
+            yield return new object[] { 0, nameWithInvalidLength };
+            yield return new object[] { -10, null };
+            yield return new object[] { -10, " " };
+            yield return new object[] { -10, "       " };
+            yield return new object[] { -10, invalidNameLength };
+            yield return new object[] { int.MinValue, null };
+            yield return new object[] { int.MinValue, " " };
+            yield return new object[] { int.MinValue, "       " };
+            yield return new object[] { int.MinValue, nameWithInvalidLength };
         }
 
-        public static IEnumerable<object[]> GenerateSetInvalidName(int testCount)
+        public static IEnumerable<object[]> GenerateSetInvalidName()
         {
-            for (int i = 0; i < testCount; i++)
-            {
-                var invalidNameLength = BaseDataGenerator.GetInvalidNameLength();
+            var invalidNameLength = BaseDataGenerator.GetInvalidNameLength();
+            var nameWithInvalidLength = StringFixture.GenerateRandomString(invalidNameLength);
 
-                var invalidNameData = Enumerable.Range(0, 5)
-                    .Select(x => StringFixture.GenerateRandomString(invalidNameLength))
-                    .ToArray();
-
-                var invalidName = BaseDataGenerator.MakeInvalidString(invalidNameData);
-
-                yield return new object[]
-                {
-                    invalidName
-                };
-            }
+            yield return new object[] { null };
+            yield return new object[] { " " };
+            yield return new object[] { "          " };
+            yield return new object[] { nameWithInvalidLength };
         }
 
-        public static IEnumerable<object[]> GenerateSetInvaliCountCards(int testCount)
+        public static IEnumerable<object[]> GenerateSetInvalidCountCards()
         {
-            var rnd = new Random();
-
-            for (int i = 0; i < testCount; i++)
-            {
-                var cardCount = -rnd.Next(0, int.MaxValue);
-
-                yield return new object[]
-                {
-                    cardCount
-                };
-            }
+            yield return new object[] { 0 };
+            yield return new object[] { -10 };
+            yield return new object[] { int.MinValue };
         }
     }
 }
