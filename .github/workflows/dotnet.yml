@@ -43,14 +43,20 @@ jobs:
         uses: Harmon758/postgresql-action@v1.0.0
 
         with:
-          postgresql db: SpaceCardsTestDb
+          postgresql db: SpaceCardsDb
           postgresql password: pwd
 
-      - name: Init secrets
+      - name: Init secrets API
         run: dotnet user-secrets init -p backend/SpaceCards.API 
        
-      - name: Set connection string
-        run: dotnet user-secrets set "ConnectionStrings:SpaceCardsDb" "User ID=postgres;Password=pwd;Host=localhost;Port=5439;Database=SpaceCardsTestDb;Pooling=true;" -p backend/SpaceCards.API 
+      - name: Set connection string API
+        run: dotnet user-secrets set "ConnectionStrings:SpaceCardsDb" "User ID=postgres;Password=pwd;Host=localhost;Port=5432;Database=SpaceCardsDb;Pooling=true;" -p backend/SpaceCards.API 
+
+      - name: Init secrets Integration Tests
+        run: dotnet user-secrets init -p backend/SpaceCards.IntegrationTests 
+
+      - name: Set connection string IntegrationalTests
+        run: dotnet user-secrets set "ConnectionStrings:SpaceCardsDb" "User ID=postgres;Password=pwd;Host=localhost;Port=5432;Database=SpaceCardsDb;Pooling=true;" -p backend/SpaceCards.IntegrationTests
       
       - name: tool restore
         run: dotnet tool restore
