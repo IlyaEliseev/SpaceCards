@@ -51,7 +51,19 @@ jobs:
        
       - name: Set connection string API
         run: dotnet user-secrets set "ConnectionStrings:SpaceCardsDb" "User ID=postgres;Password=pwd;Host=localhost;Port=5432;Database=SpaceCardsDb;Pooling=true;" -p backend/SpaceCards.API 
+       
+      - name: Set MailRu client secret
+        run: dotnet user-secrets set "ExternalAuthenticationOptions:MailRu:ClientSecret" ${{ secrets.CLIENTSECRET }}
 
+      - name: Set MailRu client id
+        run: dotnet user-secrets set "ExternalAuthenticationOptions:MailRu:ClientId" ${{ secrets.CLIENTID }}
+
+      - name: Set Google client id
+        run: dotnet user-secrets set "ExternalAuthenticationOptions:Google:ClientId" ${{ secrets.CLIENTIDGOOGLE }}
+
+      - name: Set Google client secret
+        run: dotnet user-secrets set "ExternalAuthenticationOptions:Google:ClientSecret" ${{ secrets.CLIENTSECRETGOOGLE }}
+        
       - name: Init secrets Integration Tests
         run: dotnet user-secrets init -p backend/SpaceCards.IntegrationTests 
 
