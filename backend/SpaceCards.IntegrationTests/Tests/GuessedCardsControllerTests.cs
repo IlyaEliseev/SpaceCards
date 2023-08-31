@@ -31,7 +31,6 @@ namespace SpaceCards.IntegrationTests.Tests
         [Theory]
         [MemberData(
             nameof(GuessedCardsDataGenerator.GenerateSetInvalidCardIdGroupId),
-            parameters: 5,
             MemberType = typeof(GuessedCardsDataGenerator))]
         public async Task Collect_Guessed_card_with_invalid_card_id_and_group_id_is_response_BadRequest(
             int invalidCardId,
@@ -50,11 +49,10 @@ namespace SpaceCards.IntegrationTests.Tests
 
         [Theory]
         [MemberData(
-            nameof(GuessedCardsDataGenerator.GenerateSetInvalidCardIdOrGroupId),
-            parameters: 5,
+            nameof(GuessedCardsDataGenerator.GenerateSetInvalidId),
             MemberType = typeof(GuessedCardsDataGenerator))]
-        public async Task Collect_Guessed_card_with_invalid_card_id_and_valid_group_id_is_response_BadRequest
-            (int invalidCardId)
+        public async Task Collect_Guessed_card_with_invalid_card_id_and_valid_group_id_is_response_BadRequest(
+            int invalidCardId)
         {
             // arrange
             await SignIn();
@@ -69,8 +67,7 @@ namespace SpaceCards.IntegrationTests.Tests
 
         [Theory]
         [MemberData(
-            nameof(GuessedCardsDataGenerator.GenerateSetInvalidCardIdOrGroupId),
-            parameters: 5,
+            nameof(GuessedCardsDataGenerator.GenerateSetInvalidId),
             MemberType = typeof(GuessedCardsDataGenerator))]
         public async Task Collect_Guessed_card_with_valid_card_id_and_invalid_group_id_is_response_BadRequest(
             int invalidGroupId)

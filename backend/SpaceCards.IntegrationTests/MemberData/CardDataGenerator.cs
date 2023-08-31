@@ -6,71 +6,58 @@ namespace SpaceCards.IntegrationTests.MemberData
 {
     internal class CardDataGenerator
     {
-        public static IEnumerable<object[]> GenerateSetInvalidCardId(int testCount)
+        public static IEnumerable<object[]> GenerateSetInvalidCardId()
         {
-            var rnd = new Random();
-
-            for (int i = 0; i < testCount; i++)
-            {
-                yield return new object[]
-                {
-                    -rnd.Next(0, int.MaxValue)
-                };
-            }
+            yield return new object[] { 0 };
+            yield return new object[] { -100 };
+            yield return new object[] { int.MinValue };
         }
 
-        public static IEnumerable<object[]> GenerateSetInvalidCardIdFrontSideBackSide(int testCount)
+        public static IEnumerable<object[]> GenerateSetInvalidCardIdFrontSideBackSide()
         {
-            var rnd = new Random();
+            var frontsideLength = BaseDataGenerator.GetInvalidFrontsideLength();
+            var backsideLength = BaseDataGenerator.GetInvalidBacksideLength();
+            var frontsideWithInvalidLength = StringFixture.GenerateRandomString(frontsideLength);
+            var backsideWithInvalidLength = StringFixture.GenerateRandomString(backsideLength);
 
-            for (int i = 0; i < testCount; i++)
-            {
-                var frontsideLength = BaseDataGenerator.GetInvalidFrontsideLength();
-                var backsideLength = BaseDataGenerator.GetInvalidBacksideLength();
-
-                var invalidFrontsideData = Enumerable.Range(0, 5)
-                    .Select(x => StringFixture.GenerateRandomString(frontsideLength))
-                    .ToArray();
-
-                var invalidBacksideData = Enumerable.Range(0, 5)
-                    .Select(x => StringFixture.GenerateRandomString(backsideLength))
-                    .ToArray();
-
-                var invalidCardId = -rnd.Next(0, int.MaxValue);
-
-                var invalidFrontSide = BaseDataGenerator.MakeInvalidString(invalidFrontsideData);
-                var invalidBackSide = BaseDataGenerator.MakeInvalidString(invalidBacksideData);
-
-                yield return new object[]
-                {
-                    invalidCardId, invalidFrontSide, invalidBackSide
-                };
-            }
+            yield return new object[] { 0, null, null };
+            yield return new object[] { 0, " ", " " };
+            yield return new object[] { 0, "       ", "       " };
+            yield return new object[] { 0, frontsideWithInvalidLength, backsideWithInvalidLength };
+            yield return new object[] { 0, null, " " };
+            yield return new object[] { 0, null, "       " };
+            yield return new object[] { 0, null, backsideWithInvalidLength };
+            yield return new object[] { 0, " ", null };
+            yield return new object[] { 0, "       ", null };
+            yield return new object[] { 0, frontsideWithInvalidLength, null };
+            yield return new object[] { int.MinValue, null, null };
+            yield return new object[] { int.MinValue, " ", " " };
+            yield return new object[] { int.MinValue, "       ", "       " };
+            yield return new object[] { int.MinValue, frontsideWithInvalidLength, backsideWithInvalidLength };
+            yield return new object[] { int.MinValue, null, " " };
+            yield return new object[] { int.MinValue, null, "       " };
+            yield return new object[] { int.MinValue, null, backsideWithInvalidLength };
+            yield return new object[] { int.MinValue, " ", null };
+            yield return new object[] { int.MinValue, "       ", null };
+            yield return new object[] { int.MinValue, frontsideWithInvalidLength, null };
         }
 
-        public static IEnumerable<object[]> GenerateSetInvalidFrontSideBackSide(int testCount)
+        public static IEnumerable<object[]> GenerateSetInvalidFrontSideBackSide()
         {
-            for (int i = 0; i < testCount; i++)
-            {
-                var frontsideLength = BaseDataGenerator.GetInvalidFrontsideLength();
-                var backsideLength = BaseDataGenerator.GetInvalidBacksideLength();
+            var frontsideLength = BaseDataGenerator.GetInvalidFrontsideLength();
+            var backsideLength = BaseDataGenerator.GetInvalidBacksideLength();
+            var frontsideWithInvalidLength = StringFixture.GenerateRandomString(frontsideLength);
+            var backsideWithInvalidLength = StringFixture.GenerateRandomString(backsideLength);
 
-                var invalidFrontsideData = Enumerable.Range(0, 5)
-                    .Select(x => StringFixture.GenerateRandomString(frontsideLength))
-                    .ToArray();
-
-                var invalidBacksideData = Enumerable.Range(0, 5)
-                    .Select(x => StringFixture.GenerateRandomString(backsideLength))
-                    .ToArray();
-
-                var invalidFrontSide = BaseDataGenerator.MakeInvalidString(invalidFrontsideData);
-                var invalidBackSide = BaseDataGenerator.MakeInvalidString(invalidBacksideData);
-
-                yield return new object[]
-                {
-                    invalidFrontSide, invalidBackSide
-                };
-            }
+            yield return new object[] { null, null};
+            yield return new object[] { null, " " };
+            yield return new object[] { null, backsideWithInvalidLength };
+            yield return new object[] { " ", null };
+            yield return new object[] { " ", " " };
+            yield return new object[] { " ", backsideWithInvalidLength };
+            yield return new object[] { frontsideWithInvalidLength, null };
+            yield return new object[] { frontsideWithInvalidLength, " " };
+            yield return new object[] { frontsideWithInvalidLength, backsideWithInvalidLength };
         }
     }
 }

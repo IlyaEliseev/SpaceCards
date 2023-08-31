@@ -36,7 +36,7 @@ namespace SpaceCards.IntegrationTests.Tests
         [Theory]
         [MemberData(
             nameof(UsersAccountDataGenerator.GenerateSetInvalidEmail),
-            parameters: 2,
+            parameters: 3,
             MemberType = typeof(UsersAccountDataGenerator))]
         public async Task Registration_new_user_with_invalid_email_is_response_BadRequest(
             string email)
@@ -58,7 +58,7 @@ namespace SpaceCards.IntegrationTests.Tests
         [Theory]
         [MemberData(
             nameof(UsersAccountDataGenerator.GenerateSetInvalidPassword),
-            parameters: 2,
+            parameters: 3,
             MemberType = typeof(UsersAccountDataGenerator))]
         public async Task Registration_new_user_with_invalid_password_is_response_BadRequest(
             string password)
