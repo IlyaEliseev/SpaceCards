@@ -43,14 +43,15 @@ jobs:
         uses: Harmon758/postgresql-action@v1.0.0
 
         with:
-          postgresql db: SpaceCardsDb
+          postgresql db: SpaceCardsTestDb
           postgresql password: pwd
 
       - name: Init secrets
         run: dotnet user-secrets init -p backend/SpaceCards.API 
        
       - name: Set connection string
-        run: dotnet user-secrets set "ConnectionStrings:SpaceCardsDb" "User ID=postgres;Password=pwd;Host=localhost;Port=5432;Database=SpaceCardsDb;Pooling=true;" -p backend/SpaceCards.API 
+        run: dotnet user-secrets set "ConnectionStrings:SpaceCardsDb" "User ID=postgres;Password=pwd;Host=localhost;Port=5439;Database=SpaceCardsTestDb;Pooling=true;" -p backend/SpaceCards.API 
+      
       - name: tool restore
         run: dotnet tool restore
 
@@ -58,4 +59,4 @@ jobs:
         run: dotnet ef database update -p backend/SpaceCards.DataAccess.Postgre -s backend/SpaceCards.API 
         
       - name: Test
-        run: dotnet test backend/SpaceCards.IntegrationTests/SpaceCards.IntegrationTests.csproj --no-build --verbosity normal
+        run: dotnet test backend/SpaceCards.IntegrationTests/SpaceCards.IntegrationTests.csproj --verbosity normal /p:ParallelizeTestCollections=false
