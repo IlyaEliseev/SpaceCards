@@ -1,8 +1,10 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using OpenTelemetry.Metrics;
 using Serilog;
 using SpaceCards.API;
 using SpaceCards.API.Extensions;
+using SpaceCards.API.Options;
 using SpaceCards.DataAccess.Postgre;
 using System.Reflection;
 
@@ -49,6 +51,15 @@ builder.Services.AddDbContext<SpaceCardsDbContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("SpaceCardsDb"));
 });
+
+//builder.Services.AddStackExchangeRedisCache(options =>
+//{
+//    options.Configuration = builder
+//        .Configuration
+//        .GetSection(nameof(RedisOptions))
+//        .Get<RedisOptions>()
+//        .ConnectionString;
+//});
 
 builder.Services.AddAutoMapper(cfg =>
 {

@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.Net.Http.Headers;
 using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
+using SpaceCards.API.Cache;
 using SpaceCards.API.Options;
 using SpaceCards.BusinessLogic;
 using SpaceCards.DataAccess.Postgre.Repositories;
@@ -48,6 +49,7 @@ namespace SpaceCards.API.Extensions
             services.AddScoped<SecurityService>();
             services.AddScoped<IOAuthUsersService, OAuthUsersService>();
             services.AddScoped<IOAuthUserTokensService, OAuthUserTokensService>();
+            services.AddScoped<ICacheService, CacheService>();
 
             return services;
         }
@@ -64,6 +66,8 @@ namespace SpaceCards.API.Extensions
 
             builder.Services.Configure<ExternalAuthenticationOptions>(
                 builder.Configuration.GetSection(nameof(ExternalAuthenticationOptions)));
+
+            builder.Services.Configure<RedisOptions>(builder.Configuration.GetSection(nameof(RedisOptions)));
 
             return builder;
         }
