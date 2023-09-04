@@ -1,4 +1,5 @@
 ﻿using CSharpFunctionalExtensions;
+using System.Text.Json.Serialization;
 
 namespace SpaceCards.Domain.Model
 {
@@ -7,6 +8,8 @@ namespace SpaceCards.Domain.Model
         public const int MAX_NAME_FRONTSIDE = 200;
 
         public const int MAX_NAME_BACKSIDE = 200;
+
+        private Card() { }
 
         private Card(int id, string? frontSide, string? backSide, int? groupId, Guid? userId)
         {
@@ -19,13 +22,13 @@ namespace SpaceCards.Domain.Model
 
         public int Id { get; init; }
 
-        public string FrontSide { get; }
+        public string FrontSide { get; init; }
 
-        public string BackSide { get; }
+        public string BackSide { get; init; }
 
         public int? GroupId { get; init; }
 
-        public Guid? UserId { get; }
+        public Guid? UserId { get; init; }
 
         public static Result<Card> Create(string frontSide, string backSide, Guid? userId)
         {

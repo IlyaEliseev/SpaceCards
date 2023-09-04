@@ -22,6 +22,7 @@ namespace SpaceCards.IntegrationTests.Tests
         {
             // arrange
             await SignIn();
+            await MakeCard();
 
             // act
             var response = await Client.GetAsync("cards");

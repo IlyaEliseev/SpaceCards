@@ -20,6 +20,7 @@ using Xunit;
 using Xunit.Abstractions;
 using Respawn.Graph;
 using System.Net;
+using SpaceCards.API.Cache;
 
 namespace SpaceCards.IntegrationTests.Tests
 {
@@ -65,6 +66,11 @@ namespace SpaceCards.IntegrationTests.Tests
                         {
                             throw new ArgumentException($"{nameof(ConnectionString)} is required. Please setup appsettings.Test.json");
                         }
+                    });
+
+                    builder.ConfigureServices(services =>
+                    {
+                        services.AddScoped<ICacheService, FakeCacheService>();
                     });
                 });
 
