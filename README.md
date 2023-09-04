@@ -73,6 +73,9 @@ Follow these steps to get your development environment set up:
 - Entity Framework Core
 - PostgreSql
 - Docker
+- Redis cache
+- Jwt auth
+- OAuth2.0 auth (Google, MailRu)
 
 ### Frontend
 
