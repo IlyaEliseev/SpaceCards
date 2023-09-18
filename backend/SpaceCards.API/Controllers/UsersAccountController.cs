@@ -6,6 +6,8 @@ using SpaceCards.Domain.Interfaces;
 using SpaceCards.API.Options;
 using SpaceCards.Domain.Model;
 using Microsoft.AspNetCore.Authorization;
+using SpaceCards.API.Services.JwtService;
+using System.Security.Claims;
 
 namespace SpaceCards.API.Controllers
 {
@@ -17,19 +19,22 @@ namespace SpaceCards.API.Controllers
         private readonly SecurityService _securityService;
         private readonly JWTSecretOptions _options;
         private readonly ISessionsRepository _sessionsRepository;
+        private readonly JwtService _jwtService;
 
         public UsersAccountController(
             ILogger<UsersAccountController> logger,
             IUsersAccountService userAccountService,
             IOptions<JWTSecretOptions> options,
             SecurityService securityService,
-            ISessionsRepository sessionsRepository)
+            ISessionsRepository sessionsRepository,
+            JwtService jwtService)
         {
             _logger = logger;
             _userAccountService = userAccountService;
             _securityService = securityService;
             _options = options.Value;
             _sessionsRepository = sessionsRepository;
+            _jwtService = jwtService;
         }
 
         /// <summary>
@@ -112,9 +117,14 @@ namespace SpaceCards.API.Controllers
                 return BadRequest("incorrect password");
             }
 
-            var userInformation = new UserInformation(user.Value.Nickname, user.Value.UserId);
-            var accsessToken = JwtHelper.CreateAccessToken(userInformation, _options);
-            var refreshToken = JwtHelper.CreateRefreshToken(userInformation, _options);
+            var (accsessToken, refreshToken) = _jwtService.CreateTokens(
+                claims: new Dictionary<string, object>()
+                {
+                    { ClaimTypes.NameIdentifier, user.Value.UserId },
+                    { ClaimTypes.Name, user.Value.Nickname }
+                },
+                accessTokenExpireTime: DateTimeOffset.UtcNow.AddMinutes(30).ToUnixTimeSeconds(),
+                refreshTokenExpireTime: DateTimeOffset.UtcNow.AddDays(30).ToUnixTimeSeconds());
 
             var session = Session.Create(user.Value.UserId, accsessToken, refreshToken);
             if (session.IsFailure)
@@ -162,26 +172,25 @@ namespace SpaceCards.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> RefreshAccessToken([FromBody] TokenRequest request)
         {
-            var payload = JwtHelper.GetPayloadFromJWTToken(request.RefreshToken, _options);
+            var userInformation = _jwtService.DecodeToken(request.RefreshToken);
 
-            var userInformation = JwtHelper.ParseUserInformation(payload);
-            if (userInformation.IsFailure)
-            {
-                _logger.LogError("{error}", userInformation.Error);
-                return BadRequest(userInformation.Error);
-            }
-
-            var resultGet = await _sessionsRepository.GetById(userInformation.Value.UserId);
+            var resultGet = await _sessionsRepository.GetById(userInformation.UserId);
             if (resultGet.IsFailure)
             {
                 _logger.LogError("{error}", resultGet.Error);
                 return BadRequest(resultGet.Error);
             }
 
-            var accsessToken = JwtHelper.CreateAccessToken(userInformation.Value, _options);
-            var refreshToken = JwtHelper.CreateRefreshToken(userInformation.Value, _options);
+            var (accsessToken, refreshToken) = _jwtService.CreateTokens(
+                claims: new Dictionary<string, object>()
+                {
+                    { ClaimTypes.NameIdentifier, userInformation.UserId },
+                    { ClaimTypes.Name, userInformation.Nickname }
+                },
+                accessTokenExpireTime: DateTimeOffset.UtcNow.AddMinutes(30).ToUnixTimeSeconds(),
+                refreshTokenExpireTime: DateTimeOffset.UtcNow.AddDays(30).ToUnixTimeSeconds());
 
-            var session = Session.Create(userInformation.Value.UserId, accsessToken, refreshToken);
+            var session = Session.Create(userInformation.UserId, accsessToken, refreshToken);
             if (resultGet.IsFailure)
             {
                 _logger.LogError("{error}", resultGet.Error);
@@ -199,7 +208,7 @@ namespace SpaceCards.API.Controllers
             {
                 AccessToken = accsessToken,
                 RefreshToken = refreshToken,
-                Nickname = userInformation.Value.Nickname
+                Nickname = userInformation.Nickname
             });
         }
 

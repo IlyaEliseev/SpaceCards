@@ -5,6 +5,7 @@ using Serilog;
 using SpaceCards.API;
 using SpaceCards.API.Extensions;
 using SpaceCards.API.Options;
+using SpaceCards.API.Services.JwtService;
 using SpaceCards.DataAccess.Postgre;
 using System.Reflection;
 
@@ -70,6 +71,14 @@ builder.Services.AddAutoMapper(cfg =>
 builder.Services.AddRepositories();
 
 builder.Services.AddServices();
+
+builder.Services.AddJwtService(options =>
+{
+    options.Provider = new JwtNetProvider();
+    options.Secret = builder.Configuration
+                    .GetSection(nameof(JWTSecretOptions.JWTSecret))
+                    .Get<JWTSecretOptions>().Secret;
+});
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddControllers();
