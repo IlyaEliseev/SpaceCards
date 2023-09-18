@@ -10,6 +10,7 @@ using SpaceCards.Domain.Model;
 using SpaceCards.Domain.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using SpaceCards.API.Contracts;
+using SpaceCards.API.Services.JwtService;
 
 namespace SpaceCards.API.Controllers
 {
@@ -21,19 +22,22 @@ namespace SpaceCards.API.Controllers
         private readonly IOAuthUsersService _oAuthUsersService;
         private readonly IOAuthUserTokensService _oAuthUserTokensService;
         private readonly ISessionsRepository _sessionsRepository;
+        private readonly JwtService _jwtService;
 
         public OAuthController(
             ILogger<OAuthController> logger,
             IOptions<JWTSecretOptions> jwtSecretOptions,
             IOAuthUsersService oAuthUsersService,
             IOAuthUserTokensService oAuthUserTokensService,
-            ISessionsRepository sessionsRepository)
+            ISessionsRepository sessionsRepository,
+            JwtService jwtService)
         {
             _jwtSecretOptions = jwtSecretOptions.Value;
             _logger = logger;
             _oAuthUsersService = oAuthUsersService;
             _oAuthUserTokensService = oAuthUserTokensService;
             _sessionsRepository = sessionsRepository;
+            _jwtService = jwtService;
         }
 
         /// <summary>
@@ -80,13 +84,14 @@ namespace SpaceCards.API.Controllers
                 return BadRequest(oauthUserId.Error);
             }
 
-            var accessToken = JwtHelper.CreateAccessToken(
-                new UserInformation(oauthParameters.Nickname, oauthUserId.Value),
-                _jwtSecretOptions);
-
-            var refreshToken = JwtHelper.CreateRefreshToken(
-                new UserInformation(oauthParameters.Nickname, oauthUserId.Value),
-                _jwtSecretOptions);
+            var (accessToken, refreshToken) = _jwtService.CreateTokens(
+                claims: new Dictionary<string, object>()
+                {
+                    { ClaimTypes.NameIdentifier, oauthUserId.Value },
+                    { ClaimTypes.Name, oauthParameters.Nickname }
+                },
+                accessTokenExpireTime: DateTimeOffset.UtcNow.AddMinutes(30).ToUnixTimeSeconds(),
+                refreshTokenExpireTime: DateTimeOffset.UtcNow.AddDays(30).ToUnixTimeSeconds());
 
             var session = Session.Create(oauthUserId.Value, accessToken, refreshToken);
             if (session.IsFailure)

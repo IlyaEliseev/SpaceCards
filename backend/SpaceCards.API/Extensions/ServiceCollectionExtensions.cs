@@ -7,6 +7,7 @@ using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using SpaceCards.API.Cache;
 using SpaceCards.API.Options;
+using SpaceCards.API.Services.JwtService;
 using SpaceCards.BusinessLogic;
 using SpaceCards.DataAccess.Postgre.Repositories;
 using SpaceCards.Domain.Interfaces;
@@ -51,6 +52,35 @@ namespace SpaceCards.API.Extensions
             services.AddScoped<IOAuthUserTokensService, OAuthUserTokensService>();
             services.AddScoped<ICacheService, CacheService>();
 
+            return services;
+        }
+
+        public static IServiceCollection AddJwtService(this IServiceCollection services)
+        {
+            if (services is null)
+            {
+                throw new ArgumentNullException(nameof(services));
+            }
+
+            services.AddOptions();
+            services.AddScoped<JwtService>();
+            return services;
+        }
+
+        public static IServiceCollection AddJwtService(this IServiceCollection services, Action<JwtOptions> options)
+        {
+            if (services is null)
+            {
+                throw new ArgumentNullException(nameof(services));
+            }
+
+            if (services is null)
+            {
+                throw new ArgumentNullException(nameof(options));
+            }
+
+            services.AddJwtService();
+            services.Configure(options);
             return services;
         }
 

@@ -21,6 +21,9 @@ using Xunit.Abstractions;
 using Respawn.Graph;
 using System.Net;
 using SpaceCards.API.Cache;
+using SpaceCards.API.Services.JwtService;
+using SpaceCards.API.Extensions;
+using Microsoft.OpenApi.Any;
 
 namespace SpaceCards.IntegrationTests.Tests
 {
@@ -72,14 +75,18 @@ namespace SpaceCards.IntegrationTests.Tests
                     {
                         services.AddScoped<ICacheService, FakeCacheService>();
                     });
+
                 });
 
             Client = app.CreateDefaultClient(new LoggingHandler(outputHelper));
             Fixture = new Fixture();
             DbContext = app.Services.CreateScope().ServiceProvider.GetRequiredService<SpaceCardsDbContext>();
+            JwtService = app.Services.CreateScope().ServiceProvider.GetRequiredService<JwtService>();
         }
 
         protected HttpClient Client { get; }
+
+        protected JwtService JwtService { get; }
 
         protected Fixture Fixture { get; }
 
@@ -99,8 +106,14 @@ namespace SpaceCards.IntegrationTests.Tests
 
         protected async Task SignIn()
         {
-            var userIdInformation = new UserInformation(UserNickname, UserId);
-            var token = CreateAccessToken(userIdInformation);
+            var claims = new Dictionary<string, object>()
+            {
+                { ClaimTypes.NameIdentifier, UserId },
+                { ClaimTypes.Name, UserNickname }
+            };
+
+            var token = JwtService.CreateToken(claims, DateTimeOffset.UtcNow.AddMinutes(10).ToUnixTimeSeconds());
+
             var uri = new Uri("https://localhost:49394/");
             var cookieContainer = new CookieContainer();
             cookieContainer.Add(uri, new Cookie("_sp_i", token));
@@ -206,10 +219,16 @@ namespace SpaceCards.IntegrationTests.Tests
 
         protected async Task<(string AccessToken, string RefreshToken)> MakeSession()
         {
-            var userInformation = new UserInformation(UserNickname, UserId);
+            var claims = new Dictionary<string, object>()
+            {
+                { ClaimTypes.NameIdentifier, UserId },
+                { ClaimTypes.Name, UserNickname }
+            };
 
-            var accessToken = CreateAccessToken(userInformation);
-            var refreshToken = CreateRefreshToken(userInformation);
+            var (accessToken, refreshToken) = JwtService.CreateTokens(
+                claims,
+                DateTimeOffset.UtcNow.AddMinutes(10).ToUnixTimeSeconds(),
+                DateTimeOffset.UtcNow.AddMinutes(30).ToUnixTimeSeconds());
 
             var session = new SessionEntity
             {
@@ -223,34 +242,6 @@ namespace SpaceCards.IntegrationTests.Tests
             DbContext.ChangeTracker.Clear();
 
             return (accessToken, refreshToken);
-        }
-
-        protected string CreateAccessToken(UserInformation information)
-        {
-            var accsessToken = JwtBuilder.Create()
-                      .WithAlgorithm(new HMACSHA256Algorithm())
-                      .WithSecret(JwtTokenSecret)
-                      .ExpirationTime(DateTimeOffset.UtcNow.AddHours(1).ToUnixTimeSeconds())
-                      .AddClaim(ClaimTypes.Name, information.Nickname)
-                      .AddClaim(ClaimTypes.NameIdentifier, information.UserId)
-                      .WithVerifySignature(true)
-                      .Encode();
-
-            return accsessToken;
-        }
-
-        protected string CreateRefreshToken(UserInformation information)
-        {
-            var refreshToken = JwtBuilder.Create()
-                    .WithAlgorithm(new HMACSHA256Algorithm())
-                    .WithSecret(JwtTokenSecret)
-                    .ExpirationTime(DateTimeOffset.UtcNow.AddMonths(1).ToUnixTimeSeconds())
-                    .AddClaim(ClaimTypes.Name, information.Nickname)
-                    .AddClaim(ClaimTypes.NameIdentifier, information.UserId)
-                    .WithVerifySignature(true)
-                    .Encode();
-
-            return refreshToken;
         }
 
         public Task InitializeAsync()
