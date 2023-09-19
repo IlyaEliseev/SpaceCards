@@ -1,25 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace SpaceCards.UnitTests.MemberData
 {
     internal class CardGuessingStatisticsDataGenerator : BaseDataGenerator
     {
-        public static IEnumerable<object[]> GenerateSetInvalidCardIdSuccessUserId(int testCount)
+        public static IEnumerable<object[]> GenerateSetInvalidCardIdSuccess()
         {
-            var rnd = new Random();
-
-            for (int i = 0; i < testCount; i++)
-            {
-                var invalidCardId = -rnd.Next(0, int.MaxValue);
-                var invalidSuccess = MakeInvalidSuccess();
-                Guid? invalidUserId = null;
-
-                yield return new object[]
-                {
-                    invalidCardId, invalidSuccess, invalidUserId
-                };
-            }
+            yield return new object[] { 0, -1 };
+            yield return new object[] { 0, 2 };
+            yield return new object[] { -1, -1 };
+            yield return new object[] { -1, 2 };
         }
     }
 }

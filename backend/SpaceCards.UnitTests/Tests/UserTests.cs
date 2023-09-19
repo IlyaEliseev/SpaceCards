@@ -40,7 +40,6 @@ namespace SpaceCards.UnitTests.Tests
         [Theory]
         [MemberData(
             nameof(UserDataGenerator.GenerateSetInvalidEmailPasswordHashDatetimeNickname),
-            parameters: 10,
             MemberType = typeof(UserDataGenerator))]
         public async Task Create_EmailPasswordNicknameIsNotValid_ShouldReturnError(
             string email,
