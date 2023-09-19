@@ -38,7 +38,6 @@ namespace SpaceCards.UnitTests.Tests
         [Theory]
         [MemberData(
             nameof(GroupDataGenerator.GenerateSetInvalidName),
-            parameters: 20,
             MemberType = typeof(GroupDataGenerator))]
         public async Task Create_NameIsNotValid_ShouldReturnNullAndError(string name)
         {

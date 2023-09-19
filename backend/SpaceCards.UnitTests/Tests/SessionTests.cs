@@ -38,7 +38,6 @@ namespace SpaceCards.UnitTests.Tests
         [Theory]
         [MemberData(
             nameof(SessionDataGenerator.GenerateSetInvalidUserIdAccessTokenRefreshToken),
-            parameters: 10,
             MemberType = typeof(SessionDataGenerator))]
         public async Task Create_session_with_a_not_valid_parameters_is_failure(
             Guid userId,

@@ -71,9 +71,7 @@ namespace SpaceCards.UnitTests.Tests
             var sut = new JwtService(_options);
 
             // act
-            var token = sut
-                .AddClaims(claims)
-                .CreateToken(claims, expTime);
+            var token = sut.CreateToken(claims, expTime);
 
             var decodeToken = JwtBuilder.Create()
                         .WithAlgorithm(new HMACSHA256Algorithm())

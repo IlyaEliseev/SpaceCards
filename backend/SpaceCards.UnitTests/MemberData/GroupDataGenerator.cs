@@ -15,27 +15,15 @@ namespace SpaceCards.UnitTests.MemberData
             get { return _stringFixture; }
         }
 
-        public static IEnumerable<object[]> GenerateSetInvalidName(int testCount)
+        public static IEnumerable<object[]> GenerateSetInvalidName()
         {
-            var rnd = new Random();
+            var length = Group.MAX_NAME_LENGTH + 1;
+            var nameWithInvalidLength = StringFixture.GenerateRandomString(length);
 
-            for (int i = 0; i < testCount; i++)
-            {
-                var length = rnd.Next(
-                    Group.MAX_NAME_LENGTH + 1,
-                    Group.MAX_NAME_LENGTH + 5);
-
-                var invalidData = Enumerable.Range(0, 5)
-                   .Select(x => StringFixture.GenerateRandomString(length))
-                   .ToArray();
-
-                var invalidName = BaseDataGenerator.MakeInvalidString(invalidData);
-
-                yield return new object[]
-                {
-                    invalidName
-                };
-            }
+            yield return new object[] { null };
+            yield return new object[] { "" };
+            yield return new object[] { "    " };
+            yield return new object[] { nameWithInvalidLength };
         }
     }
 }

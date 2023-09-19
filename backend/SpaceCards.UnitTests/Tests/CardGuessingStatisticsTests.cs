@@ -39,15 +39,15 @@ namespace SpaceCards.UnitTests.Tests
         [Theory]
         [MemberData(
             nameof(CardGuessingStatisticsDataGenerator
-            .GenerateSetInvalidCardIdSuccessUserId),
-            parameters: 10,
+            .GenerateSetInvalidCardIdSuccess),
             MemberType = typeof(CardGuessingStatisticsDataGenerator))]
         public async Task Creat_CardGuessingStatistics_with_a_not_valid_parameters_is_failure(
             int cardId,
-            int success,
-            Guid userId)
+            int success)
         {
             // arrange
+            var userId = Guid.NewGuid();
+
             // act
             var result = CardGuessingStatistics.Create(cardId, success, userId);
 

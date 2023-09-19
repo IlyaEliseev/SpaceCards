@@ -39,7 +39,6 @@ namespace SpaceCards.UnitTests.Tests
         [Theory]
         [MemberData(
             nameof(CardDataGenerator.GenerateSetInvalidFrontside),
-            parameters: 10,
             MemberType = typeof(CardDataGenerator))]
         public async Task Card_with_invalid_frontside_is_not_creating(string frontSide)
         {
@@ -58,7 +57,6 @@ namespace SpaceCards.UnitTests.Tests
         [Theory]
         [MemberData(
             nameof(CardDataGenerator.GenerateSetInvalidBackside),
-            parameters: 10,
             MemberType = typeof(CardDataGenerator))]
         public async Task Card_with_invalid_backside_is_not_creating(string backSide)
         {

@@ -8,29 +8,22 @@ namespace SpaceCards.UnitTests.MemberData
 {
     public class UserDataGenerator
     {
-        public static IEnumerable<object[]> GenerateSetInvalidEmailPasswordHashDatetimeNickname(
-            int testCount)
+        public static IEnumerable<object[]> GenerateSetInvalidEmailPasswordHashDatetimeNickname()
         {
-            var rnd = new Random();
-            for (int i = 0; i < testCount; i++)
-            {
-                var invalidNicknameLength = rnd.Next(
-                    User.MAX_NICKNAME_LENGTH + 1,
-                    User.MAX_NICKNAME_LENGTH + 5);
-
-                var nickname = Enumerable.Range(0, 5)
-                    .Select(x => StringFixture.GenerateRandomString(invalidNicknameLength))
-                    .ToArray();
-
-                var invalidNickname = BaseDataGenerator.MakeInvalidString(nickname);
-                var invalidEmail = BaseDataGenerator.MakeInvalidString();
-                var invalidPassword = BaseDataGenerator.MakeInvalidString();
-
-                yield return new object[]
-                {
-                    invalidEmail, invalidPassword, invalidNickname
-                };
-            }
+            var length = User.MAX_NICKNAME_LENGTH + 1;
+            var nameWithInvalidLength = StringFixture.GenerateRandomString(length);
+            yield return new object[] { null, null, null };
+            yield return new object[] { null, " ", " " };
+            yield return new object[] { null, null, " " };
+            yield return new object[] { null, " ", null };
+            yield return new object[] { " " , null, null };
+            yield return new object[] { " ", " ", null };
+            yield return new object[] { " ", null, " " };
+            yield return new object[] { " ", " ", " " };
+            yield return new object[] { nameWithInvalidLength, null, null };
+            yield return new object[] { nameWithInvalidLength, " ", " " };
+            yield return new object[] { nameWithInvalidLength, " ", null };
+            yield return new object[] { nameWithInvalidLength, null, " " };
         }
     }
 }

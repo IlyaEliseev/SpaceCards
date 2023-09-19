@@ -8,50 +8,26 @@ namespace SpaceCards.UnitTests.MemberData
 {
     internal class CardDataGenerator
     {
-        public static IEnumerable<object[]> GenerateSetInvalidFrontside(int testCount)
+        public static IEnumerable<object[]> GenerateSetInvalidFrontside()
         {
-            var rnd = new Random();
+            var length = Card.MAX_NAME_FRONTSIDE + 1;
+            var frontSideWithInvalidLength = StringFixture.GenerateRandomString(length);
 
-            for (int i = 0; i < testCount; i++)
-            {
-                var length = rnd.Next(
-                    Card.MAX_NAME_FRONTSIDE + 1,
-                    Card.MAX_NAME_FRONTSIDE + 5);
-
-                var invalidData = Enumerable.Range(0, 5)
-                    .Select(x => StringFixture.GenerateRandomString(length))
-                    .ToArray();
-
-                var invalidString = BaseDataGenerator.MakeInvalidString(invalidData);
-
-                yield return new object[]
-                {
-                    invalidString
-                };
-            }
+            yield return new object[] { null };
+            yield return new object[] { "" };
+            yield return new object[] { "    " };
+            yield return new object[] { frontSideWithInvalidLength };
         }
 
-        public static IEnumerable<object[]> GenerateSetInvalidBackside(int testCount)
+        public static IEnumerable<object[]> GenerateSetInvalidBackside()
         {
-            var rnd = new Random();
+            var length = Card.MAX_NAME_BACKSIDE + 1;
+            var backSideWithInvalidLength = StringFixture.GenerateRandomString(length);
 
-            for (int i = 0; i < testCount; i++)
-            {
-                var length = rnd.Next(
-                    Card.MAX_NAME_BACKSIDE + 1,
-                    Card.MAX_NAME_BACKSIDE + 5);
-
-                var invalidData = Enumerable.Range(0, 5)
-                    .Select(x => StringFixture.GenerateRandomString(length))
-                    .ToArray();
-
-                var invalidString = BaseDataGenerator.MakeInvalidString(invalidData);
-
-                yield return new object[]
-                {
-                    invalidString
-                };
-            }
+            yield return new object[] { null };
+            yield return new object[] { "" };
+            yield return new object[] { "    " };
+            yield return new object[] { backSideWithInvalidLength };
         }
     }
 }
