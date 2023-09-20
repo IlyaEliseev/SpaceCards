@@ -11,6 +11,8 @@ using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddHttpContextAccessor();
+
 builder.AddApiOptions();
 
 builder.AddApiAuthentication();
