@@ -9,8 +9,8 @@ using SpaceCards.API.Options;
 using SpaceCards.Domain.Model;
 using SpaceCards.Domain.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using SpaceCards.API.Contracts;
 using SpaceCards.API.Services.JwtService;
+using SpaceCards.API.Services.CookieService;
 
 namespace SpaceCards.API.Controllers
 {
@@ -23,6 +23,7 @@ namespace SpaceCards.API.Controllers
         private readonly IOAuthUserTokensService _oAuthUserTokensService;
         private readonly ISessionsRepository _sessionsRepository;
         private readonly JwtService _jwtService;
+        private readonly ICookieService _cookieService;
 
         public OAuthController(
             ILogger<OAuthController> logger,
@@ -30,7 +31,8 @@ namespace SpaceCards.API.Controllers
             IOAuthUsersService oAuthUsersService,
             IOAuthUserTokensService oAuthUserTokensService,
             ISessionsRepository sessionsRepository,
-            JwtService jwtService)
+            JwtService jwtService,
+            ICookieService cookieService)
         {
             _jwtSecretOptions = jwtSecretOptions.Value;
             _logger = logger;
@@ -38,6 +40,7 @@ namespace SpaceCards.API.Controllers
             _oAuthUserTokensService = oAuthUserTokensService;
             _sessionsRepository = sessionsRepository;
             _jwtService = jwtService;
+            _cookieService = cookieService;
         }
 
         /// <summary>
@@ -69,7 +72,7 @@ namespace SpaceCards.API.Controllers
         [HttpGet("login")]
         public async Task<IActionResult> Login()
         {
-            var oauthParameters = await GetOAuthUserData();
+            var oauthParameters = await _cookieService.GetOAuthUserData();
             if (oauthParameters is null)
             {
                 _logger.LogError("{error}", "One of oauth parameters is null");
@@ -120,7 +123,14 @@ namespace SpaceCards.API.Controllers
                 return BadRequest(oauthUserTokenId.Error);
             }
 
-            SetCookie(accessToken, oauthParameters.Nickname, oauthParameters.ImageUri);
+            var accessTokenCookieOptions = new CookieOptions() { HttpOnly = true, Secure = true, SameSite = SameSiteMode.None };
+            var otherCookieOptions = new CookieOptions() { Secure = true, SameSite = SameSiteMode.None };
+
+            _cookieService
+                .SetCookie(new UserCookie() { Key = "_sp_i", Value = accessToken, CookieOptions = accessTokenCookieOptions })
+                .SetCookie(new UserCookie() { Key = "nickname", Value = oauthParameters.Nickname, CookieOptions = otherCookieOptions })
+                .SetCookie(new UserCookie() { Key = "avatar", Value = oauthParameters.ImageUri, CookieOptions = otherCookieOptions })
+                .SetCookie(new UserCookie() { Key = "session_id", Value = $"{Guid.NewGuid()}", CookieOptions = otherCookieOptions });
 
             return Redirect("http://localhost:3000");
         }
@@ -133,101 +143,46 @@ namespace SpaceCards.API.Controllers
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            HttpContext.Response.Cookies.Delete("nickname");
-            HttpContext.Response.Cookies.Delete("avatar");
-            HttpContext.Response.Cookies.Delete("session_id");
+
+            _cookieService
+                .DeleteCookie("nickname")
+                .DeleteCookie("avatar")
+                .DeleteCookie("session_id");
+            //HttpContext.Response.Cookies.Delete("nickname");
+            //HttpContext.Response.Cookies.Delete("avatar");
+            //HttpContext.Response.Cookies.Delete("session_id");
 
             return Redirect("http://localhost:3000");
         }
 
-        /// <summary>
-        /// Extract oath user data from<see cref="HttpContext"/>.
-        /// </summary>
-        /// <returns>OAuth user data(<see cref = "OAuthData" />).</returns>
-        [NonAction]
-        public async Task<OAuthData> GetOAuthUserData()
-        {
-            var accessToken = await HttpContext.GetTokenAsync("access_token");
-            if (accessToken is null)
-            {
-                _logger.LogError($"{accessToken} is null");
-                return null;
-            }
+        ///// <summary>
+        ///// Set cookie.
+        ///// </summary>
+        ///// <param name="accsessToken">Jwt access token user.</param>
+        ///// <param name="nickname">Nickname user.</param>
+        ///// <param name="imageUri">Image uri user.</param>
+        //[NonAction]
+        //public void SetCookie(string accsessToken, string nickname, string imageUri)
+        //{
+        //    HttpContext.Response.Cookies.Append(
+        //    "_sp_i",
+        //    accsessToken,
+        //    new CookieOptions()
+        //    {
+        //        HttpOnly = true,
+        //        Secure = true,
+        //        SameSite = SameSiteMode.None,
+        //    });
 
-            var refreshToken = await HttpContext.GetTokenAsync("refresh_token");
-            if (refreshToken is null)
-            {
-                _logger.LogError($"{refreshToken} is null");
-                return null;
-            }
+        //    var cookieOptions = new CookieOptions()
+        //    {
+        //        Secure = true,
+        //        SameSite = SameSiteMode.None,
+        //    };
 
-            var exp = await HttpContext.GetTokenAsync("expires_at");
-            if (exp is null)
-            {
-                _logger.LogError($"{exp} is null");
-                return null;
-            }
-
-            var nickname = HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Name)?.Value;
-            if (nickname is null)
-            {
-                _logger.LogError($"{nickname} is null");
-                return null;
-            }
-
-            var email = HttpContext.User.Claims.FirstOrDefault(x => x.Type == ClaimTypes.Email)?.Value;
-            if (email is null)
-            {
-                _logger.LogError($"{email} is null");
-                return null;
-            }
-
-            var imageUri = HttpContext.User.Claims.FirstOrDefault(x => x.Type == "image")?.Value;
-            if (email is null)
-            {
-                _logger.LogError($"{imageUri} is null");
-                return null;
-            }
-
-            return new OAuthData
-            {
-                Nickname = nickname,
-                Email = email,
-                ImageUri = imageUri,
-                AccessToken = accessToken,
-                RefreshToken = refreshToken,
-                ExpireAt = DateTime.SpecifyKind(DateTime.Parse(exp), DateTimeKind.Utc)
-            };
-        }
-
-        /// <summary>
-        /// Set cookie.
-        /// </summary>
-        /// <param name="accsessToken">Jwt access token user.</param>
-        /// <param name="nickname">Nickname user.</param>
-        /// <param name="imageUri">Image uri user.</param>
-        [NonAction]
-        public void SetCookie(string accsessToken, string nickname, string imageUri)
-        {
-            HttpContext.Response.Cookies.Append(
-            "_sp_i",
-            accsessToken,
-            new CookieOptions()
-            {
-                HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.None,
-            });
-
-            var cookieOptions = new CookieOptions()
-            {
-                Secure = true,
-                SameSite = SameSiteMode.None,
-            };
-
-            HttpContext.Response.Cookies.Append("nickname", nickname, cookieOptions);
-            HttpContext.Response.Cookies.Append("avatar", imageUri, cookieOptions);
-            HttpContext.Response.Cookies.Append("session_id", $"{Guid.NewGuid()}", cookieOptions);
-        }
+        //    HttpContext.Response.Cookies.Append("nickname", nickname, cookieOptions);
+        //    HttpContext.Response.Cookies.Append("avatar", imageUri, cookieOptions);
+        //    HttpContext.Response.Cookies.Append("session_id", $"{Guid.NewGuid()}", cookieOptions);
+        //}
     }
 }

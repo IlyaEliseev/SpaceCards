@@ -7,6 +7,7 @@ using OpenTelemetry.Resources;
 using OpenTelemetry.Trace;
 using SpaceCards.API.Cache;
 using SpaceCards.API.Options;
+using SpaceCards.API.Services.CookieService;
 using SpaceCards.API.Services.JwtService;
 using SpaceCards.BusinessLogic;
 using SpaceCards.DataAccess.Postgre.Repositories;
@@ -31,6 +32,7 @@ namespace SpaceCards.API.Extensions
             services.AddScoped<ISessionsRepository, SessionsRepository>();
             services.AddScoped<IOAuthUsersRepository, OAuthUsersRepository>();
             services.AddScoped<IOAuthUserTokensRepository, OAuthUserTokensRepository>();
+            services.AddScoped<ICookieService, CookieService>();
 
             return services;
         }

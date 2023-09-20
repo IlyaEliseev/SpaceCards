@@ -8,6 +8,8 @@ using SpaceCards.Domain.Model;
 using Microsoft.AspNetCore.Authorization;
 using SpaceCards.API.Services.JwtService;
 using System.Security.Claims;
+using SpaceCards.API.Services.CookieService;
+using Octokit;
 
 namespace SpaceCards.API.Controllers
 {
@@ -20,6 +22,7 @@ namespace SpaceCards.API.Controllers
         private readonly JWTSecretOptions _options;
         private readonly ISessionsRepository _sessionsRepository;
         private readonly JwtService _jwtService;
+        private readonly ICookieService _cookieService;
 
         public UsersAccountController(
             ILogger<UsersAccountController> logger,
@@ -27,7 +30,8 @@ namespace SpaceCards.API.Controllers
             IOptions<JWTSecretOptions> options,
             SecurityService securityService,
             ISessionsRepository sessionsRepository,
-            JwtService jwtService)
+            JwtService jwtService,
+            ICookieService cookieService)
         {
             _logger = logger;
             _userAccountService = userAccountService;
@@ -35,6 +39,7 @@ namespace SpaceCards.API.Controllers
             _options = options.Value;
             _sessionsRepository = sessionsRepository;
             _jwtService = jwtService;
+            _cookieService = cookieService;
         }
 
         /// <summary>
@@ -139,6 +144,9 @@ namespace SpaceCards.API.Controllers
                 _logger.LogError("{error}", result.Error);
                 return BadRequest(result.Error);
             }
+
+            _cookieService
+                .SetCookie(new UserCookie() { Key = "123", Value = "124" });
 
             HttpContext.Response.Cookies.Append(
             "_sp_i",
