@@ -122,7 +122,7 @@ namespace SpaceCards.API.Controllers
                 return BadRequest("incorrect password");
             }
 
-            var (accsessToken, refreshToken) = _jwtService.CreateTokens(
+            var (accessToken, refreshToken) = _jwtService.CreateTokens(
                 claims: new Dictionary<string, object>()
                 {
                     { ClaimTypes.NameIdentifier, user.Value.UserId },
@@ -131,7 +131,7 @@ namespace SpaceCards.API.Controllers
                 accessTokenExpireTime: DateTimeOffset.UtcNow.AddMinutes(30).ToUnixTimeSeconds(),
                 refreshTokenExpireTime: DateTimeOffset.UtcNow.AddDays(30).ToUnixTimeSeconds());
 
-            var session = Session.Create(user.Value.UserId, accsessToken, refreshToken);
+            var session = Session.Create(user.Value.UserId, accessToken, refreshToken);
             if (session.IsFailure)
             {
                 _logger.LogError("{error}", session.Error);
@@ -145,27 +145,13 @@ namespace SpaceCards.API.Controllers
                 return BadRequest(result.Error);
             }
 
+            var accessTokenCookieOptions = new CookieOptions() { HttpOnly = true, Secure = true, SameSite = SameSiteMode.None };
+            var otherCookieOptions = new CookieOptions() { Secure = true, SameSite = SameSiteMode.None };
+
             _cookieService
-                .SetCookie(new UserCookie() { Key = "123", Value = "124" });
-
-            HttpContext.Response.Cookies.Append(
-            "_sp_i",
-            accsessToken,
-            new CookieOptions()
-            {
-                HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.None,
-            });
-
-            var cookieOptions = new CookieOptions()
-            {
-                Secure = true,
-                SameSite = SameSiteMode.None,
-            };
-
-            HttpContext.Response.Cookies.Append("nickname", user.Value.Nickname, cookieOptions);
-            HttpContext.Response.Cookies.Append("session_id", $"{Guid.NewGuid()}", cookieOptions);
+                .SetCookie(new UserCookie() { Key = "_sp_i", Value = accessToken, CookieOptions = accessTokenCookieOptions })
+                .SetCookie(new UserCookie() { Key = "nickname", Value = user.Value.Nickname, CookieOptions = otherCookieOptions })
+                .SetCookie(new UserCookie() { Key = "session_id", Value = $"{Guid.NewGuid()}", CookieOptions = otherCookieOptions });
 
             return Ok();
         }
@@ -223,23 +209,14 @@ namespace SpaceCards.API.Controllers
         [HttpPost("logout")]
         public async Task<IActionResult> Logout()
         {
-            HttpContext.Response.Cookies.Delete("_sp_i",
-                new CookieOptions()
-                {
-                    HttpOnly = true,
-                    Secure = true,
-                    SameSite = SameSiteMode.None,
-                });
+            var accessTokenCookieOptions = new CookieOptions() { HttpOnly = true, Secure = true, SameSite = SameSiteMode.None };
+            var otherCookieOptions = new CookieOptions() { Secure = true, SameSite = SameSiteMode.None };
 
-            var cookieOptions = new CookieOptions()
-            {
-                Secure = true,
-                SameSite = SameSiteMode.None,
-            };
-
-            HttpContext.Response.Cookies.Delete("nickname", cookieOptions);
-            HttpContext.Response.Cookies.Delete("session_id", cookieOptions);
-            HttpContext.Response.Cookies.Delete("avatar", cookieOptions);
+            _cookieService
+                .DeleteCookie("_sp_i", accessTokenCookieOptions)
+                .DeleteCookie("nickname", otherCookieOptions)
+                .DeleteCookie("avatar", otherCookieOptions)
+                .DeleteCookie("session_id", otherCookieOptions);
 
             return Ok();
         }
