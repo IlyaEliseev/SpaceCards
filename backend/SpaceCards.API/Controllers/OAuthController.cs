@@ -144,45 +144,16 @@ namespace SpaceCards.API.Controllers
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
+            var accessTokenCookieOptions = new CookieOptions() { HttpOnly = true, Secure = true, SameSite = SameSiteMode.None };
+            var otherCookieOptions = new CookieOptions() { Secure = true, SameSite = SameSiteMode.None };
+
             _cookieService
-                .DeleteCookie("nickname")
-                .DeleteCookie("avatar")
-                .DeleteCookie("session_id");
-            //HttpContext.Response.Cookies.Delete("nickname");
-            //HttpContext.Response.Cookies.Delete("avatar");
-            //HttpContext.Response.Cookies.Delete("session_id");
+                .DeleteCookie("_sp_i", accessTokenCookieOptions)
+                .DeleteCookie("nickname", otherCookieOptions)
+                .DeleteCookie("avatar", otherCookieOptions)
+                .DeleteCookie("session_id", otherCookieOptions);
 
             return Redirect("http://localhost:3000");
         }
-
-        ///// <summary>
-        ///// Set cookie.
-        ///// </summary>
-        ///// <param name="accsessToken">Jwt access token user.</param>
-        ///// <param name="nickname">Nickname user.</param>
-        ///// <param name="imageUri">Image uri user.</param>
-        //[NonAction]
-        //public void SetCookie(string accsessToken, string nickname, string imageUri)
-        //{
-        //    HttpContext.Response.Cookies.Append(
-        //    "_sp_i",
-        //    accsessToken,
-        //    new CookieOptions()
-        //    {
-        //        HttpOnly = true,
-        //        Secure = true,
-        //        SameSite = SameSiteMode.None,
-        //    });
-
-        //    var cookieOptions = new CookieOptions()
-        //    {
-        //        Secure = true,
-        //        SameSite = SameSiteMode.None,
-        //    };
-
-        //    HttpContext.Response.Cookies.Append("nickname", nickname, cookieOptions);
-        //    HttpContext.Response.Cookies.Append("avatar", imageUri, cookieOptions);
-        //    HttpContext.Response.Cookies.Append("session_id", $"{Guid.NewGuid()}", cookieOptions);
-        //}
     }
 }

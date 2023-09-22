@@ -62,7 +62,7 @@ namespace SpaceCards.API.Services.CookieService
             }
 
             var imageUri = _httpContextAccessor.HttpContext!.User.Claims.FirstOrDefault(x => x.Type == "image")?.Value;
-            if (email is null)
+            if (imageUri is null)
             {
                 _logger.LogError($"{imageUri} is null");
                 return null;
@@ -84,6 +84,7 @@ namespace SpaceCards.API.Services.CookieService
             if (userCookie.CookieOptions is not null)
             {
                 _httpContextAccessor.HttpContext!.Response.Cookies.Append(userCookie.Key, userCookie.Value, userCookie.CookieOptions);
+                return this;
             }
 
             _httpContextAccessor.HttpContext!.Response.Cookies.Append(userCookie.Key, userCookie.Value);
@@ -98,6 +99,7 @@ namespace SpaceCards.API.Services.CookieService
                 if (userCookie.CookieOptions is not null)
                 {
                     _httpContextAccessor.HttpContext!.Response.Cookies.Append(userCookie.Key, userCookie.Value, userCookie.CookieOptions);
+                    return;
                 }
 
                 _httpContextAccessor.HttpContext!.Response.Cookies.Append(userCookie.Key, userCookie.Value);
