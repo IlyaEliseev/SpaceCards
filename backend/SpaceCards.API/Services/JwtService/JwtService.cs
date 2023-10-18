@@ -5,7 +5,6 @@ namespace SpaceCards.API.Services.JwtService
     public class JwtService
     {
         private readonly JwtOptions _jwtOptions;
-        private readonly IDictionary<string, object> _claims = new Dictionary<string, object>();
 
         public JwtService(IOptions<JwtOptions> options)
         {
