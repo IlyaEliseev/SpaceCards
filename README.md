@@ -64,6 +64,28 @@ Follow these steps to get your development environment set up:
 
 12. Launch [https://localhost:49394/swagger/index.html](https://localhost:49394/swagger/index.html) in your browser to view the API
 
+13. Setup OAuth2.0
+
+- Google
+
+  ```
+  How get client ID and client secret
+  https://support.google.com/googleapi/answer/6158849?hl=en
+
+  Authorized redirect URI
+  https://localhost:49394/signin-google
+  ```
+
+- MailRu
+
+  ```
+  How get client ID and client secret
+  https://help.mail.ru/developers/oauth/app
+
+  Authorized redirect URI
+  https://localhost:49394/signin-mailru
+  ```
+
 ## Technologies
 
 ### Backend
